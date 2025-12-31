@@ -1,0 +1,872 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>بن - Bon Coffee | إدارة المنيو</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        :root {
+            --primary: #8B4513;
+            --primary-dark: #5D2E0C;
+            --primary-light: #A0522D;
+            --secondary: #D2691E;
+            --accent: #CD853F;
+            --gold: #DAA520;
+            --bg: #0a0a0a;
+            --bg-secondary: #141414;
+            --card-bg: #1a1a1a;
+            --card-hover: #252525;
+            --text: #ffffff;
+            --text-secondary: #888888;
+            --border: #2a2a2a;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --gradient: linear-gradient(135deg, #8B4513 0%, #D2691E 50%, #CD853F 100%);
+            --shadow: 0 10px 40px rgba(0,0,0,0.3);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Cairo', sans-serif;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            margin-right: 280px; /* Matches sidebar width in style.css */
+            padding: 30px;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .page-title h1 {
+            font-size: 1.8rem;
+            font-weight: 800;
+            margin-bottom: 5px;
+        }
+
+        .page-title p {
+            color: var(--text-secondary);
+        }
+
+        .add-btn {
+            background: var(--gradient);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 4px 15px rgba(139, 69, 19, 0.3);
+            transition: transform 0.2s;
+        }
+
+        .add-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        /* Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: 16px;
+            border: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .stat-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .stat-info h3 {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--text);
+        }
+
+        .stat-info p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        /* Filters */
+        .filters-bar {
+            background: var(--card-bg);
+            padding: 15px;
+            border-radius: 16px;
+            border: 1px solid var(--border);
+            margin-bottom: 20px;
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .search-box {
+            flex: 1;
+            position: relative;
+        }
+
+        .search-box i {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-secondary);
+        }
+
+        .search-box input {
+            width: 100%;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            padding: 12px 45px 12px 15px;
+            border-radius: 10px;
+            color: var(--text);
+            font-family: inherit;
+        }
+
+        .filter-select {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            padding: 12px 20px;
+            border-radius: 10px;
+            color: var(--text);
+            font-family: inherit;
+            cursor: pointer;
+        }
+
+        /* Menu Grid */
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .menu-item-card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            border: 1px solid var(--border);
+            overflow: hidden;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .menu-item-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary);
+            box-shadow: var(--shadow);
+        }
+
+        .item-image {
+            height: 150px;
+            background: var(--bg-secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+            position: relative;
+        }
+
+        .item-status {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 700;
+        }
+
+        .status-active { background: var(--success); color: white; }
+        .status-inactive { background: var(--danger); color: white; }
+
+        .item-details {
+            padding: 15px;
+        }
+
+        .item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 10px;
+        }
+
+        .item-title {
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+
+        .item-price {
+            color: var(--primary);
+            font-weight: 800;
+            font-size: 1.1rem;
+        }
+
+        .item-category {
+            display: inline-block;
+            padding: 4px 10px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 8px;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-bottom: 15px;
+        }
+
+        .item-actions {
+            display: flex;
+            gap: 10px;
+            border-top: 1px solid var(--border);
+            padding-top: 15px;
+        }
+
+        .action-btn {
+            flex: 1;
+            padding: 8px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-family: inherit;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .btn-edit {
+            background: rgba(255,255,255,0.1);
+            color: var(--text);
+        }
+
+        .btn-edit:hover { background: rgba(255,255,255,0.2); }
+
+        .btn-delete {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--danger);
+        }
+
+        .btn-delete:hover { background: rgba(239, 68, 68, 0.2); }
+
+        /* Modal */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(5px);
+            z-index: 1000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal.active { display: flex; }
+
+        .modal-content {
+            background: var(--card-bg);
+            width: 100%;
+            max-width: 500px;
+            border-radius: 20px;
+            border: 1px solid var(--border);
+            padding: 25px;
+            position: relative;
+            animation: slideUp 0.3s ease;
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 1.2rem;
+            cursor: pointer;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .form-input {
+            width: 100%;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            padding: 12px;
+            border-radius: 10px;
+            color: var(--text);
+            font-family: inherit;
+        }
+
+        .form-input:focus {
+            border-color: var(--primary);
+            outline: none;
+        }
+
+        .emoji-grid {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 10px;
+            margin-top: 10px;
+            background: var(--bg);
+            padding: 10px;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+        }
+
+        .emoji-option {
+            font-size: 1.5rem;
+            text-align: center;
+            cursor: pointer;
+            padding: 5px;
+            border-radius: 5px;
+        }
+
+        .emoji-option:hover, .emoji-option.selected {
+            background: rgba(255,255,255,0.1);
+        }
+
+        .submit-btn {
+            width: 100%;
+            background: var(--gradient);
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 70px;
+                padding: 10px;
+            }
+            .logo h2, .nav-item span { display: none; }
+            .main-content { margin-right: 70px; padding: 15px; }
+            .nav-item { justify-content: center; }
+            .header { flex-direction: column; gap: 15px; align-items: stretch; }
+            .filters-bar { flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <aside class="sidebar"></aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <header class="header">
+            <div class="page-title">
+                <h1>لوحة التحكم</h1>
+                <p>إدارة المنيو والطلبات</p>
+            </div>
+            <div class="header-actions" style="display: flex; gap: 10px;">
+                <button class="add-btn" onclick="switchTab('menu')" id="tab-menu-btn" style="background: var(--card-bg); color: var(--text);">
+                    <i class="fas fa-utensils"></i>
+                    المنيو
+                </button>
+                <button class="add-btn" onclick="switchTab('orders')" id="tab-orders-btn" style="background: var(--card-bg); color: var(--text);">
+                    <i class="fas fa-clipboard-list"></i>
+                    الطلبات
+                </button>
+            </div>
+        </header>
+
+        <!-- Menu Section -->
+        <div id="menu-section">
+            <div style="display: flex; justify-content: flex-end; margin-bottom: 20px;">
+                <button class="add-btn" onclick="openModal()">
+                    <i class="fas fa-plus"></i>
+                    إضافة صنف جديد
+                </button>
+            </div>
+
+            <!-- Stats -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: rgba(139, 69, 19, 0.2); color: var(--primary);">
+                        <i class="fas fa-coffee"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="total-items">0</h3>
+                        <p>إجمالي الأصناف</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: rgba(16, 185, 129, 0.2); color: var(--success);">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="active-items">0</h3>
+                        <p>نشط حالياً</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: rgba(218, 165, 32, 0.2); color: var(--gold);">
+                        <i class="fas fa-tags"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="total-categories">0</h3>
+                        <p>التصنيفات</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Filters -->
+            <div class="filters-bar">
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" placeholder="ابحث عن صنف..." id="search-input" oninput="filterItems()">
+                </div>
+                <select class="filter-select" id="category-filter" onchange="filterItems()">
+                    <option value="all">كل التصنيفات</option>
+                    <option value="coffee">قهوة</option>
+                    <option value="cold">مشروبات باردة</option>
+                    <option value="desserts">حلويات</option>
+                    <option value="breakfast">فطور</option>
+                </select>
+            </div>
+
+            <!-- Menu Grid -->
+            <div class="menu-grid" id="menu-grid">
+                <!-- Items will be loaded here -->
+            </div>
+        </div>
+
+        <!-- Orders Section -->
+        <div id="orders-section" style="display: none;">
+            <div class="orders-grid" id="orders-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px;">
+                <!-- Orders will be loaded here -->
+            </div>
+        </div>
+    </main>
+
+    <!-- Add/Edit Modal -->
+    <div class="modal" id="item-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modal-title">إضافة صنف جديد</h2>
+                <button class="close-modal" onclick="closeModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <form id="item-form" onsubmit="handleFormSubmit(event)">
+                <input type="hidden" id="item-id">
+                <div class="form-group">
+                    <label class="form-label">اسم الصنف</label>
+                    <input type="text" class="form-input" id="item-name" required placeholder="مثال: كابتشينو">
+                </div>
+                <div class="form-group" style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                    <div>
+                        <label class="form-label">السعر (ر.ع)</label>
+                        <input type="number" step="0.1" class="form-input" id="item-price" required placeholder="0.0">
+                    </div>
+                    <div>
+                        <label class="form-label">التصنيف</label>
+                        <select class="form-input" id="item-category">
+                            <option value="coffee">قهوة</option>
+                            <option value="cold">مشروبات باردة</option>
+                            <option value="desserts">حلويات</option>
+                            <option value="breakfast">فطور</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">اختر أيقونة</label>
+                    <input type="hidden" id="item-emoji" value="☕">
+                    <div class="emoji-grid" id="emoji-grid">
+                        <!-- Emojis generated by JS -->
+                    </div>
+                </div>
+                <button type="submit" class="submit-btn">حفظ التغييرات</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Firebase & Scripts -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+    <script src="../../js/firebase-config.js"></script>
+    <script src="js/sidebar.js?v=1.1"></script>
+
+    <script>
+        // Data
+        let items = [];
+        let orders = [];
+        const emojis = ['☕', '🥛', '🧊', '🥤', '🧋', '🍵', '🍰', '🥐', '🥯', '🥪', '🍫', '🍦', '🍪', '🍩', '🥭', '🍋'];
+        const MENU_PATH = 'restaurant-system/restaurants/bon/menu';
+        const ORDERS_PATH = 'restaurant-system/restaurants/bon/orders';
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            renderEmojis();
+            initFirebaseListeners();
+            switchTab('menu'); // Default tab
+        });
+
+        function switchTab(tab) {
+            const menuSection = document.getElementById('menu-section');
+            const ordersSection = document.getElementById('orders-section');
+            const menuBtn = document.getElementById('tab-menu-btn');
+            const ordersBtn = document.getElementById('tab-orders-btn');
+
+            if (tab === 'menu') {
+                menuSection.style.display = 'block';
+                ordersSection.style.display = 'none';
+                menuBtn.style.background = 'var(--gradient)';
+                menuBtn.style.color = 'white';
+                ordersBtn.style.background = 'var(--card-bg)';
+                ordersBtn.style.color = 'var(--text)';
+            } else {
+                menuSection.style.display = 'none';
+                ordersSection.style.display = 'block';
+                ordersBtn.style.background = 'var(--gradient)';
+                ordersBtn.style.color = 'white';
+                menuBtn.style.background = 'var(--card-bg)';
+                menuBtn.style.color = 'var(--text)';
+            }
+        }
+
+        function initFirebaseListeners() {
+            const menuRef = firebase.database().ref(MENU_PATH);
+            const ordersRef = firebase.database().ref(ORDERS_PATH);
+            
+            // Listen for menu changes
+            menuRef.on('value', (snapshot) => {
+                const data = snapshot.val();
+                if (data) {
+                    items = Object.keys(data).map(key => ({
+                        id: key,
+                        ...data[key]
+                    }));
+                } else {
+                    items = [];
+                }
+                renderItems();
+                updateStats();
+            });
+
+            // Listen for orders changes
+            ordersRef.on('value', (snapshot) => {
+                const data = snapshot.val();
+                if (data) {
+                    orders = Object.entries(data)
+                        .map(([key, value]) => ({ id: key, ...value }))
+                        .sort((a, b) => b.timestamp - a.timestamp);
+                    renderOrders();
+                } else {
+                    orders = [];
+                    renderOrders();
+                }
+            });
+        }
+
+        function renderOrders() {
+            const container = document.getElementById('orders-grid');
+            
+            if (orders.length === 0) {
+                container.innerHTML = `
+                    <div style="grid-column: 1/-1; text-align: center; padding: 50px; color: var(--text-secondary);">
+                        <i class="fas fa-clipboard-check" style="font-size: 3rem; margin-bottom: 15px; opacity: 0.5;"></i>
+                        <p>لا توجد طلبات حالياً</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = orders.map(order => {
+                const statusClass = `status-${order.status}`;
+                const statusText = {
+                    'new': 'جديد',
+                    'processing': 'قيد التحضير',
+                    'completed': 'مكتمل',
+                    'cancelled': 'ملغي'
+                }[order.status] || order.status;
+
+                return `
+                    <div class="menu-item-card" style="padding: 20px;">
+                        <div class="item-header" style="border-bottom: 1px solid var(--border); padding-bottom: 10px; margin-bottom: 10px;">
+                            <div>
+                                <div class="item-title">#${order.tableNumber || 'بدون اسم'}</div>
+                                <div style="font-size: 0.8rem; color: var(--text-secondary);">${new Date(order.createdAt).toLocaleTimeString('ar-EG')}</div>
+                            </div>
+                            <span class="item-status ${statusClass}" style="position: static;">${statusText}</span>
+                        </div>
+                        
+                        <div style="margin-bottom: 15px;">
+                            ${order.items.map(item => `
+                                <div style="display: flex; justify-content: space-between; margin-bottom: 5px; font-size: 0.9rem;">
+                                    <span><span style="color: var(--primary); font-weight: bold;">${item.quantity}x</span> ${item.name}</span>
+                                    <span>${(item.price * item.quantity).toFixed(3)}</span>
+                                </div>
+                            `).join('')}
+                        </div>
+
+                        <div style="display: flex; justify-content: space-between; font-weight: bold; border-top: 1px solid var(--border); padding-top: 10px; margin-bottom: 15px;">
+                            <span>الإجمالي</span>
+                            <span>${parseFloat(order.total).toFixed(3)} ر.ع</span>
+                        </div>
+
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                            ${order.status === 'new' ? `
+                                <button class="action-btn" style="background: var(--primary); color: white;" onclick="updateOrderStatus('${order.id}', 'processing')">
+                                    تحضير
+                                </button>
+                            ` : ''}
+                            
+                            ${order.status === 'processing' ? `
+                                <button class="action-btn" style="background: var(--success); color: white;" onclick="updateOrderStatus('${order.id}', 'completed')">
+                                    إكمال
+                                </button>
+                            ` : ''}
+
+                            ${order.status !== 'completed' && order.status !== 'cancelled' ? `
+                                <button class="action-btn" style="background: rgba(239, 68, 68, 0.1); color: var(--danger);" onclick="updateOrderStatus('${order.id}', 'cancelled')">
+                                    إلغاء
+                                </button>
+                            ` : ''}
+                            
+                            ${order.status === 'completed' ? `
+                                <button class="action-btn" style="background: rgba(239, 68, 68, 0.1); color: var(--danger); grid-column: 1/-1;" onclick="deleteOrder('${order.id}')">
+                                    حذف من السجل
+                                </button>
+                            ` : ''}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function updateOrderStatus(orderId, newStatus) {
+            firebase.database().ref(ORDERS_PATH + '/' + orderId).update({
+                status: newStatus,
+                updatedAt: firebase.database.ServerValue.TIMESTAMP
+            });
+        }
+
+        function deleteOrder(orderId) {
+            if(confirm('هل أنت متأكد من حذف هذا الطلب نهائياً؟')) {
+                firebase.database().ref(ORDERS_PATH + '/' + orderId).remove();
+            }
+        }
+
+        function renderItems(filterData = items) {
+            const grid = document.getElementById('menu-grid');
+            
+            if (filterData.length === 0) {
+                grid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 40px; color: var(--text-secondary);">لا توجد أصناف حالياً</div>';
+                return;
+            }
+
+            grid.innerHTML = filterData.map(item => `
+                <div class="menu-item-card">
+                    <div class="item-image">
+                        ${item.emoji || '☕'}
+                        <span class="item-status ${item.active ? 'status-active' : 'status-inactive'}">
+                            ${item.active ? 'نشط' : 'غير نشط'}
+                        </span>
+                    </div>
+                    <div class="item-details">
+                        <div class="item-header">
+                            <h3 class="item-title">${item.name}</h3>
+                            <span class="item-price">${parseFloat(item.price).toFixed(3)}</span>
+                        </div>
+                        <span class="item-category">${getCategoryName(item.category)}</span>
+                        <div class="item-actions">
+                            <button class="action-btn btn-edit" onclick="editItem('${item.id}')">
+                                <i class="fas fa-edit"></i> تعديل
+                            </button>
+                            <button class="action-btn btn-delete" onclick="deleteItem('${item.id}')">
+                                <i class="fas fa-trash"></i> حذف
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderEmojis() {
+            const grid = document.getElementById('emoji-grid');
+            grid.innerHTML = emojis.map(emoji => `
+                <div class="emoji-option" onclick="selectEmoji('${emoji}', this)">${emoji}</div>
+            `).join('');
+        }
+
+        function selectEmoji(emoji, element) {
+            document.getElementById('item-emoji').value = emoji;
+            document.querySelectorAll('.emoji-option').forEach(el => el.classList.remove('selected'));
+            element.classList.add('selected');
+        }
+
+        function getCategoryName(cat) {
+            const names = {
+                'coffee': 'قهوة',
+                'cold': 'مشروبات باردة',
+                'desserts': 'حلويات',
+                'breakfast': 'فطور'
+            };
+            return names[cat] || cat;
+        }
+
+        function updateStats() {
+            document.getElementById('total-items').textContent = items.length;
+            document.getElementById('active-items').textContent = items.filter(i => i.active).length;
+            document.getElementById('total-categories').textContent = new Set(items.map(i => i.category)).size;
+        }
+
+        function filterItems() {
+            const search = document.getElementById('search-input').value.toLowerCase();
+            const category = document.getElementById('category-filter').value;
+            
+            const filtered = items.filter(item => {
+                const matchSearch = item.name.toLowerCase().includes(search);
+                const matchCategory = category === 'all' || item.category === category;
+                return matchSearch && matchCategory;
+            });
+            
+            renderItems(filtered);
+        }
+
+        // Modal Functions
+        function openModal(editMode = false) {
+            const modal = document.getElementById('item-modal');
+            modal.classList.add('active');
+            if (!editMode) {
+                document.getElementById('item-form').reset();
+                document.getElementById('modal-title').textContent = 'إضافة صنف جديد';
+                document.getElementById('item-id').value = '';
+                // Select default emoji
+                selectEmoji('☕', document.querySelector('.emoji-option'));
+            }
+        }
+
+        function closeModal() {
+            document.getElementById('item-modal').classList.remove('active');
+        }
+
+        function editItem(id) {
+            const item = items.find(i => i.id === id);
+            if (!item) return;
+
+            document.getElementById('item-id').value = item.id;
+            document.getElementById('item-name').value = item.name;
+            document.getElementById('item-price').value = item.price;
+            document.getElementById('item-category').value = item.category;
+            document.getElementById('item-emoji').value = item.emoji;
+            document.getElementById('modal-title').textContent = 'تعديل الصنف';
+            
+            // Highlight selected emoji
+            const emojiOptions = document.querySelectorAll('.emoji-option');
+            emojiOptions.forEach(el => {
+                if (el.textContent === item.emoji) el.classList.add('selected');
+                else el.classList.remove('selected');
+            });
+            
+            openModal(true);
+        }
+
+        function deleteItem(id) {
+            if(confirm('هل أنت متأكد من حذف هذا الصنف؟')) {
+                firebase.database().ref(MENU_PATH + '/' + id).remove()
+                    .then(() => {
+                        // Success handled by listener
+                    })
+                    .catch(error => {
+                        alert('حدث خطأ أثناء الحذف: ' + error.message);
+                    });
+            }
+        }
+
+        function handleFormSubmit(e) {
+            e.preventDefault();
+            const id = document.getElementById('item-id').value;
+            const name = document.getElementById('item-name').value;
+            const price = parseFloat(document.getElementById('item-price').value);
+            const category = document.getElementById('item-category').value;
+            const emoji = document.getElementById('item-emoji').value;
+
+            const itemData = {
+                name,
+                price,
+                category,
+                emoji,
+                active: true,
+                updatedAt: firebase.database.ServerValue.TIMESTAMP
+            };
+
+            if (id) {
+                // Edit
+                firebase.database().ref(MENU_PATH + '/' + id).update(itemData)
+                    .then(() => closeModal())
+                    .catch(err => alert(err.message));
+            } else {
+                // Add
+                const newRef = firebase.database().ref(MENU_PATH).push();
+                newRef.set(itemData)
+                    .then(() => closeModal())
+                    .catch(err => alert(err.message));
+            }
+        }
+
+        // Close modal on outside click
+        document.getElementById('item-modal').addEventListener('click', (e) => {
+            if (e.target.id === 'item-modal') closeModal();
+        });
+    </script>
+</body>
+</html>

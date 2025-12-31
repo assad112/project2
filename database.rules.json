@@ -1,0 +1,30 @@
+{
+  "rules": {
+    "restaurant-system": {
+      "sites": {
+        ".read": true,
+        ".write": true
+      },
+      "restaurants": {
+        ".read": true,
+        ".write": true
+      },
+      "superAdmins": {
+        ".read": true,
+        ".write": true
+      },
+      "orders": {
+        ".read": true,
+        ".write": true
+      },
+      "shippingCompanies": {
+        ".read": true,
+        ".write": true
+      },
+      "restaurantData": {
+        ".read": true,
+        ".write": true
+      }
+    }
+  }
+}

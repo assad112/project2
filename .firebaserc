@@ -1,0 +1,21 @@
+{
+  "projects": {
+    "default": "restaurant-system-demo"
+  },
+  "targets": {
+    "restaurant-system-demo": {
+      "hosting": {
+        "bon-coffee-1": [
+          "bon-coffee-1"
+        ],
+        "restaurant-system-demo": [
+          "restaurant-system-demo"
+        ],
+        "coffee1": [
+          "coffee1"
+        ]
+      }
+    }
+  },
+  "etags": {}
+}

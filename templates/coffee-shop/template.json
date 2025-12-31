@@ -1,0 +1,12 @@
+{
+  "id": "coffee-shop",
+  "name": "كوفي شوب احترافي",
+  "description": "قالب كامل للكوفي شوب يشمل: المنيو، إدارة الكوفي، إدارة الطلبات، ومتجر بيع البن",
+  "icon": "☕",
+  "color": "#8B4513",
+  "folder": "coffee-shop",
+  "preview": "templates/coffee-shop/index.html",
+  "category": "cafes",
+  "pages": ["index", "admin", "orders", "beans-store"],
+  "features": ["قائمة المشروبات والحلويات", "لوحة تحكم إدارية", "نظام إدارة الطلبات", "متجر بيع البن", "سلة تسوق متقدمة", "تصميم احترافي"]
+}

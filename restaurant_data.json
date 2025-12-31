@@ -1,0 +1,182 @@
+{
+  "orders": [
+    {
+      "id": 1766384620893,
+      "tableId": 1,
+      "items": [
+        {
+          "id": 5,
+          "name": "ورق عنب",
+          "category": "appetizers",
+          "price": 2,
+          "description": "ورق عنب محشي بالأرز",
+          "emoji": "🍃",
+          "quantity": 2
+        },
+        {
+          "id": 4,
+          "name": "تبولة",
+          "category": "appetizers",
+          "price": 1.6,
+          "description": "تبولة بالبقدونس الطازج",
+          "emoji": "🌿",
+          "quantity": 1
+        },
+        {
+          "id": 6,
+          "name": "كبة مقلية",
+          "category": "appetizers",
+          "price": 2.5,
+          "description": "كبة لحم مقلية مقرمشة",
+          "emoji": "🥟",
+          "quantity": 1
+        },
+        {
+          "id": 7,
+          "name": "سمبوسة لحم",
+          "category": "appetizers",
+          "price": 1.8,
+          "description": "سمبوسة محشية لحم مفروم",
+          "emoji": "🥟",
+          "quantity": 1
+        },
+        {
+          "id": 8,
+          "name": "سمبوسة جبن",
+          "category": "appetizers",
+          "price": 1.5,
+          "description": "سمبوسة محشية جبن",
+          "emoji": "🧀",
+          "quantity": 1
+        }
+      ],
+      "total": 11.4,
+      "status": "completed",
+      "createdAt": "2025-12-22T06:23:40.893Z"
+    },
+    {
+      "id": 1766384608431,
+      "tableId": 1,
+      "items": [
+        {
+          "id": 1,
+          "name": "حمص بالطحينة",
+          "category": "appetizers",
+          "price": 1.5,
+          "description": "حمص طازج مع طحينة وزيت زيتون",
+          "emoji": "🥙",
+          "quantity": 2
+        },
+        {
+          "id": 3,
+          "name": "فتوش",
+          "category": "appetizers",
+          "price": 1.8,
+          "description": "سلطة فتوش طازجة بالخضار",
+          "emoji": "🥗",
+          "quantity": 1
+        },
+        {
+          "id": 2,
+          "name": "متبل",
+          "category": "appetizers",
+          "price": 1.5,
+          "description": "باذنجان مشوي مع طحينة",
+          "emoji": "🍆",
+          "quantity": 1
+        },
+        {
+          "id": 4,
+          "name": "تبولة",
+          "category": "appetizers",
+          "price": 1.6,
+          "description": "تبولة بالبقدونس الطازج",
+          "emoji": "🌿",
+          "quantity": 1
+        },
+        {
+          "id": 5,
+          "name": "ورق عنب",
+          "category": "appetizers",
+          "price": 2,
+          "description": "ورق عنب محشي بالأرز",
+          "emoji": "🍃",
+          "quantity": 1
+        }
+      ],
+      "total": 9.9,
+      "status": "completed",
+      "createdAt": "2025-12-22T06:23:28.431Z"
+    },
+    {
+      "id": 1766384564859,
+      "tableId": 1,
+      "items": [
+        {
+          "id": 1,
+          "name": "حمص بالطحينة",
+          "category": "appetizers",
+          "price": 1.5,
+          "description": "حمص طازج مع طحينة وزيت زيتون",
+          "emoji": "🥙",
+          "quantity": 5
+        }
+      ],
+      "total": 7.5,
+      "status": "completed",
+      "createdAt": "2025-12-22T06:22:44.859Z"
+    }
+  ],
+  "tables": [
+    {
+      "id": 1,
+      "status": "available",
+      "currentOrder": null
+    },
+    {
+      "id": 2,
+      "status": "available",
+      "currentOrder": null
+    },
+    {
+      "id": 3,
+      "status": "available",
+      "currentOrder": null
+    },
+    {
+      "id": 4,
+      "status": "available",
+      "currentOrder": null
+    },
+    {
+      "id": 5,
+      "status": "available",
+      "currentOrder": null
+    },
+    {
+      "id": 6,
+      "status": "available",
+      "currentOrder": null
+    },
+    {
+      "id": 7,
+      "status": "available",
+      "currentOrder": null
+    },
+    {
+      "id": 8,
+      "status": "available",
+      "currentOrder": null
+    },
+    {
+      "id": 9,
+      "status": "available",
+      "currentOrder": null
+    },
+    {
+      "id": 10,
+      "status": "available",
+      "currentOrder": null
+    }
+  ]
+}

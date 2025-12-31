@@ -1,0 +1,1191 @@
+/* ==========================================
+   نظام إدارة المطعم - التنسيقات الأساسية
+   متوافق 100% مع الهواتف
+   ========================================== */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --primary-color: #e74c3c;
+    --secondary-color: #2c3e50;
+    --accent-color: #27ae60;
+    --warning-color: #f39c12;
+    --light-bg: #f8f9fa;
+    --white: #ffffff;
+    --dark-text: #2c3e50;
+    --light-text: #7f8c8d;
+    --shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    --shadow-hover: 0 8px 25px rgba(0, 0, 0, 0.15);
+    --border-radius: 15px;
+    --transition: all 0.3s ease;
+}
+
+body {
+    font-family: 'Cairo', sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    color: var(--dark-text);
+    line-height: 1.6;
+}
+
+/* ==========================================
+   Container الحاوية الرئيسية
+   ========================================== */
+.app-container {
+    max-width: 100%;
+    min-height: 100vh;
+    padding: 15px;
+}
+
+/* ==========================================
+   شاشة الترحيب
+   ========================================== */
+.welcome-screen {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+}
+
+.logo {
+    text-align: center;
+    color: var(--white);
+    margin-bottom: 30px;
+}
+
+.logo i {
+    font-size: 4rem;
+    margin-bottom: 15px;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+}
+
+.logo h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 5px;
+}
+
+.logo p {
+    font-size: 1rem;
+    opacity: 0.9;
+}
+
+/* ==========================================
+   بطاقات القائمة الرئيسية
+   ========================================== */
+.menu-cards {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+    width: 100%;
+    max-width: 500px;
+    margin-bottom: 30px;
+}
+
+.menu-card {
+    background: var(--white);
+    border-radius: var(--border-radius);
+    padding: 25px 15px;
+    text-align: center;
+    text-decoration: none;
+    color: var(--dark-text);
+    box-shadow: var(--shadow);
+    transition: var(--transition);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+.menu-card:hover, .menu-card:active {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-hover);
+}
+
+.menu-card i {
+    font-size: 2.5rem;
+    padding: 15px;
+    border-radius: 50%;
+    color: var(--white);
+}
+
+.menu-card.customer i { background: var(--primary-color); }
+.menu-card.waiter i { background: var(--warning-color); }
+.menu-card.cashier i { background: var(--accent-color); }
+.menu-card.admin i { background: var(--secondary-color); }
+
+.menu-card h3 {
+    font-size: 1.1rem;
+    font-weight: 700;
+}
+
+.menu-card p {
+    font-size: 0.85rem;
+    color: var(--light-text);
+}
+
+/* ==========================================
+   قسم QR Code
+   ========================================== */
+.qr-section {
+    background: var(--white);
+    border-radius: var(--border-radius);
+    padding: 25px;
+    text-align: center;
+    width: 100%;
+    max-width: 300px;
+    box-shadow: var(--shadow);
+}
+
+.qr-section h3 {
+    color: var(--primary-color);
+    margin-bottom: 10px;
+}
+
+.qr-section p {
+    color: var(--light-text);
+    font-size: 0.9rem;
+    margin-bottom: 15px;
+}
+
+#qr-code {
+    display: flex;
+    justify-content: center;
+}
+
+#qr-code canvas {
+    border-radius: 10px;
+}
+
+/* ==========================================
+   الهيدر العام
+   ========================================== */
+.header {
+    background: var(--white);
+    padding: 15px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-radius: var(--border-radius);
+    margin-bottom: 20px;
+    box-shadow: var(--shadow);
+}
+
+.header h1 {
+    font-size: 1.3rem;
+    color: var(--dark-text);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.header h1 i {
+    color: var(--primary-color);
+}
+
+.back-btn {
+    background: var(--light-bg);
+    border: none;
+    padding: 10px 15px;
+    border-radius: 10px;
+    color: var(--dark-text);
+    font-size: 1rem;
+    cursor: pointer;
+    transition: var(--transition);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.back-btn:hover {
+    background: var(--primary-color);
+    color: var(--white);
+}
+
+/* ==========================================
+   صفحة المنيو
+   ========================================== */
+.menu-container {
+    padding: 15px;
+}
+
+.table-selector {
+    background: var(--white);
+    padding: 15px;
+    border-radius: var(--border-radius);
+    margin-bottom: 20px;
+    box-shadow: var(--shadow);
+}
+
+.table-selector label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 10px;
+    color: var(--dark-text);
+}
+
+.table-selector select {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid var(--light-bg);
+    border-radius: 10px;
+    font-size: 1rem;
+    font-family: 'Cairo', sans-serif;
+    background: var(--light-bg);
+    color: var(--dark-text);
+}
+
+.categories {
+    display: flex;
+    gap: 10px;
+    overflow-x: auto;
+    padding: 10px 0;
+    margin-bottom: 20px;
+    -webkit-overflow-scrolling: touch;
+}
+
+.category-btn {
+    background: var(--white);
+    border: none;
+    padding: 12px 25px;
+    border-radius: 25px;
+    font-size: 0.95rem;
+    font-family: 'Cairo', sans-serif;
+    font-weight: 600;
+    color: var(--dark-text);
+    cursor: pointer;
+    white-space: nowrap;
+    transition: var(--transition);
+    box-shadow: var(--shadow);
+}
+
+.category-btn.active, .category-btn:hover {
+    background: var(--primary-color);
+    color: var(--white);
+}
+
+.menu-items {
+    display: grid;
+    gap: 15px;
+}
+
+.menu-item {
+    background: var(--white);
+    border-radius: var(--border-radius);
+    overflow: hidden;
+    box-shadow: var(--shadow);
+    display: flex;
+    gap: 15px;
+    padding: 15px;
+    transition: var(--transition);
+}
+
+.menu-item:hover {
+    box-shadow: var(--shadow-hover);
+}
+
+.menu-item-image {
+    width: 100px;
+    height: 100px;
+    border-radius: 12px;
+    object-fit: cover;
+    background: var(--light-bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.5rem;
+    flex-shrink: 0;
+}
+
+.menu-item-details {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.menu-item-name {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--dark-text);
+    margin-bottom: 5px;
+}
+
+.menu-item-desc {
+    font-size: 0.85rem;
+    color: var(--light-text);
+    margin-bottom: 10px;
+}
+
+.menu-item-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.menu-item-price {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--primary-color);
+}
+
+.add-btn {
+    background: var(--accent-color);
+    border: none;
+    color: var(--white);
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    font-size: 1.5rem;
+    cursor: pointer;
+    transition: var(--transition);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.add-btn:hover {
+    background: var(--primary-color);
+    transform: scale(1.1);
+}
+
+/* ==========================================
+   سلة المشتريات
+   ========================================== */
+.cart-container {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: var(--white);
+    border-radius: var(--border-radius) var(--border-radius) 0 0;
+    box-shadow: 0 -5px 20px rgba(0, 0, 0, 0.15);
+    padding: 20px;
+    transform: translateY(100%);
+    transition: var(--transition);
+    max-height: 70vh;
+    overflow-y: auto;
+    z-index: 1000;
+}
+
+.cart-container.active {
+    transform: translateY(0);
+}
+
+.cart-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid var(--light-bg);
+}
+
+.cart-header h3 {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--dark-text);
+}
+
+.close-cart {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    color: var(--light-text);
+    cursor: pointer;
+}
+
+.cart-items {
+    margin-bottom: 15px;
+}
+
+.cart-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--light-bg);
+}
+
+.cart-item-info h4 {
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.cart-item-info p {
+    font-size: 0.85rem;
+    color: var(--primary-color);
+}
+
+.cart-item-qty {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.qty-btn {
+    width: 32px;
+    height: 32px;
+    border: none;
+    border-radius: 8px;
+    background: var(--light-bg);
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.qty-btn:hover {
+    background: var(--primary-color);
+    color: var(--white);
+}
+
+.cart-total {
+    display: flex;
+    justify-content: space-between;
+    font-size: 1.2rem;
+    font-weight: 700;
+    padding: 15px 0;
+    border-top: 2px solid var(--light-bg);
+}
+
+.send-order-btn {
+    width: 100%;
+    padding: 15px;
+    background: var(--accent-color);
+    border: none;
+    border-radius: var(--border-radius);
+    color: var(--white);
+    font-size: 1.1rem;
+    font-weight: 700;
+    font-family: 'Cairo', sans-serif;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.send-order-btn:hover {
+    background: var(--primary-color);
+}
+
+/* زر السلة العائم */
+.cart-float-btn {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    width: 60px;
+    height: 60px;
+    background: var(--primary-color);
+    border: none;
+    border-radius: 50%;
+    color: var(--white);
+    font-size: 1.5rem;
+    cursor: pointer;
+    box-shadow: var(--shadow-hover);
+    z-index: 999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: var(--transition);
+}
+
+.cart-float-btn:hover {
+    transform: scale(1.1);
+}
+
+.cart-badge {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background: var(--accent-color);
+    color: var(--white);
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    font-size: 0.85rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* ==========================================
+   صفحة النادل (الطاولات)
+   ========================================== */
+.waiter-container {
+    padding: 15px;
+}
+
+.tables-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+}
+
+.table-card {
+    background: var(--white);
+    border-radius: var(--border-radius);
+    padding: 20px;
+    text-align: center;
+    box-shadow: var(--shadow);
+    cursor: pointer;
+    transition: var(--transition);
+    border: 3px solid transparent;
+}
+
+.table-card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-hover);
+}
+
+.table-card.available {
+    border-color: var(--accent-color);
+}
+
+.table-card.occupied {
+    border-color: var(--warning-color);
+    background: #fff9e6;
+}
+
+.table-card.pending {
+    border-color: var(--primary-color);
+    background: #ffe6e6;
+    animation: blink 1.5s infinite;
+}
+
+@keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.7; }
+}
+
+.table-number {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--dark-text);
+}
+
+.table-status {
+    font-size: 0.9rem;
+    margin-top: 5px;
+    padding: 5px 15px;
+    border-radius: 20px;
+    display: inline-block;
+}
+
+.table-card.available .table-status {
+    background: #e8f5e9;
+    color: var(--accent-color);
+}
+
+.table-card.occupied .table-status {
+    background: #fff3cd;
+    color: var(--warning-color);
+}
+
+.table-card.pending .table-status {
+    background: #ffebee;
+    color: var(--primary-color);
+}
+
+/* ==========================================
+   صفحة الكاشير
+   ========================================== */
+.cashier-container {
+    padding: 15px;
+}
+
+.orders-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.order-card {
+    background: var(--white);
+    border-radius: var(--border-radius);
+    overflow: hidden;
+    box-shadow: var(--shadow);
+}
+
+.order-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    background: var(--light-bg);
+}
+
+.order-info h3 {
+    font-size: 1.1rem;
+    color: var(--dark-text);
+}
+
+.order-info span {
+    font-size: 0.85rem;
+    color: var(--light-text);
+}
+
+.order-status {
+    padding: 8px 15px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.order-status.new {
+    background: #ffebee;
+    color: var(--primary-color);
+}
+
+.order-status.preparing {
+    background: #fff3cd;
+    color: var(--warning-color);
+}
+
+.order-status.ready {
+    background: #e8f5e9;
+    color: var(--accent-color);
+}
+
+.order-status.completed {
+    background: #e3f2fd;
+    color: #2196f3;
+}
+
+.order-items {
+    padding: 15px;
+}
+
+.order-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--light-bg);
+}
+
+.order-item:last-child {
+    border-bottom: none;
+}
+
+.order-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    background: var(--light-bg);
+}
+
+.order-total {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--primary-color);
+}
+
+.order-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.action-btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 10px;
+    font-family: 'Cairo', sans-serif;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.action-btn.accept {
+    background: var(--accent-color);
+    color: var(--white);
+}
+
+.action-btn.complete {
+    background: var(--primary-color);
+    color: var(--white);
+}
+
+.action-btn.print {
+    background: var(--secondary-color);
+    color: var(--white);
+}
+
+/* ==========================================
+   لوحة الإدارة
+   ========================================== */
+.admin-container {
+    padding: 15px;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.stat-card {
+    background: var(--white);
+    border-radius: var(--border-radius);
+    padding: 20px;
+    text-align: center;
+    box-shadow: var(--shadow);
+}
+
+.stat-card i {
+    font-size: 2rem;
+    margin-bottom: 10px;
+}
+
+.stat-card.orders i { color: var(--primary-color); }
+.stat-card.revenue i { color: var(--accent-color); }
+.stat-card.tables i { color: var(--warning-color); }
+.stat-card.items i { color: var(--secondary-color); }
+
+.stat-card h3 {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--dark-text);
+}
+
+.stat-card p {
+    font-size: 0.9rem;
+    color: var(--light-text);
+}
+
+.admin-section {
+    background: var(--white);
+    border-radius: var(--border-radius);
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: var(--shadow);
+}
+
+.admin-section h3 {
+    font-size: 1.2rem;
+    color: var(--dark-text);
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid var(--light-bg);
+}
+
+.admin-tabs {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+    overflow-x: auto;
+}
+
+.admin-tab {
+    padding: 12px 25px;
+    background: var(--light-bg);
+    border: none;
+    border-radius: 10px;
+    font-family: 'Cairo', sans-serif;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: var(--transition);
+}
+
+.admin-tab.active {
+    background: var(--primary-color);
+    color: var(--white);
+}
+
+/* نموذج إضافة صنف */
+.add-item-form {
+    display: grid;
+    gap: 15px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.form-group label {
+    font-weight: 600;
+    color: var(--dark-text);
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    padding: 12px;
+    border: 2px solid var(--light-bg);
+    border-radius: 10px;
+    font-size: 1rem;
+    font-family: 'Cairo', sans-serif;
+    transition: var(--transition);
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    border-color: var(--primary-color);
+    outline: none;
+}
+
+.submit-btn {
+    padding: 15px;
+    background: var(--accent-color);
+    border: none;
+    border-radius: var(--border-radius);
+    color: var(--white);
+    font-size: 1.1rem;
+    font-weight: 700;
+    font-family: 'Cairo', sans-serif;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.submit-btn:hover {
+    background: var(--primary-color);
+}
+
+/* جدول الأصناف */
+.items-table {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.item-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    border-bottom: 1px solid var(--light-bg);
+}
+
+.item-row:last-child {
+    border-bottom: none;
+}
+
+.item-details h4 {
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.item-details p {
+    font-size: 0.85rem;
+    color: var(--light-text);
+}
+
+.item-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.edit-btn, .delete-btn {
+    padding: 8px 15px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.edit-btn {
+    background: var(--warning-color);
+    color: var(--white);
+}
+
+.delete-btn {
+    background: var(--primary-color);
+    color: var(--white);
+}
+
+/* ==========================================
+   إشعار النجاح
+   ========================================== */
+.notification {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%) translateY(-100px);
+    background: var(--accent-color);
+    color: var(--white);
+    padding: 15px 30px;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-hover);
+    z-index: 9999;
+    transition: var(--transition);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.notification.show {
+    transform: translateX(-50%) translateY(0);
+}
+
+.notification.error {
+    background: var(--primary-color);
+}
+
+/* ==========================================
+   Modal نافذة منبثقة
+   ========================================== */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    opacity: 0;
+    visibility: hidden;
+    transition: var(--transition);
+}
+
+.modal-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.modal {
+    background: var(--white);
+    border-radius: var(--border-radius);
+    padding: 25px;
+    width: 90%;
+    max-width: 400px;
+    transform: scale(0.9);
+    transition: var(--transition);
+}
+
+.modal-overlay.active .modal {
+    transform: scale(1);
+}
+
+.modal h3 {
+    margin-bottom: 15px;
+    color: var(--dark-text);
+}
+
+.modal-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.modal-btn {
+    flex: 1;
+    padding: 12px;
+    border: none;
+    border-radius: 10px;
+    font-family: 'Cairo', sans-serif;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.modal-btn.confirm {
+    background: var(--accent-color);
+    color: var(--white);
+}
+
+.modal-btn.cancel {
+    background: var(--light-bg);
+    color: var(--dark-text);
+}
+
+/* ==========================================
+   Empty State
+   ========================================== */
+.empty-state {
+    text-align: center;
+    padding: 50px 20px;
+    color: var(--light-text);
+}
+
+.empty-state i {
+    font-size: 4rem;
+    margin-bottom: 15px;
+    opacity: 0.5;
+}
+
+.empty-state p {
+    font-size: 1.1rem;
+}
+
+/* ==========================================
+   Loading Spinner
+   ========================================== */
+.loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 50px;
+}
+
+.spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid var(--light-bg);
+    border-top-color: var(--primary-color);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* ==========================================
+   تحسينات الطباعة
+   ========================================== */
+@media print {
+    body {
+        background: white;
+    }
+    
+    .header, .back-btn, .action-btn, .cart-float-btn {
+        display: none !important;
+    }
+    
+    .order-card {
+        break-inside: avoid;
+        box-shadow: none;
+        border: 1px solid #ddd;
+    }
+}
+
+/* ==========================================
+   التوافق مع الشاشات الكبيرة
+   ========================================== */
+@media (min-width: 768px) {
+    .app-container {
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+    
+    .menu-cards {
+        grid-template-columns: repeat(4, 1fr);
+        max-width: 800px;
+    }
+    
+    .tables-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+    
+    .stats-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+    
+    .menu-items {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .orders-list {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (min-width: 1024px) {
+    .menu-items {
+        grid-template-columns: repeat(3, 1fr);
+    }
+    
+    .orders-list {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+/* ==========================================
+   التوافق مع الهواتف الصغيرة
+   ========================================== */
+@media (max-width: 480px) {
+    .app-container {
+        padding: 10px;
+    }
+    
+    .menu-cards {
+        gap: 10px;
+    }
+    
+    .menu-card {
+        padding: 20px 10px;
+    }
+    
+    .menu-card i {
+        font-size: 2rem;
+    }
+    
+    .menu-card span {
+        font-size: 0.9rem;
+    }
+    
+    .logo h1 {
+        font-size: 1.6rem;
+    }
+    
+    .logo i {
+        font-size: 3rem;
+    }
+    
+    .header h1 {
+        font-size: 1.1rem;
+    }
+    
+    .stat-card {
+        padding: 12px;
+    }
+    
+    .stat-card i {
+        font-size: 1.5rem;
+    }
+    
+    .stat-card h3 {
+        font-size: 1.3rem;
+    }
+    
+    .modal {
+        width: 95%;
+        padding: 20px;
+    }
+}
+
+@media (max-width: 360px) {
+    .menu-cards {
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+    }
+    
+    .menu-card {
+        padding: 15px 8px;
+    }
+    
+    .menu-card i {
+        font-size: 1.8rem;
+    }
+    
+    .menu-card span {
+        font-size: 0.8rem;
+    }
+    
+    .logo h1 {
+        font-size: 1.4rem;
+    }
+    
+    .action-btn,
+    .submit-btn {
+        padding: 12px 20px;
+        font-size: 0.9rem;
+    }
+}

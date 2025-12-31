@@ -1,0 +1,1042 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <title>إدارة المخزون - ☕ كوفي شوب</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        :root {
+            --primary: #9b59b6;
+            --primary-dark: #8e44ad;
+            --accent: #27ae60;
+            --warning: #f39c12;
+            --danger: #e74c3c;
+            --bg: #1a1a2e;
+            --card-bg: #16213e;
+            --text: #ffffff;
+            --text-light: #a0a0a0;
+        }
+        
+        /* الوضع الفاتح */
+        body.light-mode {
+            --bg: #f5f6fa;
+            --card-bg: #ffffff;
+            --text: #2c3e50;
+            --text-light: #7f8c8d;
+        }
+        
+        body.light-mode .header,
+        body.light-mode .stat-card,
+        body.light-mode .card {
+            box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+        }
+        
+        body.light-mode input,
+        body.light-mode select {
+            background: #f0f0f0 !important;
+            color: var(--text) !important;
+        }
+        
+        body {
+            font-family: 'Cairo', sans-serif;
+            background: var(--bg);
+            min-height: 100vh;
+            color: var(--text);
+            padding: 15px;
+        }
+        
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            background: var(--card-bg);
+            border-radius: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .header h1 { 
+            font-size: 1.3rem; 
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .back-btn {
+            background: var(--primary);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .back-btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+        
+        .theme-toggle {
+            background: rgba(155, 89, 182, 0.2);
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+        
+        .theme-toggle i {
+            color: var(--primary);
+            font-size: 1.1rem;
+        }
+        
+        /* إحصائيات المخزون */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+        
+        .stat-card {
+            background: var(--card-bg);
+            padding: 25px 20px;
+            border-radius: 20px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+        }
+        
+        .stat-card.total::before { background: linear-gradient(90deg, #3498db, #2980b9); }
+        .stat-card.low::before { background: linear-gradient(90deg, #e74c3c, #c0392b); }
+        .stat-card.expiring::before { background: linear-gradient(90deg, #f39c12, #d68910); }
+        .stat-card.value::before { background: linear-gradient(90deg, #27ae60, #1e8449); }
+        
+        .stat-card i {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            opacity: 0.9;
+        }
+        
+        .stat-card.total i { color: #3498db; }
+        .stat-card.low i { color: #e74c3c; }
+        .stat-card.expiring i { color: #f39c12; }
+        .stat-card.value i { color: #27ae60; }
+        
+        .stat-card h3 {
+            font-size: 2.2rem;
+            margin-bottom: 5px;
+        }
+        
+        .stat-card.total h3 { color: #3498db; }
+        .stat-card.low h3 { color: #e74c3c; }
+        .stat-card.expiring h3 { color: #f39c12; }
+        .stat-card.value h3 { color: #27ae60; }
+        
+        .stat-card p {
+            font-size: 0.9rem;
+            color: var(--text-light);
+        }
+        
+        /* تنبيه النقص */
+        .alert-box {
+            background: linear-gradient(135deg, rgba(231, 76, 60, 0.15) 0%, rgba(192, 57, 43, 0.15) 100%);
+            border: 1px solid rgba(231, 76, 60, 0.3);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        .alert-box i {
+            font-size: 3rem;
+            color: #e74c3c;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+        
+        .alert-box .alert-content h4 {
+            color: #e74c3c;
+            font-size: 1.2rem;
+            margin-bottom: 5px;
+        }
+        
+        .alert-box .alert-content p {
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+        
+        /* البطاقات */
+        .card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 25px;
+            margin-bottom: 25px;
+        }
+        
+        .card h3 {
+            color: var(--primary);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 1.2rem;
+        }
+        
+        /* النماذج */
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+        
+        .form-group {
+            margin-bottom: 0;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text-light);
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        
+        .form-group input, 
+        .form-group select {
+            width: 100%;
+            padding: 14px 16px;
+            border-radius: 12px;
+            border: 2px solid rgba(155, 89, 182, 0.2);
+            background: rgba(0,0,0,0.2);
+            color: var(--text);
+            font-family: inherit;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .form-group input:focus, 
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(155, 89, 182, 0.2);
+        }
+        
+        .form-actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 25px;
+        }
+        
+        .submit-btn {
+            flex: 1;
+            padding: 16px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-family: inherit;
+            font-weight: 700;
+            font-size: 1.1rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: all 0.3s ease;
+        }
+        
+        .submit-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(155, 89, 182, 0.4);
+        }
+        
+        .clear-btn {
+            padding: 16px 30px;
+            background: rgba(255,255,255,0.1);
+            color: var(--text-light);
+            border: 2px solid rgba(255,255,255,0.2);
+            border-radius: 12px;
+            font-family: inherit;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .clear-btn:hover {
+            background: rgba(255,255,255,0.2);
+            color: var(--text);
+        }
+        
+        /* الفلاتر */
+        .filter-bar {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .filter-bar select,
+        .filter-bar input {
+            flex: 1;
+            min-width: 180px;
+            padding: 14px 16px;
+            border-radius: 12px;
+            border: 2px solid rgba(155, 89, 182, 0.2);
+            background: rgba(0,0,0,0.2);
+            color: var(--text);
+            font-family: inherit;
+            font-size: 1rem;
+        }
+        
+        /* قائمة المخزون */
+        .inventory-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .inventory-table th {
+            background: rgba(155, 89, 182, 0.2);
+            padding: 15px;
+            text-align: right;
+            font-weight: 700;
+            color: var(--primary);
+            border-radius: 10px;
+        }
+        
+        .inventory-table td {
+            padding: 18px 15px;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            vertical-align: middle;
+        }
+        
+        .inventory-table tr:hover td {
+            background: rgba(155, 89, 182, 0.05);
+        }
+        
+        .item-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .item-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, rgba(155, 89, 182, 0.2) 0%, rgba(142, 68, 173, 0.2) 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+        }
+        
+        .item-details h4 {
+            font-size: 1rem;
+            margin-bottom: 3px;
+        }
+        
+        .item-details p {
+            font-size: 0.8rem;
+            color: var(--text-light);
+        }
+        
+        .quantity-display {
+            text-align: center;
+        }
+        
+        .quantity-display .qty {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: var(--accent);
+        }
+        
+        .quantity-display .unit {
+            font-size: 0.75rem;
+            color: var(--text-light);
+            display: block;
+        }
+        
+        .status-badge {
+            padding: 8px 16px;
+            border-radius: 25px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            display: inline-block;
+        }
+        
+        .status-badge.ok {
+            background: rgba(39, 174, 96, 0.2);
+            color: #27ae60;
+        }
+        
+        .status-badge.low {
+            background: rgba(231, 76, 60, 0.2);
+            color: #e74c3c;
+        }
+        
+        .status-badge.expiring {
+            background: rgba(243, 156, 18, 0.2);
+            color: #f39c12;
+        }
+        
+        .action-btns {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .action-btns button {
+            width: 40px;
+            height: 40px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+        }
+        
+        .action-btns .add-btn {
+            background: linear-gradient(135deg, #27ae60 0%, #1e8449 100%);
+            color: white;
+        }
+        
+        .action-btns .edit-btn {
+            background: linear-gradient(135deg, #f39c12 0%, #d68910 100%);
+            color: white;
+        }
+        
+        .action-btns .delete-btn {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+            color: white;
+        }
+        
+        .action-btns button:hover {
+            transform: scale(1.15);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 60px;
+            color: var(--text-light);
+        }
+        
+        .empty-state i {
+            font-size: 5rem;
+            margin-bottom: 20px;
+            opacity: 0.3;
+        }
+        
+        .empty-state h4 {
+            font-size: 1.3rem;
+            margin-bottom: 10px;
+            color: var(--text);
+        }
+        
+        /* الإشعارات */
+        .notification {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: linear-gradient(135deg, var(--accent) 0%, #1e8449 100%);
+            color: white;
+            padding: 18px 35px;
+            border-radius: 50px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            z-index: 2000;
+            box-shadow: 0 10px 40px rgba(39, 174, 96, 0.4);
+        }
+        
+        .notification.show { 
+            transform: translateX(-50%) translateY(0); 
+        }
+        
+        /* Responsive */
+        @media (max-width: 900px) {
+            .stats-grid { grid-template-columns: repeat(2, 1fr); }
+            .form-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+        
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                gap: 12px;
+                text-align: center;
+            }
+            
+            .header-right { width: 100%; justify-content: center; }
+        }
+        
+        @media (max-width: 600px) {
+            .stats-grid { grid-template-columns: 1fr 1fr; }
+            .form-grid { grid-template-columns: 1fr; }
+            .stat-card { padding: 20px 15px; }
+            .stat-card h3 { font-size: 1.8rem; }
+            .inventory-table { font-size: 0.85rem; }
+            .filter-bar { flex-direction: column; }
+            .filter-bar select,
+            .filter-bar input { min-width: 100%; }
+        }
+        
+        @media (max-width: 480px) {
+            body { padding: 10px; }
+            
+            .stat-card { padding: 15px 10px; }
+            .stat-card h3 { font-size: 1.5rem; }
+            .stat-card i { font-size: 1.5rem; }
+            .stat-card p { font-size: 0.75rem; }
+            
+            .header h1 { font-size: 1.1rem; }
+            
+            .tabs { flex-wrap: nowrap; overflow-x: auto; }
+            .tab-btn { padding: 10px 15px; font-size: 0.85rem; white-space: nowrap; }
+            
+            .inventory-table { font-size: 0.75rem; }
+            .inventory-table th,
+            .inventory-table td { padding: 8px 5px; }
+            
+            .modal { width: 95%; padding: 20px; }
+            
+            .back-btn { padding: 8px 15px; font-size: 0.85rem; }
+        }
+        
+        @media (max-width: 360px) {
+            .stat-card h3 { font-size: 1.3rem; }
+            
+            .header h1 { font-size: 1rem; }
+            
+            .tab-btn { padding: 8px 12px; font-size: 0.8rem; }
+            .tab-btn i { display: none; }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1><i class="fas fa-boxes"></i> إدارة المخزون</h1>
+        <div class="header-right">
+            <button class="theme-toggle" id="theme-toggle" onclick="toggleDarkMode()">
+                <i class="fas fa-moon"></i>
+            </button>
+            <a href="index.html" class="back-btn"><i class="fas fa-arrow-right"></i> رجوع</a>
+        </div>
+    </div>
+    
+    <!-- إحصائيات المخزون -->
+    <div class="stats-grid">
+        <div class="stat-card total">
+            <i class="fas fa-boxes"></i>
+            <h3 id="inv-total">0</h3>
+            <p>إجمالي الأصناف</p>
+        </div>
+        <div class="stat-card low">
+            <i class="fas fa-exclamation-triangle"></i>
+            <h3 id="inv-low">0</h3>
+            <p>نقص في المخزون</p>
+        </div>
+        <div class="stat-card expiring">
+            <i class="fas fa-clock"></i>
+            <h3 id="inv-expiring">0</h3>
+            <p>قارب الانتهاء</p>
+        </div>
+        <div class="stat-card value">
+            <i class="fas fa-coins"></i>
+            <h3 id="inv-value">0</h3>
+            <p>قيمة المخزون (ر.ع)</p>
+        </div>
+    </div>
+    
+    <!-- تنبيه النقص -->
+    <div class="alert-box" id="low-stock-alert" style="display: none;">
+        <i class="fas fa-exclamation-circle"></i>
+        <div class="alert-content">
+            <h4>⚠️ تنبيه: نقص في المخزون!</h4>
+            <p id="low-stock-items">بعض المواد وصلت للحد الأدنى وتحتاج لإعادة تعبئة</p>
+        </div>
+    </div>
+    
+    <!-- إضافة مادة جديدة -->
+    <div class="card">
+        <h3><i class="fas fa-plus-circle"></i> إضافة مادة جديدة</h3>
+        <div class="form-grid">
+            <div class="form-group">
+                <label><i class="fas fa-tag"></i> اسم المادة</label>
+                <input type="text" id="inv-name" placeholder="مثال: طماطم طازجة">
+            </div>
+            <div class="form-group">
+                <label><i class="fas fa-folder"></i> التصنيف</label>
+                <select id="inv-category">
+                    <option value="vegetables">🥬 خضروات</option>
+                    <option value="fruits">🍎 فواكه</option>
+                    <option value="meat">🥩 لحوم</option>
+                    <option value="poultry">🍗 دواجن</option>
+                    <option value="seafood">🐟 مأكولات بحرية</option>
+                    <option value="dairy">🧀 ألبان وأجبان</option>
+                    <option value="grains">🌾 حبوب ورز</option>
+                    <option value="spices">🌶️ بهارات وتوابل</option>
+                    <option value="oils">🫒 زيوت وسمن</option>
+                    <option value="drinks">🥤 مشروبات</option>
+                    <option value="frozen">🧊 مجمدات</option>
+                    <option value="canned">🥫 معلبات</option>
+                    <option value="bakery">🍞 مخبوزات</option>
+                    <option value="other">📦 أخرى</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label><i class="fas fa-cubes"></i> الكمية</label>
+                <input type="number" id="inv-quantity" min="0" step="0.1" placeholder="الكمية الحالية">
+            </div>
+            <div class="form-group">
+                <label><i class="fas fa-balance-scale"></i> الوحدة</label>
+                <select id="inv-unit">
+                    <option value="kg">كيلوجرام (kg)</option>
+                    <option value="g">جرام (g)</option>
+                    <option value="L">لتر (L)</option>
+                    <option value="ml">مليلتر (ml)</option>
+                    <option value="pcs">قطعة</option>
+                    <option value="box">صندوق</option>
+                    <option value="bag">كيس</option>
+                    <option value="pack">عبوة</option>
+                    <option value="dozen">درزن</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label><i class="fas fa-exclamation"></i> الحد الأدنى (تنبيه)</label>
+                <input type="number" id="inv-min" min="0" step="0.1" placeholder="الحد الأدنى للتنبيه">
+            </div>
+            <div class="form-group">
+                <label><i class="fas fa-money-bill"></i> سعر الوحدة (ر.ع)</label>
+                <input type="number" id="inv-price" min="0" step="0.01" placeholder="السعر">
+            </div>
+            <div class="form-group">
+                <label><i class="fas fa-calendar"></i> تاريخ الصلاحية</label>
+                <input type="date" id="inv-expiry">
+            </div>
+            <div class="form-group">
+                <label><i class="fas fa-truck"></i> المورد</label>
+                <input type="text" id="inv-supplier" placeholder="اسم المورد (اختياري)">
+            </div>
+            <div class="form-group">
+                <label><i class="fas fa-sticky-note"></i> ملاحظات</label>
+                <input type="text" id="inv-notes" placeholder="ملاحظات إضافية">
+            </div>
+        </div>
+        <input type="hidden" id="edit-inv-id">
+        <div class="form-actions">
+            <button class="submit-btn" onclick="saveInventoryItem()">
+                <i class="fas fa-save"></i> <span id="inv-save-btn-text">حفظ المادة</span>
+            </button>
+            <button class="clear-btn" onclick="clearInventoryForm()">
+                <i class="fas fa-eraser"></i> مسح
+            </button>
+        </div>
+    </div>
+    
+    <!-- قائمة المخزون -->
+    <div class="card">
+        <h3><i class="fas fa-warehouse"></i> قائمة المخزون (<span id="inv-count">0</span> صنف)</h3>
+        
+        <div class="filter-bar">
+            <select id="inv-filter-category" onchange="loadInventoryList()">
+                <option value="all">🏷️ جميع التصنيفات</option>
+                <option value="vegetables">🥬 خضروات</option>
+                <option value="fruits">🍎 فواكه</option>
+                <option value="meat">🥩 لحوم</option>
+                <option value="poultry">🍗 دواجن</option>
+                <option value="seafood">🐟 مأكولات بحرية</option>
+                <option value="dairy">🧀 ألبان وأجبان</option>
+                <option value="grains">🌾 حبوب ورز</option>
+                <option value="spices">🌶️ بهارات وتوابل</option>
+                <option value="oils">🫒 زيوت وسمن</option>
+                <option value="drinks">🥤 مشروبات</option>
+                <option value="frozen">🧊 مجمدات</option>
+                <option value="canned">🥫 معلبات</option>
+                <option value="bakery">🍞 مخبوزات</option>
+                <option value="other">📦 أخرى</option>
+            </select>
+            <select id="inv-filter-status" onchange="loadInventoryList()">
+                <option value="all">📊 جميع الحالات</option>
+                <option value="ok">✅ متوفر</option>
+                <option value="low">⚠️ نقص في المخزون</option>
+                <option value="expiring">⏰ قارب الانتهاء</option>
+            </select>
+            <input type="text" id="inv-search" placeholder="🔍 بحث عن مادة..." oninput="loadInventoryList()">
+        </div>
+        
+        <div id="inventory-list"></div>
+    </div>
+    
+    <div class="notification" id="notification">
+        <i class="fas fa-check-circle"></i>
+        <span id="notification-text">تم بنجاح</span>
+    </div>
+    
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+    <script src="js/performance.js"></script>
+    <script src="js/firebase-config.js"></script>
+    <script src="js/restaurant-context.js"></script>
+    <script>
+    // بيانات التصنيفات
+    const categoryIcons = {
+        vegetables: '🥬', fruits: '🍎', meat: '🥩', poultry: '🍗',
+        seafood: '🐟', dairy: '🧀', grains: '🌾', spices: '🌶️',
+        oils: '🫒', drinks: '🥤', frozen: '🧊', canned: '🥫',
+        bakery: '🍞', other: '📦'
+    };
+    
+    const categoryNames = {
+        vegetables: 'خضروات', fruits: 'فواكه', meat: 'لحوم', poultry: 'دواجن',
+        seafood: 'مأكولات بحرية', dairy: 'ألبان وأجبان', grains: 'حبوب ورز',
+        spices: 'بهارات وتوابل', oils: 'زيوت وسمن', drinks: 'مشروبات',
+        frozen: 'مجمدات', canned: 'معلبات', bakery: 'مخبوزات', other: 'أخرى'
+    };
+    
+    const unitNames = {
+        kg: 'كيلو', g: 'جرام', L: 'لتر', ml: 'مل',
+        pcs: 'قطعة', box: 'صندوق', bag: 'كيس', pack: 'عبوة', dozen: 'درزن'
+    };
+    
+    document.addEventListener('DOMContentLoaded', function() {
+        // التحقق من تسجيل الدخول
+        if (!localStorage.getItem('restaurantLoggedIn') || !localStorage.getItem('currentRestaurant')) {
+            window.location.replace('login-restaurant.html');
+            return;
+        }
+        
+        loadInventoryStats();
+        loadInventoryList();
+        loadSavedTheme();
+    });
+    
+    function getInventory() {
+        return RestaurantContext.getData('inventory') || [];
+    }
+    
+    function setInventory(items) {
+        RestaurantContext.setData('inventory', items);
+    }
+    
+    function loadInventoryStats() {
+        const inventory = getInventory();
+        const now = new Date();
+        const weekLater = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
+        
+        const total = inventory.length;
+        const low = inventory.filter(item => item.quantity <= item.minQuantity).length;
+        const expiring = inventory.filter(item => {
+            if (!item.expiryDate) return false;
+            const expiry = new Date(item.expiryDate);
+            return expiry <= weekLater && expiry >= now;
+        }).length;
+        const value = inventory.reduce((sum, item) => sum + (item.quantity * (item.price || 0)), 0);
+        
+        document.getElementById('inv-total').textContent = total;
+        document.getElementById('inv-low').textContent = low;
+        document.getElementById('inv-expiring').textContent = expiring;
+        document.getElementById('inv-value').textContent = value.toFixed(1);
+        
+        // عرض تنبيه النقص
+        const alertEl = document.getElementById('low-stock-alert');
+        if (low > 0) {
+            const lowItems = inventory.filter(item => item.quantity <= item.minQuantity)
+                                      .map(item => item.name).slice(0, 3);
+            document.getElementById('low-stock-items').textContent = 
+                'المواد: ' + lowItems.join('، ') + (low > 3 ? ` و ${low - 3} أخرى` : '');
+            alertEl.style.display = 'flex';
+        } else {
+            alertEl.style.display = 'none';
+        }
+    }
+    
+    function loadInventoryList() {
+        const categoryFilter = document.getElementById('inv-filter-category').value;
+        const statusFilter = document.getElementById('inv-filter-status').value;
+        const searchQuery = document.getElementById('inv-search').value.toLowerCase();
+        
+        let inventory = getInventory();
+        const now = new Date();
+        const weekLater = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
+        
+        // تطبيق الفلاتر
+        if (categoryFilter !== 'all') {
+            inventory = inventory.filter(item => item.category === categoryFilter);
+        }
+        
+        if (statusFilter !== 'all') {
+            inventory = inventory.filter(item => {
+                if (statusFilter === 'low') return item.quantity <= item.minQuantity;
+                if (statusFilter === 'expiring') {
+                    if (!item.expiryDate) return false;
+                    const expiry = new Date(item.expiryDate);
+                    return expiry <= weekLater && expiry >= now;
+                }
+                if (statusFilter === 'ok') return item.quantity > item.minQuantity;
+                return true;
+            });
+        }
+        
+        if (searchQuery) {
+            inventory = inventory.filter(item => 
+                item.name.toLowerCase().includes(searchQuery) ||
+                (item.supplier && item.supplier.toLowerCase().includes(searchQuery)) ||
+                (item.notes && item.notes.toLowerCase().includes(searchQuery))
+            );
+        }
+        
+        const container = document.getElementById('inventory-list');
+        document.getElementById('inv-count').textContent = getInventory().length;
+        
+        if (inventory.length === 0) {
+            container.innerHTML = `
+                <div class="empty-state">
+                    <i class="fas fa-box-open"></i>
+                    <h4>لا توجد مواد في المخزون</h4>
+                    <p>ابدأ بإضافة المواد باستخدام النموذج أعلاه</p>
+                </div>
+            `;
+            return;
+        }
+        
+        let html = `<table class="inventory-table">
+            <thead>
+                <tr>
+                    <th>المادة</th>
+                    <th>الكمية</th>
+                    <th>الحالة</th>
+                    <th>الصلاحية</th>
+                    <th>السعر</th>
+                    <th>إجراءات</th>
+                </tr>
+            </thead>
+            <tbody>`;
+        
+        inventory.forEach(item => {
+            const isLow = item.quantity <= item.minQuantity;
+            const isExpiring = item.expiryDate && new Date(item.expiryDate) <= weekLater && new Date(item.expiryDate) >= now;
+            
+            let statusClass = 'ok';
+            let statusText = 'متوفر ✓';
+            if (isLow) { statusClass = 'low'; statusText = 'نقص ⚠️'; }
+            else if (isExpiring) { statusClass = 'expiring'; statusText = 'قارب الانتهاء ⏰'; }
+            
+            const expiryText = item.expiryDate ? new Date(item.expiryDate).toLocaleDateString('ar-SA') : '-';
+            const priceText = item.price ? item.price.toFixed(2) + ' ر.ع' : '-';
+            
+            html += `
+                <tr>
+                    <td>
+                        <div class="item-info">
+                            <div class="item-icon">${categoryIcons[item.category] || '📦'}</div>
+                            <div class="item-details">
+                                <h4>${item.name}</h4>
+                                <p>${categoryNames[item.category] || item.category}${item.supplier ? ' • ' + item.supplier : ''}</p>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="quantity-display">
+                            <span class="qty">${item.quantity}</span>
+                            <span class="unit">${unitNames[item.unit] || item.unit}</span>
+                        </div>
+                    </td>
+                    <td><span class="status-badge ${statusClass}">${statusText}</span></td>
+                    <td>${expiryText}</td>
+                    <td>${priceText}</td>
+                    <td>
+                        <div class="action-btns">
+                            <button class="add-btn" onclick="addStock(${item.id})" title="إضافة كمية">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                            <button class="edit-btn" onclick="editInventoryItem(${item.id})" title="تعديل">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="delete-btn" onclick="deleteInventoryItem(${item.id})" title="حذف">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            `;
+        });
+        
+        html += '</tbody></table>';
+        container.innerHTML = html;
+    }
+    
+    function saveInventoryItem() {
+        const editId = document.getElementById('edit-inv-id').value;
+        const name = document.getElementById('inv-name').value.trim();
+        const category = document.getElementById('inv-category').value;
+        const quantity = parseFloat(document.getElementById('inv-quantity').value) || 0;
+        const unit = document.getElementById('inv-unit').value;
+        const minQuantity = parseFloat(document.getElementById('inv-min').value) || 0;
+        const price = parseFloat(document.getElementById('inv-price').value) || 0;
+        const expiryDate = document.getElementById('inv-expiry').value;
+        const supplier = document.getElementById('inv-supplier').value.trim();
+        const notes = document.getElementById('inv-notes').value.trim();
+        
+        if (!name) {
+            showNotif('أدخل اسم المادة', 'warning');
+            return;
+        }
+        
+        let inventory = getInventory();
+        
+        if (editId) {
+            const idx = inventory.findIndex(item => item.id === parseInt(editId));
+            if (idx !== -1) {
+                inventory[idx] = { ...inventory[idx], name, category, quantity, unit, minQuantity, price, expiryDate, supplier, notes };
+            }
+            showNotif('تم تحديث المادة بنجاح');
+        } else {
+            const newItem = {
+                id: Date.now(),
+                name, category, quantity, unit, minQuantity, price, expiryDate, supplier, notes,
+                createdAt: new Date().toISOString()
+            };
+            inventory.push(newItem);
+            showNotif('تم إضافة المادة بنجاح');
+        }
+        
+        setInventory(inventory);
+        clearInventoryForm();
+        loadInventoryList();
+        loadInventoryStats();
+    }
+    
+    function editInventoryItem(id) {
+        const inventory = getInventory();
+        const item = inventory.find(i => i.id === id);
+        if (!item) return;
+        
+        document.getElementById('edit-inv-id').value = item.id;
+        document.getElementById('inv-name').value = item.name;
+        document.getElementById('inv-category').value = item.category;
+        document.getElementById('inv-quantity').value = item.quantity;
+        document.getElementById('inv-unit').value = item.unit;
+        document.getElementById('inv-min').value = item.minQuantity || '';
+        document.getElementById('inv-price').value = item.price || '';
+        document.getElementById('inv-expiry').value = item.expiryDate || '';
+        document.getElementById('inv-supplier').value = item.supplier || '';
+        document.getElementById('inv-notes').value = item.notes || '';
+        document.getElementById('inv-save-btn-text').textContent = 'تحديث المادة';
+        
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+    
+    function deleteInventoryItem(id) {
+        if (!confirm('هل تريد حذف هذه المادة من المخزون؟')) return;
+        
+        let inventory = getInventory();
+        inventory = inventory.filter(item => item.id !== id);
+        setInventory(inventory);
+        loadInventoryList();
+        loadInventoryStats();
+        showNotif('تم حذف المادة');
+    }
+    
+    function addStock(id) {
+        const amount = prompt('أدخل الكمية المضافة:');
+        if (!amount || isNaN(parseFloat(amount))) return;
+        
+        let inventory = getInventory();
+        const idx = inventory.findIndex(item => item.id === id);
+        if (idx !== -1) {
+            inventory[idx].quantity += parseFloat(amount);
+            setInventory(inventory);
+            loadInventoryList();
+            loadInventoryStats();
+            showNotif('تم إضافة ' + amount + ' ' + (unitNames[inventory[idx].unit] || inventory[idx].unit));
+        }
+    }
+    
+    function clearInventoryForm() {
+        document.getElementById('edit-inv-id').value = '';
+        document.getElementById('inv-name').value = '';
+        document.getElementById('inv-category').value = 'vegetables';
+        document.getElementById('inv-quantity').value = '';
+        document.getElementById('inv-unit').value = 'kg';
+        document.getElementById('inv-min').value = '';
+        document.getElementById('inv-price').value = '';
+        document.getElementById('inv-expiry').value = '';
+        document.getElementById('inv-supplier').value = '';
+        document.getElementById('inv-notes').value = '';
+        document.getElementById('inv-save-btn-text').textContent = 'حفظ المادة';
+    }
+    
+    function showNotif(msg) {
+        const n = document.getElementById('notification');
+        document.getElementById('notification-text').textContent = msg;
+        n.classList.add('show');
+        setTimeout(() => n.classList.remove('show'), 3000);
+    }
+    
+    // الوضع الداكن/الفاتح
+    function toggleDarkMode() {
+        const body = document.body;
+        const icon = document.querySelector('#theme-toggle i');
+        
+        body.classList.toggle('light-mode');
+        
+        if (body.classList.contains('light-mode')) {
+            icon.className = 'fas fa-sun';
+            localStorage.setItem('theme', 'light');
+        } else {
+            icon.className = 'fas fa-moon';
+            localStorage.setItem('theme', 'dark');
+        }
+    }
+    
+    function loadSavedTheme() {
+        const savedTheme = localStorage.getItem('theme');
+        const icon = document.querySelector('#theme-toggle i');
+        
+        if (savedTheme === 'light') {
+            document.body.classList.add('light-mode');
+            if (icon) icon.className = 'fas fa-sun';
+        }
+    }
+    </script>
+</body>
+</html>

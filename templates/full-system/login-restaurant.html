@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="mobile-web-app-capable" content="yes">
+    <title>تسجيل الدخول - كوفي شوب</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        html, body {
+            width: 100%;
+            height: 100%;
+            overflow-x: hidden;
+        }
+        
+        body {
+            font-family: 'Cairo', sans-serif;
+            min-height: 100vh;
+            min-height: -webkit-fill-available;
+            background: linear-gradient(135deg, #3c2415 0%, #5d3a1a 50%, #8b5a2b 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 420px;
+        }
+        
+        .logo-section {
+            text-align: center;
+            margin-bottom: 30px;
+            color: white;
+        }
+        
+        .logo-icon {
+            width: 100px;
+            height: 100px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+        
+        .logo-icon i { font-size: 3rem; color: white; }
+        
+        .logo-section h1 { font-size: 2rem; font-weight: 800; margin-bottom: 5px; text-shadow: 0 2px 10px rgba(0,0,0,0.2); }
+        .logo-section p { opacity: 0.9; font-size: 1rem; }
+        
+        .card {
+            background: white;
+            border-radius: 25px;
+            padding: 40px 35px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        
+        .card-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .card-header h2 {
+            color: #333;
+            font-size: 1.5rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .card-header h2 i {
+            color: #8b5a2b;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+            font-size: 0.95rem;
+        }
+        
+        .input-wrapper {
+            position: relative;
+        }
+        
+        .input-wrapper i {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #8b5a2b;
+            font-size: 1.1rem;
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 15px 45px 15px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            font-family: inherit;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: #fafafa;
+        }
+        
+        .form-group input:focus {
+            outline: none;
+            border-color: #8b5a2b;
+            background: white;
+            box-shadow: 0 0 0 4px rgba(139, 90, 43, 0.1);
+        }
+        
+        .submit-btn {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #8b5a2b, #5d3a1a);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-family: inherit;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 25px rgba(139, 90, 43, 0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 25px;
+        }
+        
+        .submit-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 30px rgba(139, 90, 43, 0.5);
+        }
+        
+        .error-message {
+            padding: 12px 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            display: none;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.9rem;
+            background: #ffe6e6;
+            color: #c0392b;
+        }
+        
+        .error-message.show {
+            display: flex;
+        }
+        
+        .footer-links {
+            text-align: center;
+            margin-top: 25px;
+        }
+        
+        .footer-links a {
+            color: white;
+            text-decoration: none;
+            opacity: 0.9;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255,255,255,0.15);
+            padding: 12px 25px;
+            border-radius: 25px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .footer-links a:hover {
+            opacity: 1;
+            background: rgba(255,255,255,0.25);
+        }
+        
+        .info-box {
+            background: linear-gradient(135deg, #f5ebe0, #ede0d4);
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(139, 90, 43, 0.2);
+        }
+        
+        .info-box p {
+            color: #555;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .info-box i {
+            color: #8b5a2b;
+            font-size: 1.2rem;
+        }
+        
+        /* Animation */
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+        
+        .shake { animation: shake 0.3s ease; }
+
+        /* Responsive Design */
+        @media (max-width: 480px) {
+            .container { padding: 0; }
+            
+            .logo-icon {
+                width: 80px;
+                height: 80px;
+                border-radius: 25px;
+            }
+            
+            .logo-icon i { font-size: 2.5rem; }
+            
+            .logo-section h1 { font-size: 1.6rem; }
+            .logo-section p { font-size: 0.9rem; }
+            
+            .card {
+                padding: 30px 25px;
+                border-radius: 20px;
+            }
+            
+            .card-header h2 { font-size: 1.3rem; }
+            
+            .form-group input { padding: 12px 40px 12px 12px; }
+            
+            .submit-btn { padding: 14px; font-size: 1rem; }
+        }
+        
+        @media (max-width: 360px) {
+            .logo-icon {
+                width: 70px;
+                height: 70px;
+            }
+            
+            .logo-icon i { font-size: 2rem; }
+            
+            .logo-section h1 { font-size: 1.4rem; }
+            
+            .card { padding: 25px 20px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo-section">
+            <div class="logo-icon">
+                <i class="fas fa-mug-hot"></i>
+            </div>
+            <h1>☕ كوفي شوب</h1>
+            <p>سجل دخولك للوصول لنظام الإدارة</p>
+        </div>
+        
+        <div class="card">
+            <div class="card-header">
+                <h2><i class="fas fa-sign-in-alt"></i> تسجيل الدخول</h2>
+            </div>
+            
+            <div class="info-box">
+                <p><i class="fas fa-info-circle"></i> للحصول على حساب، تواصل مع مدير النظام</p>
+            </div>
+            
+            <div class="error-message" id="login-error">
+                <i class="fas fa-exclamation-circle"></i>
+                <span id="login-error-text">خطأ</span>
+            </div>
+            
+            <form onsubmit="loginRestaurant(event)">
+                <div class="form-group">
+                    <label><i class="fas fa-user"></i> اسم المستخدم</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-user"></i>
+                        <input type="text" id="login-username" placeholder="أدخل اسم المستخدم" required>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label><i class="fas fa-lock"></i> كلمة المرور</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" id="login-password" placeholder="أدخل كلمة المرور" required>
+                    </div>
+                </div>
+                
+                <button type="submit" class="submit-btn">
+                    <i class="fas fa-sign-in-alt"></i> دخول
+                </button>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+    <script src="js/performance.js"></script>
+    <script src="js/firebase-config.js"></script>
+    
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // التحقق إذا كان مسجل دخول مسبقاً
+        const isLoggedIn = localStorage.getItem('restaurantLoggedIn');
+        const restaurantData = localStorage.getItem('currentRestaurant');
+        
+        if (isLoggedIn && restaurantData) {
+            try {
+                const restaurant = JSON.parse(restaurantData);
+                if (restaurant && restaurant.id) {
+                    window.location.replace('index.html?r=' + restaurant.id);
+                    return;
+                }
+            } catch(e) {
+                // مسح البيانات الفاسدة
+                localStorage.removeItem('restaurantLoggedIn');
+                localStorage.removeItem('currentRestaurant');
+            }
+        }
+    });
+    
+    async function loginRestaurant(e) {
+        e.preventDefault();
+        
+        const username = document.getElementById('login-username').value.trim();
+        const password = document.getElementById('login-password').value;
+        const submitBtn = document.querySelector('.submit-btn');
+        
+        // منع الضغط المتكرر
+        if (submitBtn.disabled) return;
+        
+        // تعطيل الزر أثناء التحميل
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري التحقق...';
+        
+        try {
+            // البحث في Firebase
+            const restaurants = await FirebaseDB.getRestaurants();
+            console.log('المطاعم:', restaurants);
+            
+            const restaurant = restaurants.find(r => 
+                r.username === username && r.password === password && r.status === 'active'
+            );
+            
+            if (restaurant) {
+                console.log('تم العثور على المطعم:', restaurant);
+                // حفظ البيانات
+                localStorage.setItem('restaurantLoggedIn', 'true');
+                localStorage.setItem('currentRestaurant', JSON.stringify(restaurant));
+                
+                // الانتقال للصفحة الرئيسية
+                window.location.replace('index.html?r=' + restaurant.id);
+            } else {
+                showError('اسم المستخدم أو كلمة المرور غير صحيحة');
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i> دخول';
+            }
+        } catch (error) {
+            console.error('خطأ في الاتصال:', error);
+            showError('خطأ في الاتصال بالسيرفر: ' + error.message);
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i> دخول';
+        }
+    }
+    
+    function showError(message) {
+        const errorDiv = document.getElementById('login-error');
+        document.getElementById('login-error-text').textContent = message;
+        errorDiv.classList.add('show', 'shake');
+        setTimeout(() => errorDiv.classList.remove('shake'), 300);
+    }
+    </script>
+</body>
+</html>

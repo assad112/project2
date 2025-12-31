@@ -1,0 +1,10 @@
+{
+  "id": "cafe-modern",
+  "name": "كافيه عصري",
+  "description": "تصميم دافئ وأنيق مثالي للكافيهات",
+  "icon": "☕",
+  "color": "#d97706",
+  "folder": "cafe-modern",
+  "preview": "templates/cafe-modern/index.html",
+  "category": "cafes"
+}

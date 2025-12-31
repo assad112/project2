@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>بن - Bon Coffee | نظام الباركود</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .barcode-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        
+        .barcode-card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            border: 1px solid var(--border);
+            padding: 25px;
+        }
+        
+        .barcode-card h3 {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            font-size: 1.2rem;
+        }
+        
+        .scanner-box {
+            background: var(--bg);
+            border: 2px dashed var(--border);
+            border-radius: 15px;
+            padding: 25px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .scanner-icon {
+            font-size: 4rem;
+            margin-bottom: 15px;
+            color: var(--primary);
+        }
+        
+        .barcode-input {
+            width: 100%;
+            padding: 16px 18px;
+            border-radius: 12px;
+            border: 2px solid var(--border);
+            background: var(--card-bg);
+            color: var(--text);
+            font-family: inherit;
+            font-size: 1.05rem;
+            margin-top: 15px;
+        }
+        
+        .barcode-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(139, 69, 19, 0.12);
+        }
+        
+        .result-box {
+            background: rgba(34, 197, 94, 0.1);
+            border: 1px solid rgba(34, 197, 94, 0.25);
+            border-radius: 12px;
+            padding: 15px;
+            display: none;
+        }
+        
+        .result-box.active { display: block; }
+        
+        .result-row {
+            display: flex;
+            justify-content: space-between;
+            margin: 8px 0;
+        }
+        
+        .result-label { color: var(--text-secondary); }
+        
+        .barcode-products {
+            max-height: 420px;
+            overflow-y: auto;
+        }
+        
+        .barcode-product {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            border-radius: 12px;
+            background: var(--bg);
+            margin-bottom: 10px;
+        }
+        
+        .barcode-product .icon {
+            width: 45px;
+            height: 45px;
+            border-radius: 12px;
+            background: var(--gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+        
+        .barcode-product .info { flex: 1; }
+        
+        .barcode-product .info .name {
+            font-weight: 700;
+            margin-bottom: 3px;
+        }
+        
+        .barcode-product .info .code {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+        }
+        
+        .barcode-product .actions {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .small-btn {
+            padding: 10px 12px;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            background: var(--card-bg);
+            color: var(--text);
+            cursor: pointer;
+        }
+        
+        .small-btn.primary {
+            background: var(--gradient);
+            border: none;
+            color: white;
+        }
+        
+        /* Tables QR Section */
+        .tables-section {
+            margin-top: 30px;
+        }
+        
+        .tables-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        
+        .tables-header h3 {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.3rem;
+            margin: 0;
+        }
+        
+        .tables-controls {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        
+        .tables-controls input {
+            width: 80px;
+            padding: 10px 12px;
+            border-radius: 10px;
+            border: 2px solid var(--border);
+            background: var(--card-bg);
+            color: var(--text);
+            font-family: inherit;
+            font-size: 1rem;
+            text-align: center;
+        }
+        
+        .tables-controls input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+        
+        .qr-tables-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+        }
+        
+        .qr-table-card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            border: 1px solid var(--border);
+            padding: 20px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        
+        .qr-table-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        
+        .qr-table-card .table-number {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: var(--primary);
+            margin-bottom: 12px;
+        }
+        
+        .qr-table-card .qr-image {
+            width: 150px;
+            height: 150px;
+            margin: 0 auto 15px;
+            background: white;
+            border-radius: 12px;
+            padding: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .qr-table-card .qr-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+        
+        .qr-table-card .table-url {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            word-break: break-all;
+            margin-bottom: 12px;
+            padding: 8px;
+            background: var(--bg);
+            border-radius: 8px;
+        }
+        
+        .qr-table-card .qr-actions {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+        }
+        
+        .print-all-btn {
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-family: inherit;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+        }
+        
+        .print-all-btn:hover {
+            transform: scale(1.05);
+        }
+        
+        /* Print Styles */
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            
+            #print-area, #print-area * {
+                visibility: visible;
+            }
+            
+            #print-area {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+            }
+            
+            .print-qr-card {
+                page-break-inside: avoid;
+                border: 2px solid #333;
+                padding: 20px;
+                margin: 10px;
+                text-align: center;
+                display: inline-block;
+                width: 45%;
+            }
+            
+            .print-qr-card img {
+                width: 180px;
+                height: 180px;
+            }
+        }
+        
+        @media (max-width: 1024px) {
+            .barcode-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .qr-tables-grid {
+                grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <aside class="sidebar"></aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <header class="header">
+            <div class="header-title">
+                <h2>📱 نظام الباركود</h2>
+                <p>مسح وإضافة المنتجات عبر الباركود</p>
+            </div>
+            <div class="header-actions">
+                <button class="btn btn-primary" onclick="document.getElementById('barcode-input').focus()">
+                    <i class="fas fa-crosshairs"></i>
+                    بدء المسح
+                </button>
+            </div>
+        </header>
+
+        <div class="barcode-grid">
+            <!-- Scanner -->
+            <div class="barcode-card">
+                <h3><i class="fas fa-qrcode" style="color: var(--primary);"></i> ماسح الباركود</h3>
+                <div class="scanner-box">
+                    <div class="scanner-icon">📷</div>
+                    <p style="color: var(--text-secondary);">اكتب/الصق رقم الباركود ثم اضغط Enter</p>
+                    <input class="barcode-input" id="barcode-input" placeholder="مثال: 1001" autocomplete="off">
+                </div>
+
+                <div class="result-box" id="scan-result">
+                    <div class="result-row"><span class="result-label">المنتج:</span><span id="result-name">-</span></div>
+                    <div class="result-row"><span class="result-label">السعر:</span><span id="result-price">-</span></div>
+                    <div class="result-row"><span class="result-label">الباركود:</span><span id="result-code">-</span></div>
+                    <button class="btn btn-success" style="width: 100%; margin-top: 12px;" onclick="addScannedToCart()">
+                        <i class="fas fa-cart-plus"></i>
+                        إضافة للسلة
+                    </button>
+                </div>
+            </div>
+
+            <!-- Products with barcodes -->
+            <div class="barcode-card">
+                <h3><i class="fas fa-list" style="color: var(--gold);"></i> المنتجات المسجلة</h3>
+                <div class="barcode-products" id="barcode-products">
+                    <!-- Filled by JS -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Tables QR Codes Section -->
+        <div class="tables-section">
+            <div class="barcode-card">
+                <div class="tables-header">
+                    <h3><i class="fas fa-qrcode" style="color: #3b82f6;"></i> 🪑 باركود الطاولات</h3>
+                    <div class="tables-controls">
+                        <label style="color: var(--text-secondary);">عدد الطاولات:</label>
+                        <input type="number" id="tables-count" value="10" min="1" max="100">
+                        <button class="btn btn-primary" onclick="generateTablesQR()">
+                            <i class="fas fa-sync-alt"></i>
+                            توليد
+                        </button>
+                        <button class="print-all-btn" onclick="printAllQR()">
+                            <i class="fas fa-print"></i>
+                            طباعة الكل
+                        </button>
+                        <button class="btn btn-secondary" onclick="downloadAllQR()">
+                            <i class="fas fa-download"></i>
+                            تحميل
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="qr-tables-grid" id="qr-tables-grid">
+                    <!-- Filled by JS -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Hidden Print Area -->
+        <div id="print-area" style="display: none;"></div>
+    </main>
+
+    <div class="toast-container"></div>
+
+    <script src="js/app.js"></script>
+    <script>
+        let lastScannedId = null;
+
+        function renderBarcodeProducts() {
+            const container = document.getElementById('barcode-products');
+            const products = BonApp.state.products;
+            container.innerHTML = products.map(p => `
+                <div class="barcode-product">
+                    <div class="icon">${p.image || '☕'}</div>
+                    <div class="info">
+                        <div class="name">${p.name}</div>
+                        <div class="code">باركود: ${p.barcode || '-'}</div>
+                    </div>
+                    <div class="actions">
+                        <button class="small-btn" onclick="copyText('${p.barcode || ''}')"><i class="fas fa-copy"></i></button>
+                        <button class="small-btn primary" onclick="BonApp.addToCart(${p.id})"><i class="fas fa-plus"></i></button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function copyText(text) {
+            if (!text) return;
+            navigator.clipboard?.writeText(text);
+            BonApp.showToast('تم نسخ الباركود', 'success');
+        }
+
+        function showScanResult(product) {
+            document.getElementById('scan-result').classList.add('active');
+            document.getElementById('result-name').textContent = product.name;
+            document.getElementById('result-price').textContent = `${product.price} ${BonApp.config.currency}`;
+            document.getElementById('result-code').textContent = product.barcode;
+            lastScannedId = product.id;
+        }
+
+        function addScannedToCart() {
+            if (lastScannedId) {
+                BonApp.addToCart(lastScannedId);
+            }
+        }
+
+        // Hook into barcode input (BonApp already listens Enter and calls scanBarcode)
+        // We extend by showing result UI.
+        const originalScan = BonApp.scanBarcode.bind(BonApp);
+        BonApp.scanBarcode = function(code) {
+            const product = this.state.products.find(p => p.barcode === code);
+            if (product) {
+                showScanResult(product);
+                this.showToast('تم العثور على المنتج ✅', 'success');
+            }
+            return originalScan(code);
+        }
+
+        renderBarcodeProducts();
+        BonApp.updateCartUI();
+        
+        // ==========================================
+        // نظام باركود الطاولات
+        // ==========================================
+        
+        function getBaseUrl() {
+            // استخدام رابط الشبكة المحلية الصحيح للوصول من الهاتف
+            const networkIP = '192.168.0.91';
+            const port = '8080';
+            return `http://${networkIP}:${port}/templates/bon/menu.html`;
+        }
+        
+        function generateTablesQR() {
+            const count = parseInt(document.getElementById('tables-count').value) || 10;
+            const container = document.getElementById('qr-tables-grid');
+            const baseUrl = getBaseUrl();
+            
+            let html = '';
+            
+            for (let i = 1; i <= count; i++) {
+                const tableUrl = `${baseUrl}?table=${i}`;
+                const qrApiUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(tableUrl)}`;
+                
+                html += `
+                    <div class="qr-table-card" data-table="${i}">
+                        <div class="table-number">🪑 طاولة ${i}</div>
+                        <div class="qr-image">
+                            <img src="${qrApiUrl}" alt="QR Code - Table ${i}" loading="lazy">
+                        </div>
+                        <div class="table-url">${tableUrl}</div>
+                        <div class="qr-actions">
+                            <button class="small-btn" onclick="copyTableUrl('${tableUrl}')">
+                                <i class="fas fa-copy"></i>
+                            </button>
+                            <button class="small-btn" onclick="downloadQR(${i}, '${qrApiUrl}')">
+                                <i class="fas fa-download"></i>
+                            </button>
+                            <button class="small-btn primary" onclick="printSingleQR(${i}, '${qrApiUrl}')">
+                                <i class="fas fa-print"></i>
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }
+            
+            container.innerHTML = html;
+            BonApp.showToast(`تم توليد ${count} باركود للطاولات ✅`, 'success');
+        }
+        
+        function copyTableUrl(url) {
+            navigator.clipboard?.writeText(url);
+            BonApp.showToast('تم نسخ رابط الطاولة', 'success');
+        }
+        
+        function downloadQR(tableNum, qrUrl) {
+            const link = document.createElement('a');
+            link.href = qrUrl;
+            link.download = `table-${tableNum}-qr.png`;
+            link.target = '_blank';
+            
+            // Fetch and download
+            fetch(qrUrl)
+                .then(res => res.blob())
+                .then(blob => {
+                    const url = URL.createObjectURL(blob);
+                    link.href = url;
+                    link.click();
+                    URL.revokeObjectURL(url);
+                    BonApp.showToast(`تم تحميل باركود طاولة ${tableNum}`, 'success');
+                })
+                .catch(() => {
+                    // Fallback: open in new tab
+                    window.open(qrUrl, '_blank');
+                });
+        }
+        
+        function downloadAllQR() {
+            const cards = document.querySelectorAll('.qr-table-card');
+            if (cards.length === 0) {
+                BonApp.showToast('قم بتوليد الباركودات أولاً', 'error');
+                return;
+            }
+            
+            BonApp.showToast('جاري تحميل الباركودات...', 'info');
+            
+            cards.forEach((card, index) => {
+                setTimeout(() => {
+                    const tableNum = card.dataset.table;
+                    const img = card.querySelector('img');
+                    if (img) {
+                        downloadQR(tableNum, img.src);
+                    }
+                }, index * 500); // Delay to prevent blocking
+            });
+        }
+        
+        function printSingleQR(tableNum, qrUrl) {
+            const printWindow = window.open('', '_blank');
+            printWindow.document.write(`
+                <!DOCTYPE html>
+                <html dir="rtl">
+                <head>
+                    <title>طاولة ${tableNum} - QR Code</title>
+                    <style>
+                        body {
+                            font-family: 'Cairo', Arial, sans-serif;
+                            text-align: center;
+                            padding: 40px;
+                        }
+                        .qr-print {
+                            border: 3px solid #333;
+                            border-radius: 20px;
+                            padding: 30px;
+                            display: inline-block;
+                            max-width: 300px;
+                        }
+                        .logo { font-size: 3rem; margin-bottom: 10px; }
+                        .brand { font-size: 1.5rem; font-weight: bold; color: #8b5a2b; margin-bottom: 20px; }
+                        .table-num { font-size: 2rem; font-weight: bold; margin-bottom: 15px; }
+                        .qr-img { width: 200px; height: 200px; margin: 20px auto; }
+                        .scan-text { color: #666; margin-top: 15px; }
+                    </style>
+                </head>
+                <body>
+                    <div class="qr-print">
+                        <div class="logo">☕</div>
+                        <div class="brand">بن - Bon Coffee</div>
+                        <div class="table-num">🪑 طاولة ${tableNum}</div>
+                        <img class="qr-img" src="${qrUrl}" alt="QR">
+                        <div class="scan-text">📱 امسح للطلب</div>
+                    </div>
+                    <scr` + `ipt>
+                        window.onload = function() {
+                            setTimeout(function() {
+                                window.print();
+                                window.close();
+                            }, 500);
+                        };
+                    </scr` + `ipt>
+                </body>
+                </html>
+            `);
+            printWindow.document.close();
+        }
+        
+        function printAllQR() {
+            const cards = document.querySelectorAll('.qr-table-card');
+            if (cards.length === 0) {
+                BonApp.showToast('قم بتوليد الباركودات أولاً', 'error');
+                return;
+            }
+            
+            let cardsHtml = '';
+            cards.forEach(card => {
+                const tableNum = card.dataset.table;
+                const img = card.querySelector('img');
+                if (img) {
+                    cardsHtml += `
+                        <div class="qr-print-card">
+                            <div class="logo">☕</div>
+                            <div class="brand">بن - Bon Coffee</div>
+                            <div class="table-num">🪑 طاولة ${tableNum}</div>
+                            <img src="${img.src}" alt="QR">
+                            <div class="scan-text">📱 امسح للطلب</div>
+                        </div>
+                    `;
+                }
+            });
+            
+            const printWindow = window.open('', '_blank');
+            printWindow.document.write(`
+                <!DOCTYPE html>
+                <html dir="rtl">
+                <head>
+                    <title>باركود جميع الطاولات</title>
+                    <style>
+                        body {
+                            font-family: 'Cairo', Arial, sans-serif;
+                            padding: 20px;
+                        }
+                        .qr-grid {
+                            display: grid;
+                            grid-template-columns: repeat(2, 1fr);
+                            gap: 20px;
+                        }
+                        .qr-print-card {
+                            border: 2px solid #333;
+                            border-radius: 15px;
+                            padding: 20px;
+                            text-align: center;
+                            page-break-inside: avoid;
+                        }
+                        .logo { font-size: 2rem; }
+                        .brand { font-size: 1.2rem; font-weight: bold; color: #8b5a2b; margin: 5px 0 10px; }
+                        .table-num { font-size: 1.5rem; font-weight: bold; margin-bottom: 10px; }
+                        .qr-print-card img { width: 150px; height: 150px; }
+                        .scan-text { color: #666; font-size: 0.9rem; margin-top: 10px; }
+                        @media print {
+                            .qr-grid { grid-template-columns: repeat(2, 1fr); }
+                            .qr-print-card { break-inside: avoid; }
+                        }
+                    </style>
+                </head>
+                <body>
+                    <div class="qr-grid">
+                        ${cardsHtml}
+                    </div>
+                    <scr` + `ipt>
+                        window.onload = function() {
+                            setTimeout(function() {
+                                window.print();
+                            }, 800);
+                        };
+                    </scr` + `ipt>
+                </body>
+                </html>
+            `);
+            printWindow.document.close();
+        }
+        
+        // Auto-generate on page load
+        generateTablesQR();
+    </script>
+    <script src="js/sidebar.js?v=1.1"></script>
+</body>
+</html>

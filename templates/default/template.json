@@ -1,0 +1,10 @@
+{
+  "id": "default",
+  "name": "القالب الافتراضي",
+  "description": "قالب بسيط ونظيف مناسب لجميع الأنشطة",
+  "icon": "📄",
+  "color": "#6366f1",
+  "folder": "default",
+  "preview": "templates/default/index.html",
+  "category": "general"
+}

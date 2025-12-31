@@ -1,0 +1,19 @@
+{
+  "id": "bon",
+  "name": "بن - Bon Coffee",
+  "description": "نظام متكامل للكوفي شوب يشمل: لوحة التحكم، المتجر، المنيو، نظام الباركود، الكاشير، والمخزن",
+  "icon": "☕",
+  "color": "#8B4513",
+  "folder": "bon",
+  "preview": "templates/bon/index.html",
+  "category": "cafes",
+  "pages": ["index", "store", "menu", "barcode", "cashier", "inventory"],
+  "features": [
+    "لوحة تحكم شاملة",
+    "متجر إلكتروني متكامل",
+    "قائمة المنيو التفاعلية",
+    "نظام الباركود والـ QR",
+    "نظام الكاشير المتقدم",
+    "إدارة المخزون"
+  ]
+}

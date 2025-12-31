@@ -1,0 +1,1146 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>متجر حبوب القهوة - روستري</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/main.css">
+    <style>
+        /* Store Page Specific Styles */
+        .store-hero {
+            padding: 160px 0 100px;
+            background: var(--gradient-dark);
+            text-align: center;
+        }
+
+        .store-hero h1 {
+            font-size: 3rem;
+            color: var(--white);
+            margin-bottom: 15px;
+        }
+
+        .store-hero h1 span {
+            color: var(--primary);
+        }
+
+        .store-hero p {
+            color: rgba(255,255,255,0.7);
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .store-section {
+            padding: 80px 0;
+        }
+
+        /* Filters */
+        .store-filters {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 50px;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .filter-categories {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .filter-cat-btn {
+            padding: 12px 25px;
+            background: var(--white);
+            border: 2px solid var(--cream);
+            border-radius: var(--radius-full);
+            font-family: inherit;
+            font-weight: 600;
+            color: var(--text);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .filter-cat-btn:hover {
+            border-color: var(--primary);
+        }
+
+        .filter-cat-btn.active {
+            background: var(--secondary);
+            border-color: var(--secondary);
+            color: var(--primary);
+        }
+
+        .filter-sort {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .filter-sort label {
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .filter-sort select {
+            padding: 12px 40px 12px 20px;
+            border: 2px solid var(--cream);
+            border-radius: var(--radius-md);
+            background: var(--white);
+            font-family: inherit;
+            font-size: 1rem;
+            cursor: pointer;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%234a3f35' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10l-5 5z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: left 15px center;
+        }
+
+        /* Products Grid */
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .product-card {
+            background: var(--white);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+            transition: var(--transition);
+        }
+
+        .product-card:hover {
+            transform: translateY(-10px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .product-image {
+            position: relative;
+            height: 280px;
+            overflow: hidden;
+        }
+
+        .product-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: var(--transition);
+        }
+
+        .product-card:hover .product-image img {
+            transform: scale(1.1);
+        }
+
+        .product-badges {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .product-badge {
+            padding: 6px 14px;
+            border-radius: var(--radius-full);
+            font-size: 0.75rem;
+            font-weight: 700;
+        }
+
+        .product-badge.bestseller {
+            background: #ef4444;
+            color: white;
+        }
+
+        .product-badge.new {
+            background: #10b981;
+            color: white;
+        }
+
+        .product-badge.organic {
+            background: #84cc16;
+            color: white;
+        }
+
+        .product-badge.sale {
+            background: #f59e0b;
+            color: white;
+        }
+
+        .product-wishlist {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            width: 45px;
+            height: 45px;
+            background: var(--white);
+            border: none;
+            border-radius: 50%;
+            color: var(--text-light);
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .product-wishlist:hover,
+        .product-wishlist.active {
+            color: #ef4444;
+        }
+
+        .product-quick-view {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%) translateY(20px);
+            opacity: 0;
+            padding: 12px 30px;
+            background: var(--white);
+            border: none;
+            border-radius: var(--radius-full);
+            font-family: inherit;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: var(--shadow-md);
+        }
+
+        .product-card:hover .product-quick-view {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        .product-body {
+            padding: 25px;
+        }
+
+        .product-origin {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.85rem;
+            color: var(--primary-dark);
+            margin-bottom: 10px;
+        }
+
+        .product-title {
+            font-size: 1.3rem;
+            color: var(--secondary);
+            margin-bottom: 10px;
+        }
+
+        .product-desc {
+            color: var(--text-light);
+            font-size: 0.9rem;
+            margin-bottom: 15px;
+            line-height: 1.6;
+        }
+
+        .product-specs {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: var(--cream);
+            border-radius: var(--radius-md);
+        }
+
+        .product-spec {
+            text-align: center;
+            flex: 1;
+        }
+
+        .product-spec i {
+            color: var(--primary-dark);
+            font-size: 1.1rem;
+            margin-bottom: 5px;
+        }
+
+        .product-spec span {
+            display: block;
+            font-size: 0.75rem;
+            color: var(--text-light);
+        }
+
+        .product-spec strong {
+            display: block;
+            font-size: 0.85rem;
+            color: var(--secondary);
+        }
+
+        .product-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .product-price {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .product-price .current {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--primary-dark);
+        }
+
+        .product-price .original {
+            font-size: 0.9rem;
+            color: var(--text-light);
+            text-decoration: line-through;
+        }
+
+        .product-price .weight {
+            font-size: 0.8rem;
+            color: var(--text-light);
+        }
+
+        .product-add-btn {
+            width: 55px;
+            height: 55px;
+            background: var(--secondary);
+            border: none;
+            border-radius: 50%;
+            color: var(--primary);
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .product-add-btn:hover {
+            background: var(--primary);
+            color: var(--secondary);
+            transform: rotate(90deg);
+        }
+
+        /* Features Section */
+        .store-features {
+            padding: 80px 0;
+            background: var(--secondary);
+        }
+
+        .store-features-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 30px;
+        }
+
+        .store-feature {
+            text-align: center;
+            padding: 30px;
+        }
+
+        .store-feature i {
+            font-size: 2.5rem;
+            color: var(--primary);
+            margin-bottom: 20px;
+        }
+
+        .store-feature h3 {
+            color: var(--white);
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+        }
+
+        .store-feature p {
+            color: rgba(255,255,255,0.6);
+            font-size: 0.9rem;
+        }
+
+        /* Newsletter Section */
+        .newsletter-section {
+            padding: 80px 0;
+            background: var(--cream);
+        }
+
+        .newsletter-box {
+            max-width: 600px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .newsletter-box h2 {
+            font-size: 2rem;
+            color: var(--secondary);
+            margin-bottom: 15px;
+        }
+
+        .newsletter-box p {
+            color: var(--text-light);
+            margin-bottom: 30px;
+        }
+
+        .newsletter-form {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+        }
+
+        .newsletter-form input {
+            flex: 1;
+            max-width: 350px;
+            padding: 18px 25px;
+            border: 2px solid var(--white);
+            border-radius: var(--radius-full);
+            font-family: inherit;
+            font-size: 1rem;
+        }
+
+        .newsletter-form input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .newsletter-form button {
+            padding: 18px 40px;
+            background: var(--secondary);
+            border: none;
+            border-radius: var(--radius-full);
+            color: var(--primary);
+            font-family: inherit;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .newsletter-form button:hover {
+            background: var(--primary);
+            color: var(--secondary);
+        }
+
+        /* Responsive */
+        @media (max-width: 992px) {
+            .store-features-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .store-hero h1 {
+                font-size: 2rem;
+            }
+            
+            .store-filters {
+                flex-direction: column;
+            }
+            
+            .filter-categories {
+                justify-content: center;
+            }
+            
+            .products-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .store-features-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .newsletter-form {
+                flex-direction: column;
+            }
+            
+            .newsletter-form input {
+                max-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header scrolled">
+        <div class="container">
+            <a href="index.html" class="logo">
+                <span class="logo-icon">☕</span>
+                <div class="logo-text">
+                    <span class="logo-name">روستري</span>
+                    <span class="logo-tagline">تحميص احترافي</span>
+                </div>
+            </a>
+
+            <nav class="nav">
+                <ul class="nav-list">
+                    <li><a href="index.html" class="nav-link">الرئيسية</a></li>
+                    <li><a href="index.html#menu" class="nav-link">القائمة</a></li>
+                    <li><a href="#" class="nav-link active">متجر الحبوب</a></li>
+                    <li><a href="index.html#about" class="nav-link">من نحن</a></li>
+                    <li><a href="index.html#contact" class="nav-link">تواصل معنا</a></li>
+                </ul>
+            </nav>
+
+            <div class="header-actions">
+                <button class="cart-btn" id="cartBtn">
+                    <i class="fas fa-shopping-bag"></i>
+                    <span class="cart-badge" id="cartBadge">0</span>
+                </button>
+                <button class="menu-toggle" id="menuToggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Store Hero -->
+    <section class="store-hero">
+        <div class="container">
+            <h1>متجر <span>حبوب القهوة</span></h1>
+            <p>اكتشف مجموعتنا المميزة من أجود أنواع حبوب البن المحمصة بعناية من أفضل المزارع حول العالم</p>
+        </div>
+    </section>
+
+    <!-- Products Section -->
+    <section class="store-section">
+        <div class="container">
+            <!-- Filters -->
+            <div class="store-filters">
+                <div class="filter-categories">
+                    <button class="filter-cat-btn active">الكل</button>
+                    <button class="filter-cat-btn">عربي</button>
+                    <button class="filter-cat-btn">إثيوبي</button>
+                    <button class="filter-cat-btn">كولومبي</button>
+                    <button class="filter-cat-btn">برازيلي</button>
+                    <button class="filter-cat-btn">يمني</button>
+                </div>
+                <div class="filter-sort">
+                    <label>ترتيب حسب:</label>
+                    <select>
+                        <option>الأكثر مبيعاً</option>
+                        <option>الأحدث</option>
+                        <option>السعر: من الأقل</option>
+                        <option>السعر: من الأعلى</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Products Grid -->
+            <div class="products-grid">
+                <!-- Product 1 -->
+                <div class="product-card">
+                    <div class="product-image">
+                        <img src="https://images.unsplash.com/photo-1559056199-641a0ac8b55e?w=500" alt="قهوة إثيوبية يرغاتشيفي">
+                        <div class="product-badges">
+                            <span class="product-badge bestseller">الأكثر مبيعاً</span>
+                        </div>
+                        <button class="product-wishlist"><i class="far fa-heart"></i></button>
+                        <button class="product-quick-view"><i class="fas fa-eye"></i> عرض سريع</button>
+                    </div>
+                    <div class="product-body">
+                        <div class="product-origin">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span>إثيوبيا - يرغاتشيفي</span>
+                        </div>
+                        <h3 class="product-title">قهوة يرغاتشيفي الإثيوبية</h3>
+                        <p class="product-desc">نكهة زهرية مميزة مع لمسات من الفواكه الاستوائية والحمضيات</p>
+                        <div class="product-specs">
+                            <div class="product-spec">
+                                <i class="fas fa-fire"></i>
+                                <span>درجة التحميص</span>
+                                <strong>متوسط</strong>
+                            </div>
+                            <div class="product-spec">
+                                <i class="fas fa-mountain"></i>
+                                <span>الارتفاع</span>
+                                <strong>1900م</strong>
+                            </div>
+                            <div class="product-spec">
+                                <i class="fas fa-seedling"></i>
+                                <span>النوع</span>
+                                <strong>أرابيكا</strong>
+                            </div>
+                        </div>
+                        <div class="product-footer">
+                            <div class="product-price">
+                                <span class="current">4.500 ر.ع</span>
+                                <span class="weight">250 جرام</span>
+                            </div>
+                            <button class="product-add-btn"><i class="fas fa-plus"></i></button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product 2 -->
+                <div class="product-card">
+                    <div class="product-image">
+                        <img src="https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?w=500" alt="قهوة كولومبية سوبريمو">
+                        <div class="product-badges">
+                            <span class="product-badge organic">عضوي</span>
+                        </div>
+                        <button class="product-wishlist"><i class="far fa-heart"></i></button>
+                        <button class="product-quick-view"><i class="fas fa-eye"></i> عرض سريع</button>
+                    </div>
+                    <div class="product-body">
+                        <div class="product-origin">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span>كولومبيا - هويلا</span>
+                        </div>
+                        <h3 class="product-title">قهوة كولومبية سوبريمو</h3>
+                        <p class="product-desc">مذاق غني ومتوازن مع حلاوة الكراميل ولمسة من الجوز</p>
+                        <div class="product-specs">
+                            <div class="product-spec">
+                                <i class="fas fa-fire"></i>
+                                <span>درجة التحميص</span>
+                                <strong>متوسط-داكن</strong>
+                            </div>
+                            <div class="product-spec">
+                                <i class="fas fa-mountain"></i>
+                                <span>الارتفاع</span>
+                                <strong>1700م</strong>
+                            </div>
+                            <div class="product-spec">
+                                <i class="fas fa-seedling"></i>
+                                <span>النوع</span>
+                                <strong>أرابيكا</strong>
+                            </div>
+                        </div>
+                        <div class="product-footer">
+                            <div class="product-price">
+                                <span class="current">3.800 ر.ع</span>
+                                <span class="weight">250 جرام</span>
+                            </div>
+                            <button class="product-add-btn"><i class="fas fa-plus"></i></button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product 3 -->
+                <div class="product-card">
+                    <div class="product-image">
+                        <img src="https://images.unsplash.com/photo-1497935586351-b67a49e012bf?w=500" alt="قهوة يمنية مخا">
+                        <div class="product-badges">
+                            <span class="product-badge new">جديد</span>
+                        </div>
+                        <button class="product-wishlist"><i class="far fa-heart"></i></button>
+                        <button class="product-quick-view"><i class="fas fa-eye"></i> عرض سريع</button>
+                    </div>
+                    <div class="product-body">
+                        <div class="product-origin">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span>اليمن - صنعاء</span>
+                        </div>
+                        <h3 class="product-title">قهوة يمنية مخا</h3>
+                        <p class="product-desc">نكهة عميقة وفريدة مع تلميحات من الشوكولا والتوابل الشرقية</p>
+                        <div class="product-specs">
+                            <div class="product-spec">
+                                <i class="fas fa-fire"></i>
+                                <span>درجة التحميص</span>
+                                <strong>داكن</strong>
+                            </div>
+                            <div class="product-spec">
+                                <i class="fas fa-mountain"></i>
+                                <span>الارتفاع</span>
+                                <strong>2200م</strong>
+                            </div>
+                            <div class="product-spec">
+                                <i class="fas fa-seedling"></i>
+                                <span>النوع</span>
+                                <strong>أرابيكا</strong>
+                            </div>
+                        </div>
+                        <div class="product-footer">
+                            <div class="product-price">
+                                <span class="current">6.500 ر.ع</span>
+                                <span class="weight">250 جرام</span>
+                            </div>
+                            <button class="product-add-btn"><i class="fas fa-plus"></i></button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product 4 -->
+                <div class="product-card">
+                    <div class="product-image">
+                        <img src="https://images.unsplash.com/photo-1511920170033-f8396924c348?w=500" alt="قهوة برازيلية سانتوس">
+                        <div class="product-badges">
+                            <span class="product-badge sale">خصم 15%</span>
+                        </div>
+                        <button class="product-wishlist"><i class="far fa-heart"></i></button>
+                        <button class="product-quick-view"><i class="fas fa-eye"></i> عرض سريع</button>
+                    </div>
+                    <div class="product-body">
+                        <div class="product-origin">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span>البرازيل - سانتوس</span>
+                        </div>
+                        <h3 class="product-title">قهوة برازيلية سانتوس</h3>
+                        <p class="product-desc">طعم ناعم ومتوازن مع نكهة البندق والكاكاو</p>
+                        <div class="product-specs">
+                            <div class="product-spec">
+                                <i class="fas fa-fire"></i>
+                                <span>درجة التحميص</span>
+                                <strong>فاتح</strong>
+                            </div>
+                            <div class="product-spec">
+                                <i class="fas fa-mountain"></i>
+                                <span>الارتفاع</span>
+                                <strong>1100م</strong>
+                            </div>
+                            <div class="product-spec">
+                                <i class="fas fa-seedling"></i>
+                                <span>النوع</span>
+                                <strong>أرابيكا</strong>
+                            </div>
+                        </div>
+                        <div class="product-footer">
+                            <div class="product-price">
+                                <span class="current">2.800 ر.ع</span>
+                                <span class="original">3.200 ر.ع</span>
+                                <span class="weight">250 جرام</span>
+                            </div>
+                            <button class="product-add-btn"><i class="fas fa-plus"></i></button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product 5 -->
+                <div class="product-card">
+                    <div class="product-image">
+                        <img src="https://images.unsplash.com/photo-1504630083234-14187a9df0f5?w=500" alt="خلطة البيت">
+                        <div class="product-badges">
+                            <span class="product-badge bestseller">الأكثر مبيعاً</span>
+                        </div>
+                        <button class="product-wishlist"><i class="far fa-heart"></i></button>
+                        <button class="product-quick-view"><i class="fas fa-eye"></i> عرض سريع</button>
+                    </div>
+                    <div class="product-body">
+                        <div class="product-origin">
+                            <i class="fas fa-coffee"></i>
+                            <span>خلطة روستري الخاصة</span>
+                        </div>
+                        <h3 class="product-title">خلطة البيت الممتازة</h3>
+                        <p class="product-desc">مزيج متناغم من أفضل حبوب البن العربي والإثيوبي</p>
+                        <div class="product-specs">
+                            <div class="product-spec">
+                                <i class="fas fa-fire"></i>
+                                <span>درجة التحميص</span>
+                                <strong>متوسط</strong>
+                            </div>
+                            <div class="product-spec">
+                                <i class="fas fa-blender"></i>
+                                <span>النوع</span>
+                                <strong>خلطة</strong>
+                            </div>
+                            <div class="product-spec">
+                                <i class="fas fa-seedling"></i>
+                                <span>المصدر</span>
+                                <strong>متعدد</strong>
+                            </div>
+                        </div>
+                        <div class="product-footer">
+                            <div class="product-price">
+                                <span class="current">3.500 ر.ع</span>
+                                <span class="weight">250 جرام</span>
+                            </div>
+                            <button class="product-add-btn"><i class="fas fa-plus"></i></button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product 6 -->
+                <div class="product-card">
+                    <div class="product-image">
+                        <img src="https://images.unsplash.com/photo-1461023058943-07fcbe16d735?w=500" alt="قهوة عربية سعودية">
+                        <button class="product-wishlist"><i class="far fa-heart"></i></button>
+                        <button class="product-quick-view"><i class="fas fa-eye"></i> عرض سريع</button>
+                    </div>
+                    <div class="product-body">
+                        <div class="product-origin">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span>السعودية - الطائف</span>
+                        </div>
+                        <h3 class="product-title">قهوة عربية بالهيل</h3>
+                        <p class="product-desc">القهوة العربية الأصيلة محمصة بخفة مع الهيل والزعفران</p>
+                        <div class="product-specs">
+                            <div class="product-spec">
+                                <i class="fas fa-fire"></i>
+                                <span>درجة التحميص</span>
+                                <strong>خفيف جداً</strong>
+                            </div>
+                            <div class="product-spec">
+                                <i class="fas fa-mortar-pestle"></i>
+                                <span>الإضافات</span>
+                                <strong>هيل</strong>
+                            </div>
+                            <div class="product-spec">
+                                <i class="fas fa-seedling"></i>
+                                <span>النوع</span>
+                                <strong>أرابيكا</strong>
+                            </div>
+                        </div>
+                        <div class="product-footer">
+                            <div class="product-price">
+                                <span class="current">4.200 ر.ع</span>
+                                <span class="weight">250 جرام</span>
+                            </div>
+                            <button class="product-add-btn"><i class="fas fa-plus"></i></button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product 7 -->
+                <div class="product-card">
+                    <div class="product-image">
+                        <img src="https://images.unsplash.com/photo-1587734195503-904fca47e0e9?w=500" alt="قهوة كينيا AA">
+                        <div class="product-badges">
+                            <span class="product-badge organic">عضوي</span>
+                        </div>
+                        <button class="product-wishlist"><i class="far fa-heart"></i></button>
+                        <button class="product-quick-view"><i class="fas fa-eye"></i> عرض سريع</button>
+                    </div>
+                    <div class="product-body">
+                        <div class="product-origin">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span>كينيا - نيري</span>
+                        </div>
+                        <h3 class="product-title">قهوة كينيا AA</h3>
+                        <p class="product-desc">حموضة مشرقة مع نكهات التوت الأسود والطماطم</p>
+                        <div class="product-specs">
+                            <div class="product-spec">
+                                <i class="fas fa-fire"></i>
+                                <span>درجة التحميص</span>
+                                <strong>متوسط</strong>
+                            </div>
+                            <div class="product-spec">
+                                <i class="fas fa-mountain"></i>
+                                <span>الارتفاع</span>
+                                <strong>1800م</strong>
+                            </div>
+                            <div class="product-spec">
+                                <i class="fas fa-seedling"></i>
+                                <span>النوع</span>
+                                <strong>أرابيكا</strong>
+                            </div>
+                        </div>
+                        <div class="product-footer">
+                            <div class="product-price">
+                                <span class="current">5.200 ر.ع</span>
+                                <span class="weight">250 جرام</span>
+                            </div>
+                            <button class="product-add-btn"><i class="fas fa-plus"></i></button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product 8 -->
+                <div class="product-card">
+                    <div class="product-image">
+                        <img src="https://images.unsplash.com/photo-1498804103079-a6351b050096?w=500" alt="إسبريسو خاص">
+                        <button class="product-wishlist"><i class="far fa-heart"></i></button>
+                        <button class="product-quick-view"><i class="fas fa-eye"></i> عرض سريع</button>
+                    </div>
+                    <div class="product-body">
+                        <div class="product-origin">
+                            <i class="fas fa-coffee"></i>
+                            <span>خلطة إسبريسو</span>
+                        </div>
+                        <h3 class="product-title">خلطة الإسبريسو الإيطالية</h3>
+                        <p class="product-desc">مزيج كلاسيكي مثالي للإسبريسو مع كريمة غنية</p>
+                        <div class="product-specs">
+                            <div class="product-spec">
+                                <i class="fas fa-fire"></i>
+                                <span>درجة التحميص</span>
+                                <strong>داكن</strong>
+                            </div>
+                            <div class="product-spec">
+                                <i class="fas fa-blender"></i>
+                                <span>النوع</span>
+                                <strong>خلطة</strong>
+                            </div>
+                            <div class="product-spec">
+                                <i class="fas fa-mug-hot"></i>
+                                <span>الاستخدام</span>
+                                <strong>إسبريسو</strong>
+                            </div>
+                        </div>
+                        <div class="product-footer">
+                            <div class="product-price">
+                                <span class="current">3.200 ر.ع</span>
+                                <span class="weight">250 جرام</span>
+                            </div>
+                            <button class="product-add-btn"><i class="fas fa-plus"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Store Features -->
+    <section class="store-features">
+        <div class="container">
+            <div class="store-features-grid">
+                <div class="store-feature">
+                    <i class="fas fa-shipping-fast"></i>
+                    <h3>توصيل مجاني</h3>
+                    <p>للطلبات فوق 10.000 ر.ع</p>
+                </div>
+                <div class="store-feature">
+                    <i class="fas fa-fire-alt"></i>
+                    <h3>تحميص طازج</h3>
+                    <p>نحمص القهوة يومياً</p>
+                </div>
+                <div class="store-feature">
+                    <i class="fas fa-award"></i>
+                    <h3>جودة عالية</h3>
+                    <p>حبوب مختارة بعناية</p>
+                </div>
+                <div class="store-feature">
+                    <i class="fas fa-undo"></i>
+                    <h3>ضمان الرضا</h3>
+                    <p>استرجاع خلال 7 أيام</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Newsletter -->
+    <section class="newsletter-section">
+        <div class="container">
+            <div class="newsletter-box">
+                <h2>اشترك في نشرتنا البريدية</h2>
+                <p>احصل على أحدث العروض والوصفات الحصرية مباشرة في بريدك</p>
+                <form class="newsletter-form">
+                    <input type="email" placeholder="أدخل بريدك الإلكتروني">
+                    <button type="submit">اشتراك</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <div class="footer-logo">
+                        <span class="logo-icon">☕</span>
+                        <span>روستري</span>
+                    </div>
+                    <p>نقدم لكم أجود أنواع القهوة المحمصة بعناية فائقة منذ عام 2015</p>
+                    <div class="footer-social">
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-whatsapp"></i></a>
+                    </div>
+                </div>
+                
+                <div class="footer-links">
+                    <h4>روابط سريعة</h4>
+                    <ul>
+                        <li><a href="index.html">الرئيسية</a></li>
+                        <li><a href="index.html#menu">القائمة</a></li>
+                        <li><a href="#">متجر الحبوب</a></li>
+                        <li><a href="index.html#about">من نحن</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-links">
+                    <h4>الدعم</h4>
+                    <ul>
+                        <li><a href="#">الأسئلة الشائعة</a></li>
+                        <li><a href="#">سياسة الشحن</a></li>
+                        <li><a href="#">الاسترجاع</a></li>
+                        <li><a href="index.html#contact">تواصل معنا</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-newsletter">
+                    <h4>تواصل معنا</h4>
+                    <p>مسقط، سلطنة عمان<br>+968 2412 3456<br>info@roastery.om</p>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>© 2024 روستري. جميع الحقوق محفوظة</p>
+                <div class="footer-payments">
+                    <i class="fab fa-cc-visa"></i>
+                    <i class="fab fa-cc-mastercard"></i>
+                    <i class="fab fa-cc-apple-pay"></i>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Cart Sidebar -->
+    <div class="cart-overlay" id="cartOverlay"></div>
+    <div class="cart-sidebar" id="cartSidebar">
+        <div class="cart-header">
+            <h3><i class="fas fa-shopping-bag"></i> سلة المشتريات</h3>
+            <button class="cart-close" id="cartClose"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="cart-body" id="cartBody">
+            <div class="cart-empty">
+                <i class="fas fa-shopping-basket"></i>
+                <h4>سلتك فارغة</h4>
+                <p>أضف بعض المنتجات لتبدأ التسوق</p>
+            </div>
+        </div>
+        <div class="cart-footer">
+            <div class="cart-total">
+                <span>الإجمالي</span>
+                <span id="cartTotal">0.000 ر.ع</span>
+            </div>
+            <button class="btn btn-primary btn-block checkout-btn">
+                <i class="fas fa-credit-card"></i> إتمام الشراء
+            </button>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast" id="toast">
+        <i class="fas fa-check-circle"></i>
+        <span>تمت الإضافة إلى السلة</span>
+    </div>
+
+    <!-- Scroll to Top -->
+    <button class="scroll-top" id="scrollTop">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <script>
+        // Cart functionality
+        let cart = [];
+        const cartBtn = document.getElementById('cartBtn');
+        const cartSidebar = document.getElementById('cartSidebar');
+        const cartOverlay = document.getElementById('cartOverlay');
+        const cartClose = document.getElementById('cartClose');
+        const cartBadge = document.getElementById('cartBadge');
+        const cartBody = document.getElementById('cartBody');
+        const cartTotal = document.getElementById('cartTotal');
+        const toast = document.getElementById('toast');
+
+        // Currency
+        const currency = 'ر.ع';
+
+        cartBtn.addEventListener('click', () => {
+            cartSidebar.classList.add('active');
+            cartOverlay.classList.add('active');
+        });
+
+        cartClose.addEventListener('click', closeCart);
+        cartOverlay.addEventListener('click', closeCart);
+
+        function closeCart() {
+            cartSidebar.classList.remove('active');
+            cartOverlay.classList.remove('active');
+        }
+
+        // Add to cart
+        document.querySelectorAll('.product-add-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const card = this.closest('.product-card');
+                const name = card.querySelector('.product-title').textContent;
+                const priceText = card.querySelector('.product-price .current').textContent;
+                const price = parseFloat(priceText.replace(currency, '').trim());
+                const image = card.querySelector('.product-image img').src;
+
+                addToCart({ name, price, image });
+            });
+        });
+
+        function addToCart(item) {
+            const existing = cart.find(i => i.name === item.name);
+            if (existing) {
+                existing.qty++;
+            } else {
+                cart.push({ ...item, qty: 1 });
+            }
+            updateCart();
+            showToast();
+        }
+
+        function updateCart() {
+            cartBadge.textContent = cart.reduce((sum, item) => sum + item.qty, 0);
+            
+            if (cart.length === 0) {
+                cartBody.innerHTML = `
+                    <div class="cart-empty">
+                        <i class="fas fa-shopping-basket"></i>
+                        <h4>سلتك فارغة</h4>
+                        <p>أضف بعض المنتجات لتبدأ التسوق</p>
+                    </div>
+                `;
+            } else {
+                cartBody.innerHTML = cart.map((item, index) => `
+                    <div class="cart-item">
+                        <img src="${item.image}" alt="${item.name}" class="cart-item-image">
+                        <div class="cart-item-details">
+                            <h4 class="cart-item-name">${item.name}</h4>
+                            <div class="cart-item-qty">
+                                <button onclick="updateQty(${index}, -1)">-</button>
+                                <span>${item.qty}</span>
+                                <button onclick="updateQty(${index}, 1)">+</button>
+                            </div>
+                            <span class="cart-item-price">${(item.price * item.qty).toFixed(3)} ${currency}</span>
+                        </div>
+                        <button class="cart-item-remove" onclick="removeFromCart(${index})">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                `).join('');
+            }
+
+            const total = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+            cartTotal.textContent = `${total.toFixed(3)} ${currency}`;
+        }
+
+        function updateQty(index, change) {
+            cart[index].qty += change;
+            if (cart[index].qty <= 0) {
+                cart.splice(index, 1);
+            }
+            updateCart();
+        }
+
+        function removeFromCart(index) {
+            cart.splice(index, 1);
+            updateCart();
+        }
+
+        function showToast() {
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 2500);
+        }
+
+        // Filter categories
+        document.querySelectorAll('.filter-cat-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.filter-cat-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+
+        // Wishlist toggle
+        document.querySelectorAll('.product-wishlist').forEach(btn => {
+            btn.addEventListener('click', function() {
+                this.classList.toggle('active');
+                const icon = this.querySelector('i');
+                icon.classList.toggle('far');
+                icon.classList.toggle('fas');
+            });
+        });
+
+        // Scroll to top
+        const scrollTop = document.getElementById('scrollTop');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 500) {
+                scrollTop.classList.add('show');
+            } else {
+                scrollTop.classList.remove('show');
+            }
+        });
+
+        scrollTop.addEventListener('click', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+    </script>
+</body>
+</html>

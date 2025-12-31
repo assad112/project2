@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>بن - Bon Coffee | لوحة التحكم</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- Sidebar -->
+    <aside class="sidebar"></aside>
+    
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-title">
+                <h2>☕ مرحباً بك في بن</h2>
+                <p>لوحة التحكم الرئيسية</p>
+            </div>
+            <div class="header-actions">
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" placeholder="بحث..." id="search-input">
+                </div>
+                <button class="btn btn-primary">
+                    <i class="fas fa-plus"></i>
+                    طلب جديد
+                </button>
+            </div>
+        </header>
+        
+        <!-- Stats -->
+        <div class="stats-grid">
+            <div class="stat-card coffee">
+                <div class="stat-icon">
+                    <i class="fas fa-coffee"></i>
+                </div>
+                <div class="stat-value" id="stat-products">8</div>
+                <div class="stat-label">المنتجات</div>
+                <div class="stat-change up">
+                    <i class="fas fa-arrow-up"></i>
+                    <span>+2 هذا الأسبوع</span>
+                </div>
+            </div>
+            
+            <div class="stat-card orders">
+                <div class="stat-icon">
+                    <i class="fas fa-receipt"></i>
+                </div>
+                <div class="stat-value" id="stat-orders">156</div>
+                <div class="stat-label">الطلبات اليوم</div>
+                <div class="stat-change up">
+                    <i class="fas fa-arrow-up"></i>
+                    <span>+12% من أمس</span>
+                </div>
+            </div>
+            
+            <div class="stat-card revenue">
+                <div class="stat-icon">
+                    <i class="fas fa-coins"></i>
+                </div>
+                <div class="stat-value" id="stat-revenue">3,450</div>
+                <div class="stat-label">الإيرادات (ر.ع)</div>
+                <div class="stat-change up">
+                    <i class="fas fa-arrow-up"></i>
+                    <span>+8% من أمس</span>
+                </div>
+            </div>
+            
+            <div class="stat-card customers">
+                <div class="stat-icon">
+                    <i class="fas fa-users"></i>
+                </div>
+                <div class="stat-value" id="stat-customers">89</div>
+                <div class="stat-label">العملاء اليوم</div>
+                <div class="stat-change up">
+                    <i class="fas fa-arrow-up"></i>
+                    <span>+5 جديد</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Quick Actions -->
+        <div class="section-header" style="margin-bottom: 20px;">
+            <h3 style="font-size: 1.3rem; font-weight: 700;">
+                <i class="fas fa-bolt" style="color: var(--gold);"></i>
+                الوصول السريع
+            </h3>
+        </div>
+        
+        <div class="cards-grid" style="margin-bottom: 30px;">
+            <a href="store.html" class="card" style="text-decoration: none; color: inherit;">
+                <div class="card-image" style="background: linear-gradient(135deg, #3b82f6, #1d4ed8);">
+                    🛒
+                </div>
+                <div class="card-body">
+                    <h4 class="card-title">المتجر</h4>
+                    <p class="card-text">إدارة المنتجات والمبيعات</p>
+                </div>
+            </a>
+
+            <a href="admin-store.html" class="card" style="text-decoration: none; color: inherit;">
+                <div class="card-image" style="background: linear-gradient(135deg, #6366f1, #4338ca);">
+                    🛠️
+                </div>
+                <div class="card-body">
+                    <h4 class="card-title">إدارة المتجر</h4>
+                    <p class="card-text">إضافة وتعديل المنتجات</p>
+                </div>
+            </a>
+            
+            <a href="menu.html" class="card" style="text-decoration: none; color: inherit;">
+                <div class="card-image" style="background: linear-gradient(135deg, #8B4513, #D2691E);">
+                    ☕
+                </div>
+                <div class="card-body">
+                    <h4 class="card-title">المنيو</h4>
+                    <p class="card-text">قائمة المشروبات والمأكولات</p>
+                </div>
+            </a>
+            
+            <a href="barcode.html" class="card" style="text-decoration: none; color: inherit;">
+                <div class="card-image" style="background: linear-gradient(135deg, #10b981, #059669);">
+                    📱
+                </div>
+                <div class="card-body">
+                    <h4 class="card-title">الباركود</h4>
+                    <p class="card-text">مسح وإنشاء الباركود</p>
+                </div>
+            </a>
+            
+            <a href="cashier.html" class="card" style="text-decoration: none; color: inherit;">
+                <div class="card-image" style="background: linear-gradient(135deg, #f59e0b, #d97706);">
+                    💰
+                </div>
+                <div class="card-body">
+                    <h4 class="card-title">الكاشير</h4>
+                    <p class="card-text">نقطة البيع والفواتير</p>
+                </div>
+            </a>
+            
+            <a href="inventory.html" class="card" style="text-decoration: none; color: inherit;">
+                <div class="card-image" style="background: linear-gradient(135deg, #8b5cf6, #7c3aed);">
+                    📦
+                </div>
+                <div class="card-body">
+                    <h4 class="card-title">المخزن</h4>
+                    <p class="card-text">إدارة المخزون والمواد</p>
+                </div>
+            </a>
+        </div>
+        
+        <!-- Recent Orders -->
+        <div class="section-header" style="margin-bottom: 20px;">
+            <h3 style="font-size: 1.3rem; font-weight: 700;">
+                <i class="fas fa-clock" style="color: var(--primary);"></i>
+                آخر الطلبات
+            </h3>
+        </div>
+        
+        <div class="table-container">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>رقم الطلب</th>
+                        <th>العميل</th>
+                        <th>المنتجات</th>
+                        <th>المبلغ</th>
+                        <th>الحالة</th>
+                        <th>الوقت</th>
+                    </tr>
+                </thead>
+                <tbody id="recent-orders">
+                    <tr>
+                        <td>#1001</td>
+                        <td>محمد أحمد</td>
+                        <td>2x لاتيه، 1x كرواسون</td>
+                        <td>48 ر.ع</td>
+                        <td><span class="badge badge-success">مكتمل</span></td>
+                        <td>منذ 5 دقائق</td>
+                    </tr>
+                    <tr>
+                        <td>#1002</td>
+                        <td>سارة علي</td>
+                        <td>1x كابتشينو</td>
+                        <td>20 ر.ع</td>
+                        <td><span class="badge badge-warning">قيد التحضير</span></td>
+                        <td>منذ 10 دقائق</td>
+                    </tr>
+                    <tr>
+                        <td>#1003</td>
+                        <td>خالد محمد</td>
+                        <td>3x قهوة عربية، 2x كيك</td>
+                        <td>81 ر.ع</td>
+                        <td><span class="badge badge-success">مكتمل</span></td>
+                        <td>منذ 15 دقيقة</td>
+                    </tr>
+                    <tr>
+                        <td>#1004</td>
+                        <td>نورة سعيد</td>
+                        <td>1x فرابتشينو، 1x موكا</td>
+                        <td>47 ر.ع</td>
+                        <td><span class="badge badge-primary">جديد</span></td>
+                        <td>منذ دقيقة</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </main>
+    
+    <!-- Toast Container -->
+    <div class="toast-container"></div>
+    
+    <script src="js/sidebar.js?v=1.1"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>

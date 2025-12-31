@@ -1,0 +1,10 @@
+{
+  "id": "restaurant-classic",
+  "name": "مطعم كلاسيكي",
+  "description": "تصميم فاخر للمطاعم الراقية",
+  "icon": "🍽️",
+  "color": "#dc2626",
+  "folder": "restaurant-classic",
+  "preview": "templates/restaurant-classic/index.html",
+  "category": "restaurants"
+}

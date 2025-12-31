@@ -1,0 +1,11 @@
+{
+  "id": "full-system",
+  "name": "النظام المتكامل",
+  "description": "نظام كامل للمطعم والكافيه يشمل: المنيو، المتجر، الإدارة، الويتر، الكاشير، المخزون",
+  "icon": "🏢",
+  "color": "#10b981",
+  "folder": "full-system",
+  "preview": "templates/full-system/index.html",
+  "category": "general",
+  "pages": ["index", "menu", "store", "admin", "store-admin", "inventory", "waiter", "cashier", "login", "login-restaurant", "profile"]
+}

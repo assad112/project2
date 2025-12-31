@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#1a0f0a">
+    <title>روستري كوفي | قهوة مختصة</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="css/main.css">
+</head>
+<body>
+    <!-- Preloader -->
+    <div class="preloader" id="preloader">
+        <div class="preloader-content">
+            <div class="coffee-cup">
+                <div class="steam"></div>
+                <div class="steam"></div>
+                <div class="steam"></div>
+            </div>
+            <span class="preloader-text">جاري التحميل...</span>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <header class="header" id="header">
+        <div class="container">
+            <a href="#" class="logo">
+                <span class="logo-icon">☕</span>
+                <div class="logo-text">
+                    <span class="logo-name">روستري</span>
+                    <span class="logo-tagline">قهوة مختصة</span>
+                </div>
+            </a>
+
+            <nav class="nav" id="nav">
+                <ul class="nav-list">
+                    <li><a href="#home" class="nav-link active">الرئيسية</a></li>
+                    <li><a href="#features" class="nav-link">مميزاتنا</a></li>
+                    <li><a href="#menu" class="nav-link">القائمة</a></li>
+                    <li><a href="#about" class="nav-link">من نحن</a></li>
+                    <li><a href="#gallery" class="nav-link">معرض الصور</a></li>
+                    <li><a href="#contact" class="nav-link">تواصل معنا</a></li>
+                </ul>
+            </nav>
+
+            <div class="header-actions">
+                <button class="cart-btn" onclick="toggleCart()">
+                    <i class="fas fa-shopping-bag"></i>
+                    <span class="cart-badge" id="cartBadge">0</span>
+                </button>
+                <button class="menu-toggle" id="menuToggle" onclick="toggleMenu()">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+        </div>
+        <div class="nav-overlay" id="navOverlay" onclick="toggleMenu()"></div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero" id="home">
+        <div class="hero-video">
+            <video autoplay muted loop playsinline>
+                <source src="https://assets.mixkit.co/videos/preview/mixkit-pouring-coffee-in-a-cup-seen-in-detail-21457-large.mp4" type="video/mp4">
+            </video>
+            <div class="hero-overlay"></div>
+        </div>
+        <div class="hero-content">
+            <span class="hero-badge"><i class="fas fa-award"></i> أفضل قهوة مختصة</span>
+            <h1 class="hero-title">استمتع بأجود<br><span>أنواع القهوة</span></h1>
+            <p class="hero-desc">نحمص بنّنا بعناية فائقة لنقدم لك تجربة قهوة استثنائية لا تُنسى</p>
+            <div class="hero-btns">
+                <a href="#menu" class="btn btn-primary">
+                    <span>استكشف القائمة</span>
+                    <i class="fas fa-arrow-left"></i>
+                </a>
+                <a href="#about" class="btn btn-outline">
+                    <span>تعرف علينا</span>
+                </a>
+            </div>
+            <div class="hero-stats">
+                <div class="stat">
+                    <span class="stat-number" data-target="15">0</span>
+                    <span class="stat-label">سنة خبرة</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-number" data-target="50">0</span>
+                    <span class="stat-label">نوع قهوة</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-number" data-target="10000">0</span>
+                    <span class="stat-label">عميل سعيد</span>
+                </div>
+            </div>
+        </div>
+        <div class="hero-scroll">
+            <a href="#features">
+                <i class="fas fa-chevron-down"></i>
+            </a>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features" id="features">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-badge">لماذا نحن؟</span>
+                <h2 class="section-title">ما يميزنا عن الآخرين</h2>
+                <p class="section-desc">نلتزم بأعلى معايير الجودة في كل فنجان قهوة نقدمه</p>
+            </div>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-seedling"></i>
+                    </div>
+                    <h3>بن عضوي 100%</h3>
+                    <p>نستخدم أجود أنواع البن العضوي المستورد من أفضل المزارع العالمية</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-fire"></i>
+                    </div>
+                    <h3>تحميص طازج يومياً</h3>
+                    <p>نحمص البن يومياً بكميات صغيرة لضمان أعلى درجات الطزاجة</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-user-tie"></i>
+                    </div>
+                    <h3>باريستا محترفين</h3>
+                    <p>فريقنا من الباريستا المحترفين يضمن لك تجربة استثنائية</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-heart"></i>
+                    </div>
+                    <h3>صُنع بحب</h3>
+                    <p>كل فنجان قهوة نقدمه محضّر بشغف واهتمام بأدق التفاصيل</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Menu Section -->
+    <section class="menu" id="menu">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-badge">قائمتنا</span>
+                <h2 class="section-title">اكتشف مشروباتنا</h2>
+                <p class="section-desc">تشكيلة متنوعة من المشروبات الساخنة والباردة والحلويات</p>
+            </div>
+            
+            <div class="menu-filters">
+                <button class="menu-filter-btn active" data-filter="all">الكل</button>
+                <button class="menu-filter-btn" data-filter="hot">ساخنة</button>
+                <button class="menu-filter-btn" data-filter="cold">باردة</button>
+                <button class="menu-filter-btn" data-filter="dessert">حلويات</button>
+                <button class="menu-filter-btn" data-filter="special">مختصة</button>
+            </div>
+            
+            <div class="menu-grid" id="menuGrid">
+                <!-- Menu items will be rendered by JavaScript -->
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section class="about" id="about">
+        <div class="container">
+            <div class="about-grid">
+                <div class="about-images">
+                    <div class="about-img main">
+                        <img src="https://images.unsplash.com/photo-1442512595331-e89e73853f31?w=600" alt="Coffee Making">
+                    </div>
+                    <div class="about-img secondary">
+                        <img src="https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=400" alt="Coffee Beans">
+                    </div>
+                    <div class="about-experience">
+                        <span class="exp-number">15+</span>
+                        <span class="exp-text">سنة خبرة</span>
+                    </div>
+                </div>
+                <div class="about-content">
+                    <span class="section-badge">قصتنا</span>
+                    <h2 class="section-title">رحلة شغف مع القهوة</h2>
+                    <p class="about-text">بدأت قصتنا منذ أكثر من 15 عاماً بحلم بسيط: تقديم أفضل قهوة مختصة في سلطنة عمان. اليوم، أصبحنا وجهة عشاق القهوة الباحثين عن تجربة استثنائية.</p>
+                    <p class="about-text">نختار بعناية فائقة أجود أنواع البن من مزارع مختارة حول العالم، ونحمصه بخبرة لنقدم لك نكهات فريدة في كل فنجان.</p>
+                    <ul class="about-features">
+                        <li><i class="fas fa-check"></i> بن مستورد من أفضل المزارع العالمية</li>
+                        <li><i class="fas fa-check"></i> تحميص طازج يومياً بكميات محدودة</li>
+                        <li><i class="fas fa-check"></i> أجواء مريحة وخدمة مميزة</li>
+                        <li><i class="fas fa-check"></i> توصيل سريع لجميع مناطق السلطنة</li>
+                    </ul>
+                    <a href="#contact" class="btn btn-primary">
+                        <span>تواصل معنا</span>
+                        <i class="fas fa-arrow-left"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Gallery Section -->
+    <section class="gallery" id="gallery">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-badge">معرض الصور</span>
+                <h2 class="section-title">لحظات من روستري</h2>
+                <p class="section-desc">صور من أجوائنا المميزة ولحظاتنا الجميلة</p>
+            </div>
+            <div class="gallery-grid">
+                <div class="gallery-item large">
+                    <img src="https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?w=800" alt="Coffee Shop">
+                    <div class="gallery-overlay">
+                        <i class="fas fa-expand"></i>
+                    </div>
+                </div>
+                <div class="gallery-item">
+                    <img src="https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=400" alt="Coffee">
+                    <div class="gallery-overlay">
+                        <i class="fas fa-expand"></i>
+                    </div>
+                </div>
+                <div class="gallery-item">
+                    <img src="https://images.unsplash.com/photo-1497935586351-b67a49e012bf?w=400" alt="Beans">
+                    <div class="gallery-overlay">
+                        <i class="fas fa-expand"></i>
+                    </div>
+                </div>
+                <div class="gallery-item tall">
+                    <img src="https://images.unsplash.com/photo-1442512595331-e89e73853f31?w=400" alt="Barista">
+                    <div class="gallery-overlay">
+                        <i class="fas fa-expand"></i>
+                    </div>
+                </div>
+                <div class="gallery-item">
+                    <img src="https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=400" alt="Latte Art">
+                    <div class="gallery-overlay">
+                        <i class="fas fa-expand"></i>
+                    </div>
+                </div>
+                <div class="gallery-item">
+                    <img src="https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?w=400" alt="Espresso">
+                    <div class="gallery-overlay">
+                        <i class="fas fa-expand"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section class="testimonials">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-badge">آراء العملاء</span>
+                <h2 class="section-title">ماذا يقول عملاؤنا</h2>
+            </div>
+            <div class="testimonials-grid">
+                <div class="testimonial-card">
+                    <div class="testimonial-rating">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <p class="testimonial-text">"أفضل قهوة تذوقتها في حياتي! الجودة والخدمة استثنائية. أنصح الجميع بزيارة روستري."</p>
+                    <div class="testimonial-author">
+                        <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Customer">
+                        <div>
+                            <h4>أحمد الحارثي</h4>
+                            <span>عميل دائم</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <div class="testimonial-rating">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <p class="testimonial-text">"المكان رائع والأجواء مريحة جداً. الباريستا محترف والقهوة لذيذة. مكاني المفضل!"</p>
+                    <div class="testimonial-author">
+                        <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="Customer">
+                        <div>
+                            <h4>فاطمة البلوشي</h4>
+                            <span>عميلة منذ 3 سنوات</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <div class="testimonial-rating">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <p class="testimonial-text">"تجربة القهوة المختصة هنا لا تُضاهى. أحب V60 الإثيوبي. شكراً روستري!"</p>
+                    <div class="testimonial-author">
+                        <img src="https://randomuser.me/api/portraits/men/67.jpg" alt="Customer">
+                        <div>
+                            <h4>سالم الرواحي</h4>
+                            <span>محب للقهوة المختصة</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section class="contact" id="contact">
+        <div class="container">
+            <div class="contact-grid">
+                <div class="contact-info">
+                    <span class="section-badge">تواصل معنا</span>
+                    <h2 class="section-title">نحب أن نسمع منك</h2>
+                    <p>لأي استفسار أو اقتراح، لا تتردد في التواصل معنا</p>
+                    
+                    <div class="contact-items">
+                        <div class="contact-item">
+                            <div class="contact-icon">
+                                <i class="fas fa-map-marker-alt"></i>
+                            </div>
+                            <div>
+                                <h4>العنوان</h4>
+                                <p>مسقط، سلطنة عمان</p>
+                            </div>
+                        </div>
+                        <div class="contact-item">
+                            <div class="contact-icon">
+                                <i class="fas fa-phone"></i>
+                            </div>
+                            <div>
+                                <h4>الهاتف</h4>
+                                <p dir="ltr">+968 9123 4567</p>
+                            </div>
+                        </div>
+                        <div class="contact-item">
+                            <div class="contact-icon">
+                                <i class="fas fa-envelope"></i>
+                            </div>
+                            <div>
+                                <h4>البريد الإلكتروني</h4>
+                                <p>info@roastery.om</p>
+                            </div>
+                        </div>
+                        <div class="contact-item">
+                            <div class="contact-icon">
+                                <i class="fas fa-clock"></i>
+                            </div>
+                            <div>
+                                <h4>ساعات العمل</h4>
+                                <p>يومياً: 7 صباحاً - 12 منتصف الليل</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="contact-social">
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-whatsapp"></i></a>
+                        <a href="#"><i class="fab fa-snapchat"></i></a>
+                    </div>
+                </div>
+                
+                <form class="contact-form">
+                    <div class="form-group">
+                        <input type="text" placeholder="الاسم الكامل" required>
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <div class="form-group">
+                        <input type="email" placeholder="البريد الإلكتروني" required>
+                        <i class="fas fa-envelope"></i>
+                    </div>
+                    <div class="form-group">
+                        <input type="tel" placeholder="رقم الهاتف">
+                        <i class="fas fa-phone"></i>
+                    </div>
+                    <div class="form-group">
+                        <textarea placeholder="رسالتك" rows="5" required></textarea>
+                        <i class="fas fa-comment"></i>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block">
+                        <span>إرسال الرسالة</span>
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-wave">
+            <svg viewBox="0 0 1440 100" preserveAspectRatio="none">
+                <path d="M0,50 C360,100 1080,0 1440,50 L1440,100 L0,100 Z" fill="currentColor"></path>
+            </svg>
+        </div>
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <a href="#" class="footer-logo">
+                        <span class="logo-icon">☕</span>
+                        <span>روستري كوفي</span>
+                    </a>
+                    <p>نقدم لكم أجود أنواع القهوة المختصة منذ عام 2009. رحلة شغف لا تنتهي مع عالم القهوة.</p>
+                    <div class="footer-social">
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-whatsapp"></i></a>
+                        <a href="#"><i class="fab fa-snapchat"></i></a>
+                    </div>
+                </div>
+                <div class="footer-links">
+                    <h4>روابط سريعة</h4>
+                    <ul>
+                        <li><a href="#home">الرئيسية</a></li>
+                        <li><a href="#menu">القائمة</a></li>
+                        <li><a href="#about">من نحن</a></li>
+                        <li><a href="#contact">تواصل معنا</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links">
+                    <h4>خدماتنا</h4>
+                    <ul>
+                        <li><a href="#">قهوة مختصة</a></li>
+                        <li><a href="#">حلويات طازجة</a></li>
+                        <li><a href="#">توصيل سريع</a></li>
+                        <li><a href="beans-store.html">متجر البن</a></li>
+                    </ul>
+                </div>
+                <div class="footer-newsletter">
+                    <h4>النشرة البريدية</h4>
+                    <p>اشترك للحصول على آخر العروض والأخبار</p>
+                    <form class="newsletter-form">
+                        <input type="email" placeholder="بريدك الإلكتروني">
+                        <button type="submit"><i class="fas fa-paper-plane"></i></button>
+                    </form>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>© 2024 روستري كوفي. جميع الحقوق محفوظة</p>
+                <div class="footer-payments">
+                    <i class="fab fa-cc-visa"></i>
+                    <i class="fab fa-cc-mastercard"></i>
+                    <i class="fab fa-cc-apple-pay"></i>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Cart Sidebar -->
+    <div class="cart-overlay" id="cartOverlay" onclick="toggleCart()"></div>
+    <aside class="cart-sidebar" id="cartSidebar">
+        <div class="cart-header">
+            <h3><i class="fas fa-shopping-bag"></i> سلة التسوق</h3>
+            <button class="cart-close" onclick="toggleCart()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="cart-body" id="cartBody"></div>
+        <div class="cart-footer">
+            <div class="cart-total">
+                <span>الإجمالي</span>
+                <span id="cartTotal">0.000 ر.ع</span>
+            </div>
+            <button class="btn btn-primary btn-block checkout-btn">
+                <span>إتمام الطلب</span>
+                <i class="fas fa-arrow-left"></i>
+            </button>
+        </div>
+    </aside>
+
+    <!-- Toast -->
+    <div class="toast" id="toast">
+        <i class="fas fa-check-circle"></i>
+        <span id="toastMessage">تمت الإضافة للسلة</span>
+    </div>
+
+    <!-- Scroll to Top -->
+    <button class="scroll-top" id="scrollTop" onclick="scrollToTop()">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <script src="js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,58 @@
+{
+  "database": {
+    "rules": "database.rules.json"
+  },
+  "hosting": [
+    {
+      "target": "restaurant-system-demo",
+      "public": ".",
+      "ignore": [
+        "firebase.json",
+        "**/.*",
+        "**/node_modules/**",
+        "server.py",
+        "restaurant_data.json",
+        "*.md",
+        "package*.json",
+        "index.html",
+        "menu.html",
+        "waiter.html",
+        "cashier.html",
+        "admin.html",
+        "inventory.html",
+        "profile.html",
+        "store.html",
+        "store-admin.html",
+        "login-restaurant.html",
+        "initial-data.json"
+      ],
+      "rewrites": [
+        {
+          "source": "**",
+          "destination": "/login.html"
+        }
+      ]
+    },
+    {
+      "target": "bon-coffee-1",
+      "public": ".",
+      "ignore": [
+        "firebase.json",
+        "**/.*",
+        "**/node_modules/**",
+        "server.py",
+        "restaurant_data.json",
+        "*.md",
+        "package*.json",
+        "super-admin.html",
+        "login.html"
+      ],
+      "rewrites": [
+        {
+          "source": "**",
+          "destination": "/index.html"
+        }
+      ]
+    }
+  ]
+}

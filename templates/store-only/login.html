@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>سوبر أدمن - نظام إدارة المطاعم</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Cairo', sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #9b59b6 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .login-container {
+            width: 100%;
+            max-width: 420px;
+        }
+        
+        .logo-section {
+            text-align: center;
+            margin-bottom: 30px;
+            color: white;
+        }
+        
+        .logo-icon {
+            width: 100px;
+            height: 100px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            backdrop-filter: blur(10px);
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        .logo-icon i {
+            font-size: 3rem;
+            color: gold;
+        }
+        
+        .logo-section h1 {
+            font-size: 2rem;
+            font-weight: 800;
+            margin-bottom: 5px;
+        }
+        
+        .logo-section p {
+            opacity: 0.9;
+            font-size: 1rem;
+        }
+        
+        .login-card {
+            background: white;
+            border-radius: 25px;
+            padding: 40px 35px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        
+        .login-card h2 {
+            text-align: center;
+            color: #9b59b6;
+            margin-bottom: 25px;
+            font-size: 1.3rem;
+        }
+        
+        .login-card h2 i {
+            margin-left: 8px;
+            color: gold;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .input-wrapper {
+            position: relative;
+        }
+        
+        .input-wrapper i {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #9b59b6;
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 15px 45px 15px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            font-family: inherit;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: #fafafa;
+        }
+        
+        .form-group input:focus {
+            outline: none;
+            border-color: #9b59b6;
+            background: white;
+            box-shadow: 0 0 0 4px rgba(155, 89, 182, 0.1);
+        }
+        
+        .login-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #9b59b6, #8e44ad);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-family: inherit;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 20px rgba(155, 89, 182, 0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .login-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(155, 89, 182, 0.5);
+        }
+        
+        .login-btn:active {
+            transform: translateY(0);
+        }
+        
+        .divider {
+            display: flex;
+            align-items: center;
+            margin: 25px 0;
+            color: #999;
+        }
+        
+        .divider::before,
+        .divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: #e0e0e0;
+        }
+        
+        .divider span {
+            padding: 0 15px;
+            font-size: 0.9rem;
+        }
+        
+        .error-message {
+            background: #ffe6e6;
+            color: #c0392b;
+            padding: 12px 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            display: none;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .error-message.show {
+            display: flex;
+        }
+        
+        .default-credentials {
+            text-align: center;
+            color: #666;
+            font-size: 0.85rem;
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 12px;
+        }
+        
+        .default-credentials strong {
+            color: #9b59b6;
+        }
+        
+        .footer-links {
+            text-align: center;
+            margin-top: 25px;
+        }
+        
+        .footer-links a {
+            color: white;
+            text-decoration: none;
+            opacity: 0.9;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255,255,255,0.1);
+            padding: 12px 25px;
+            border-radius: 25px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .footer-links a:hover {
+            opacity: 1;
+            background: rgba(255,255,255,0.2);
+            transform: translateY(-2px);
+        }
+        
+        /* Animation */
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+        
+        .shake {
+            animation: shake 0.3s ease;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 480px) {
+            .login-container { padding: 0; }
+            
+            .logo-icon {
+                width: 80px;
+                height: 80px;
+                border-radius: 25px;
+            }
+            
+            .logo-icon i { font-size: 2.5rem; }
+            
+            .logo-section h1 { font-size: 1.6rem; }
+            .logo-section p { font-size: 0.9rem; }
+            
+            .login-card {
+                padding: 30px 25px;
+                border-radius: 20px;
+            }
+            
+            .form-group input { padding: 12px 40px 12px 12px; }
+            
+            .login-btn { padding: 13px; font-size: 1rem; }
+        }
+        
+        @media (max-width: 360px) {
+            .logo-icon {
+                width: 70px;
+                height: 70px;
+            }
+            
+            .logo-icon i { font-size: 2rem; }
+            
+            .logo-section h1 { font-size: 1.4rem; }
+            
+            .login-card { padding: 25px 20px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="logo-section">
+            <div class="logo-icon">
+                <i class="fas fa-crown"></i>
+            </div>
+            <h1>سوبر أدمن</h1>
+            <p>لوحة التحكم الرئيسية لإدارة المطاعم</p>
+        </div>
+        
+        <div class="login-card">
+            <h2><i class="fas fa-shield-alt"></i> تسجيل دخول المدير</h2>
+            
+            <div class="error-message" id="error-message">
+                <i class="fas fa-exclamation-circle"></i>
+                <span id="error-text">خطأ في البيانات</span>
+            </div>
+            
+            <form onsubmit="loginSuperAdmin(event)">
+                <div class="form-group">
+                    <label>اسم المستخدم</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-user"></i>
+                        <input type="text" id="super-username" placeholder="أدخل اسم المستخدم" required>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label>كلمة المرور</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" id="super-password" placeholder="أدخل كلمة المرور" required>
+                    </div>
+                </div>
+                
+                <button type="submit" class="login-btn">
+                    <i class="fas fa-sign-in-alt"></i> دخول
+                </button>
+            </form>
+            
+            <div class="divider">
+                <span>بيانات الدخول الافتراضية</span>
+            </div>
+            
+            <div class="default-credentials">
+                اسم المستخدم: <strong>admin</strong><br>
+                كلمة المرور: <strong>admin123</strong>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+    <script src="js/performance.js"></script>
+    <script src="js/firebase-config.js"></script>
+    
+    <script>
+    // منع الحلقة اللانهائية
+    let redirecting = false;
+    
+    document.addEventListener('DOMContentLoaded', function() {
+        // التحقق إذا كان مسجل دخول
+        if (localStorage.getItem('superAdminLoggedIn') && !redirecting) {
+            redirecting = true;
+            window.location.href = 'super-admin.html';
+            return;
+        }
+    });
+    
+    async function loginSuperAdmin(e) {
+        e.preventDefault();
+        
+        const username = document.getElementById('super-username').value;
+        const password = document.getElementById('super-password').value;
+        const submitBtn = document.querySelector('.login-btn');
+        
+        // تعطيل الزر أثناء التحميل
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري التحقق...';
+        
+        try {
+            // التحقق من Firebase
+            const admin = await FirebaseDB.verifySuperAdmin(username, password);
+            
+            if (admin) {
+                localStorage.setItem('superAdminLoggedIn', 'true');
+                localStorage.setItem('currentAdmin', JSON.stringify(admin));
+                window.location.href = 'super-admin.html';
+            } else {
+                showError('اسم المستخدم أو كلمة المرور غير صحيحة');
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i> دخول';
+            }
+        } catch (error) {
+            console.error('خطأ في الاتصال:', error);
+            showError('خطأ في الاتصال بالسيرفر');
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i> دخول';
+        }
+    }
+    
+    function showError(message) {
+        const errorDiv = document.getElementById('error-message');
+        document.getElementById('error-text').textContent = message;
+        errorDiv.classList.add('show');
+        
+        errorDiv.classList.add('shake');
+        setTimeout(() => errorDiv.classList.remove('shake'), 300);
+    }
+    </script>
+</body>
+</html>

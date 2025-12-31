@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <title>إدارة الطاولات - مطعم الذواقة</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        :root {
+            --primary: #e74c3c;
+            --accent: #27ae60;
+            --warning: #f39c12;
+            --bg: #1a1a2e;
+            --card-bg: #16213e;
+            --text: #ffffff;
+            --text-light: #a0a0a0;
+        }
+        
+        /* الوضع الفاتح */
+        body.light-mode {
+            --bg: #f5f6fa;
+            --card-bg: #ffffff;
+            --text: #2c3e50;
+            --text-light: #7f8c8d;
+        }
+        
+        body.light-mode .header,
+        body.light-mode .stat-card,
+        body.light-mode .table-card,
+        body.light-mode .modal {
+            box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+        }
+        
+        body {
+            font-family: 'Cairo', sans-serif;
+            background: var(--bg);
+            min-height: 100vh;
+            color: var(--text);
+            padding: 15px;
+        }
+        
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            background: var(--card-bg);
+            border-radius: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .header h1 { font-size: 1.3rem; color: var(--primary); }
+        
+        .back-btn {
+            background: var(--primary);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        
+        .theme-toggle {
+            background: rgba(231, 76, 60, 0.2);
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            margin-right: 10px;
+        }
+        
+        .theme-toggle i {
+            color: var(--primary);
+            font-size: 1.1rem;
+        }
+        
+        .theme-toggle:active {
+            transform: scale(0.9);
+        }
+        
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .stat-card {
+            background: var(--card-bg);
+            padding: 15px;
+            border-radius: 15px;
+            text-align: center;
+        }
+        
+        .stat-card i { font-size: 1.5rem; margin-bottom: 5px; }
+        .stat-card h3 { font-size: 1.8rem; margin: 5px 0; }
+        .stat-card p { font-size: 0.8rem; color: var(--text-light); }
+        
+        .stat-card:nth-child(1) i { color: var(--accent); }
+        .stat-card:nth-child(2) i { color: var(--warning); }
+        .stat-card:nth-child(3) i { color: var(--primary); }
+        .stat-card:nth-child(4) i { color: #3498db; }
+        
+        .section-title {
+            color: white;
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+        }
+        
+        .tables-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 15px;
+        }
+        
+        .table-card {
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 3px solid transparent;
+        }
+        
+        .table-card:active { transform: scale(0.95); }
+        
+        .table-card.available { border-color: var(--accent); }
+        .table-card.occupied { border-color: var(--warning); }
+        .table-card.pending { border-color: var(--primary); animation: pulse 1.5s infinite; }
+        
+        @keyframes pulse {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(231, 76, 60, 0.4); }
+            50% { box-shadow: 0 0 0 10px rgba(231, 76, 60, 0); }
+        }
+        
+        .table-number {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 10px;
+        }
+        
+        .table-number i {
+            font-size: 1.5rem;
+            margin-left: 5px;
+            vertical-align: middle;
+        }
+        
+        .table-card.available .table-number i { color: var(--accent); }
+        .table-card.occupied .table-number i { color: var(--warning); }
+        .table-card.pending .table-number i { color: var(--primary); }
+        
+        .table-status {
+            font-size: 0.85rem;
+            padding: 5px 15px;
+            border-radius: 20px;
+            display: inline-block;
+        }
+        
+        .table-card.available .table-status { background: rgba(39, 174, 96, 0.2); color: var(--accent); }
+        .table-card.occupied .table-status { background: rgba(243, 156, 18, 0.2); color: var(--warning); }
+        .table-card.pending .table-status { background: rgba(231, 76, 60, 0.2); color: var(--primary); }
+        
+        /* Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.8);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            padding: 20px;
+        }
+        
+        .modal-overlay.active { display: flex; }
+        
+        .modal {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 25px;
+            width: 100%;
+            max-width: 400px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        
+        .modal h3 { margin-bottom: 20px; color: var(--primary); text-align: center; }
+        
+        .modal-icon {
+            text-align: center;
+            font-size: 4rem;
+            margin: 20px 0;
+        }
+        
+        .modal-icon.available { color: var(--accent); }
+        .modal-icon.occupied { color: var(--warning); }
+        .modal-icon.pending { color: var(--primary); }
+        
+        .modal-text {
+            text-align: center;
+            color: var(--text-light);
+            margin-bottom: 20px;
+        }
+        
+        .order-details {
+            background: rgba(0,0,0,0.2);
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .order-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .order-row:last-child { border-bottom: none; }
+        
+        .order-total-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 15px 0 0;
+            font-weight: 700;
+            font-size: 1.2rem;
+            border-top: 2px solid var(--primary);
+            margin-top: 10px;
+        }
+        
+        .order-total-row span:last-child { color: var(--accent); }
+        
+        .modal-actions { display: flex; gap: 10px; }
+        
+        .modal-btn {
+            flex: 1;
+            padding: 15px;
+            border: none;
+            border-radius: 10px;
+            font-family: inherit;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+        
+        .modal-btn.primary { background: var(--primary); color: white; }
+        .modal-btn.success { background: var(--accent); color: white; }
+        .modal-btn.cancel { background: var(--text-light); color: white; }
+        
+        /* إشعار */
+        .notification {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: var(--accent);
+            color: white;
+            padding: 15px 30px;
+            border-radius: 30px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: transform 0.3s;
+            z-index: 2000;
+        }
+        
+        .notification.show { transform: translateX(-50%) translateY(0); }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                gap: 12px;
+                text-align: center;
+            }
+            
+            .stats-grid { grid-template-columns: repeat(2, 1fr); }
+            .tables-grid { grid-template-columns: repeat(3, 1fr); }
+            
+            .modal { width: 95%; }
+        }
+        
+        @media (max-width: 480px) {
+            body { padding: 10px; }
+            
+            .header h1 { font-size: 1.1rem; }
+            
+            .header-right { width: 100%; justify-content: center; }
+            
+            .tables-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+            
+            .table-card { padding: 15px; }
+            .table-card .table-icon { font-size: 2rem; }
+            .table-card .table-number { font-size: 1.1rem; }
+            
+            .stat-card { padding: 12px; }
+            .stat-card h3 { font-size: 1.4rem; }
+            .stat-card i { font-size: 1.2rem; }
+            .stat-card p { font-size: 0.7rem; }
+            
+            .section-title { font-size: 0.95rem; }
+            
+            .back-btn { padding: 8px 15px; font-size: 0.85rem; }
+        }
+        
+        @media (max-width: 360px) {
+            .stats-grid { grid-template-columns: 1fr 1fr; gap: 8px; }
+            
+            .stat-card h3 { font-size: 1.2rem; }
+            .stat-card p { font-size: 0.65rem; }
+            
+            .header h1 { font-size: 1rem; }
+            
+            .tables-grid { grid-template-columns: 1fr 1fr; }
+            .table-card { padding: 12px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1><i class="fas fa-concierge-bell"></i> إدارة الطاولات</h1>
+        <div class="header-right">
+            <button class="theme-toggle" id="theme-toggle" onclick="toggleDarkMode()">
+                <i class="fas fa-moon"></i>
+            </button>
+            <a href="index.html" class="back-btn">رجوع</a>
+        </div>
+    </div>
+    
+    <div class="stats-grid">
+        <div class="stat-card">
+            <i class="fas fa-check-circle"></i>
+            <h3 id="available-count">0</h3>
+            <p>متاحة</p>
+        </div>
+        <div class="stat-card">
+            <i class="fas fa-utensils"></i>
+            <h3 id="occupied-count">0</h3>
+            <p>مشغولة</p>
+        </div>
+        <div class="stat-card">
+            <i class="fas fa-bell"></i>
+            <h3 id="pending-count">0</h3>
+            <p>طلبات جديدة</p>
+        </div>
+        <div class="stat-card">
+            <i class="fas fa-receipt"></i>
+            <h3 id="total-orders">0</h3>
+            <p>إجمالي الطلبات</p>
+        </div>
+    </div>
+    
+    <h3 class="section-title"><i class="fas fa-th-large"></i> الطاولات</h3>
+    <div class="tables-grid" id="tables-grid"></div>
+    
+    <div class="modal-overlay" id="table-modal">
+        <div class="modal">
+            <h3 id="modal-title">طاولة 1</h3>
+            <div id="modal-content"></div>
+            <div class="modal-actions" id="modal-actions"></div>
+        </div>
+    </div>
+    
+    <div class="notification" id="notification">
+        <i class="fas fa-check-circle"></i>
+        <span id="notification-text">تم بنجاح</span>
+    </div>
+    
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+    <script src="js/performance.js"></script>
+    <script src="js/firebase-config.js"></script>
+    <script src="js/restaurant-context.js"></script>
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // التحقق من تسجيل الدخول
+        if (!localStorage.getItem('restaurantLoggedIn') || !localStorage.getItem('currentRestaurant')) {
+            window.location.replace('login-restaurant.html');
+            return;
+        }
+        
+        loadTables();
+        updateStats();
+        setInterval(() => { loadTables(); updateStats(); }, 5000);
+    });
+    
+    function getTables() { return RestaurantContext.getTables(); }
+    function getOrders() { return RestaurantContext.getOrders(); }
+    
+    function loadTables() {
+        const container = document.getElementById('tables-grid');
+        const tables = getTables();
+        
+        container.innerHTML = tables.map(table => {
+            let statusText = '';
+            switch (table.status) {
+                case 'available': statusText = 'متاحة'; break;
+                case 'occupied': statusText = 'مشغولة'; break;
+                case 'pending': statusText = 'طلب جديد!'; break;
+            }
+            return `
+                <div class="table-card ${table.status}" onclick="showTableDetails(${table.id})">
+                    <div class="table-number"><i class="fas fa-chair"></i> ${table.id}</div>
+                    <span class="table-status">${statusText}</span>
+                </div>
+            `;
+        }).join('');
+    }
+    
+    function updateStats() {
+        const tables = getTables();
+        const orders = getOrders();
+        document.getElementById('available-count').textContent = tables.filter(t => t.status === 'available').length;
+        document.getElementById('occupied-count').textContent = tables.filter(t => t.status === 'occupied').length;
+        document.getElementById('pending-count').textContent = tables.filter(t => t.status === 'pending').length;
+        document.getElementById('total-orders').textContent = orders.length;
+    }
+    
+    function showTableDetails(tableId) {
+        const tables = getTables();
+        const table = tables.find(t => t.id === tableId);
+        const orders = getOrders();
+        
+        document.getElementById('modal-title').textContent = `طاولة ${tableId}`;
+        const content = document.getElementById('modal-content');
+        const actions = document.getElementById('modal-actions');
+        
+        if (table.status === 'available') {
+            content.innerHTML = `
+                <div class="modal-icon available"><i class="fas fa-check-circle"></i></div>
+                <p class="modal-text">هذه الطاولة متاحة</p>
+            `;
+            actions.innerHTML = `
+                <button class="modal-btn primary" onclick="newOrder(${tableId})"><i class="fas fa-plus"></i> طلب جديد</button>
+                <button class="modal-btn cancel" onclick="closeModal()">إغلاق</button>
+            `;
+        } else {
+            const order = orders.find(o => o.id === table.currentOrder);
+            if (order) {
+                const statusName = {new:'جديد',preparing:'قيد التحضير',ready:'جاهز',completed:'مكتمل'}[order.status] || order.status;
+                content.innerHTML = `
+                    <div class="modal-icon ${table.status}"><i class="fas fa-${table.status === 'pending' ? 'bell' : 'utensils'}"></i></div>
+                    <p class="modal-text">
+                        <strong>حالة الطلب:</strong> ${statusName}<br>
+                        <strong>الوقت:</strong> ${formatTime(order.createdAt)}
+                    </p>
+                    <div class="order-details">
+                        ${order.items.map(item => `
+                            <div class="order-row">
+                                <span>${item.emoji || '🍽️'} ${item.name} × ${item.quantity}</span>
+                                <span>${(item.price * item.quantity).toFixed(2)} ر.ع</span>
+                            </div>
+                        `).join('')}
+                        <div class="order-total-row">
+                            <span>المجموع:</span>
+                            <span>${order.total.toFixed(2)} ر.ع</span>
+                        </div>
+                    </div>
+                `;
+                
+                if (order.status === 'ready') {
+                    actions.innerHTML = `
+                        <button class="modal-btn success" onclick="deliverOrder(${order.id}, ${tableId})"><i class="fas fa-check-double"></i> تم التوصيل</button>
+                        <button class="modal-btn cancel" onclick="closeModal()">إغلاق</button>
+                    `;
+                } else {
+                    actions.innerHTML = `
+                        <button class="modal-btn primary" onclick="freeTable(${tableId}, ${order.id})"><i class="fas fa-times"></i> تحرير الطاولة</button>
+                        <button class="modal-btn cancel" onclick="closeModal()">إغلاق</button>
+                    `;
+                }
+            } else {
+                content.innerHTML = `
+                    <div class="modal-icon occupied"><i class="fas fa-question-circle"></i></div>
+                    <p class="modal-text">لا توجد تفاصيل للطلب</p>
+                `;
+                actions.innerHTML = `
+                    <button class="modal-btn primary" onclick="freeTable(${tableId})"><i class="fas fa-times"></i> تحرير الطاولة</button>
+                    <button class="modal-btn cancel" onclick="closeModal()">إغلاق</button>
+                `;
+            }
+        }
+        
+        document.getElementById('table-modal').classList.add('active');
+    }
+    
+    function closeModal() { document.getElementById('table-modal').classList.remove('active'); }
+    
+    function newOrder(tableId) {
+        window.location.href = RestaurantContext.addRestaurantToUrl(`menu.html?table=${tableId}`);
+    }
+    
+    function freeTable(tableId, orderId) {
+        RestaurantContext.updateTableStatus(tableId, 'available', null);
+        
+        if (orderId) {
+            const orders = getOrders().filter(o => o.id !== orderId);
+            RestaurantContext.setOrders(orders);
+        }
+        
+        closeModal();
+        loadTables();
+        updateStats();
+        showNotif('تم تحرير الطاولة');
+    }
+    
+    function deliverOrder(orderId, tableId) {
+        RestaurantContext.updateOrderStatus(orderId, 'completed');
+        RestaurantContext.updateTableStatus(tableId, 'available', null);
+        
+        closeModal();
+        loadTables();
+        updateStats();
+        showNotif('تم توصيل الطلب للطاولة');
+    }
+    
+    function formatTime(d) { return new Date(d).toLocaleTimeString('ar-SA',{hour:'2-digit',minute:'2-digit'}); }
+    function showNotif(msg) { const n = document.getElementById('notification'); document.getElementById('notification-text').textContent = msg; n.classList.add('show'); setTimeout(() => n.classList.remove('show'), 3000); }
+    
+    // وظائف الوضع الداكن/الفاتح
+    function toggleDarkMode() {
+        const body = document.body;
+        const themeToggle = document.getElementById('theme-toggle');
+        const icon = themeToggle.querySelector('i');
+        
+        body.classList.toggle('light-mode');
+        
+        if (body.classList.contains('light-mode')) {
+            icon.className = 'fas fa-sun';
+            localStorage.setItem('theme', 'light');
+        } else {
+            icon.className = 'fas fa-moon';
+            localStorage.setItem('theme', 'dark');
+        }
+    }
+    
+    function loadSavedTheme() {
+        const savedTheme = localStorage.getItem('theme');
+        const themeToggle = document.getElementById('theme-toggle');
+        if (!themeToggle) return;
+        const icon = themeToggle.querySelector('i');
+        
+        if (savedTheme === 'light') {
+            document.body.classList.add('light-mode');
+            icon.className = 'fas fa-sun';
+        }
+    }
+    
+    loadSavedTheme();
+    </script>
+</body>
+</html>

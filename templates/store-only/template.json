@@ -1,0 +1,11 @@
+{
+  "id": "store-only",
+  "name": "المتجر الإلكتروني",
+  "description": "قالب خاص للمتجر الإلكتروني مع لوحة إدارة المتجر",
+  "icon": "🛒",
+  "color": "#3b82f6",
+  "folder": "store-only",
+  "preview": "templates/store-only/index.html",
+  "category": "stores",
+  "pages": ["index", "store-admin", "login"]
+}

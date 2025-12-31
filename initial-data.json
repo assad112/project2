@@ -1,0 +1,78 @@
+{
+  "restaurant-system": {
+    "sites": {
+      "restaurant-system-demo": {
+        "name": "السوبر أدمن",
+        "type": "super-admin",
+        "url": "https://restaurant-system-demo.web.app",
+        "description": "لوحة التحكم الرئيسية لإدارة جميع المطاعم",
+        "createdAt": "2025-12-24T00:00:00.000Z"
+      },
+      "bon-coffee-1": {
+        "name": "كافيه بون",
+        "type": "restaurant",
+        "url": "https://bon-coffee-1.web.app",
+        "restaurantId": "bon-1",
+        "description": "موقع كافيه بون المستقل",
+        "createdAt": "2025-12-24T00:00:00.000Z"
+      }
+    },
+    "restaurants": {
+      "bon-1": {
+        "name": "Bon",
+        "type": "cafe",
+        "tables": 10,
+        "phone": "99123456",
+        "address": "كافيه • Bon",
+        "username": "Bon",
+        "password": "Bon",
+        "siteId": "bon-coffee-1",
+        "status": "active",
+        "createdAt": "2025-12-24T00:00:00.000Z"
+      }
+    },
+    "superAdmins": {
+      "admin-1": {
+        "username": "admin",
+        "password": "admin123",
+        "name": "المدير العام",
+        "createdAt": "2025-12-24T00:00:00.000Z"
+      }
+    },
+    "shippingCompanies": {
+      "shipping-1": {
+        "name": "توصيل سريع",
+        "phone": "99111111",
+        "email": "fast@delivery.com",
+        "basePrice": 1.000,
+        "pricePerKg": 0.200,
+        "estimatedTime": "30-45 دقيقة",
+        "coverage": ["مسقط", "السيب", "بوشر", "العامرات"],
+        "status": "active",
+        "createdAt": "2025-12-24T00:00:00.000Z"
+      },
+      "shipping-2": {
+        "name": "توصيل اقتصادي",
+        "phone": "99222222",
+        "email": "eco@delivery.com",
+        "basePrice": 0.500,
+        "pricePerKg": 0.100,
+        "estimatedTime": "60-90 دقيقة",
+        "coverage": ["مسقط", "السيب"],
+        "status": "active",
+        "createdAt": "2025-12-24T00:00:00.000Z"
+      },
+      "shipping-3": {
+        "name": "توصيل VIP",
+        "phone": "99333333",
+        "email": "vip@delivery.com",
+        "basePrice": 2.000,
+        "pricePerKg": 0.300,
+        "estimatedTime": "20-30 دقيقة",
+        "coverage": ["مسقط", "السيب", "بوشر", "العامرات", "المعبيلة"],
+        "status": "active",
+        "createdAt": "2025-12-24T00:00:00.000Z"
+      }
+    }
+  }
+}
