@@ -7,7 +7,12 @@
     const path = window.location.pathname;
     const page = path.split('/').pop() || 'index.html';
 
-    const menuItems = [
+    // التحقق من نوع المستخدم
+    const isAdmin = localStorage.getItem('admin_logged_in') === 'true';
+    const isWorker = localStorage.getItem('worker_logged_in') === 'true';
+
+    // قائمة الأدمن (جميع الصفحات)
+    const adminMenuItems = [
         { name: 'لوحة التحكم', icon: 'fa-home', link: 'index.html', id: 'dashboard' },
         { name: 'قائمة الشيشة', icon: 'fa-cloud', link: 'menu.html', id: 'menu' },
         { name: 'إدارة القائمة', icon: 'fa-edit', link: 'admin-menu.html', id: 'admin-menu' },
@@ -20,12 +25,26 @@
         { name: 'نظام الباركود', icon: 'fa-barcode', link: 'barcode.html', id: 'barcode' }
     ];
 
+    // قائمة العامل (المنيو والكاشير فقط)
+    const workerMenuItems = [
+        { name: 'قائمة الشيشة', icon: 'fa-cloud', link: 'menu.html', id: 'menu' },
+        { name: 'الكاشير', icon: 'fa-cash-register', link: 'cashier.html', id: 'cashier' }
+    ];
+
+    // اختيار القائمة المناسبة
+    const menuItems = isAdmin ? adminMenuItems : (isWorker ? workerMenuItems : adminMenuItems);
+
+    // معلومات المستخدم
+    const userName = isAdmin ? (localStorage.getItem('admin_name') || 'مدير النظام') : 
+                   (isWorker ? (localStorage.getItem('worker_name') || 'عامل') : 'مستخدم');
+    const userRole = isAdmin ? 'أدمن' : (isWorker ? 'عامل' : 'مستخدم');
+
     let sidebarHTML = `
         <div class="sidebar-header">
             <div class="logo">💨</div>
             <div class="brand">
                 <h1>قهوة الشام</h1>
-                <p>مقهى شيشة</p>
+                <p>${userRole}</p>
             </div>
         </div>
 
@@ -116,6 +135,8 @@ if (localStorage.getItem('bon-theme') === 'light') {
 // تسجيل الخروج
 function logout() {
     if (confirm('هل تريد تسجيل الخروج؟')) {
+        const isWorker = localStorage.getItem('worker_logged_in') === 'true';
+        
         localStorage.removeItem('admin_logged_in');
         localStorage.removeItem('admin_username');
         localStorage.removeItem('admin_name');
@@ -124,6 +145,11 @@ function logout() {
         localStorage.removeItem('worker_username');
         localStorage.removeItem('worker_name');
         localStorage.removeItem('worker_role');
-        window.location.href = 'login-admin.html';
+        localStorage.removeItem('worker_position');
+        localStorage.removeItem('worker_id');
+        localStorage.removeItem('restaurant_id');
+        
+        // توجيه حسب نوع المستخدم
+        window.location.href = isWorker ? 'login-worker.html' : 'login-admin.html';
     }
 }

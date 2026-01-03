@@ -1462,5 +1462,16 @@
         }
     </script>
     <script src="js/sidebar.js?v=1.1"></script>
+    <script>
+        // حماية الصفحة - للأدمن فقط
+        if (localStorage.getItem('admin_logged_in') !== 'true') {
+            if (localStorage.getItem('worker_logged_in') === 'true') {
+                alert('ليس لديك صلاحية للوصول إلى هذه الصفحة');
+                window.location.href = 'cashier.html';
+            } else {
+                window.location.href = 'login-admin.html';
+            }
+        }
+    </script>
 </body>
 </html>
