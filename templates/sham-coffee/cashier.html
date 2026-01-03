@@ -143,6 +143,25 @@
 
         .pay-grid button { width: 100%; justify-content: center; }
 
+        .discount-btn {
+            padding: 8px 12px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            background: var(--bg);
+            color: var(--text);
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        .discount-btn:hover {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+            transform: translateY(-2px);
+        }
+
         @media (max-width: 1100px) {
             .pos-layout { grid-template-columns: 1fr; }
         }
@@ -207,7 +226,52 @@
                 <div class="receipt-items" id="receipt-items"></div>
 
                 <div class="receipt-footer">
+                    <!-- Discount Section -->
+                    <div class="discount-section" id="discount-section" style="margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px solid var(--border);">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                            <span style="font-weight: 600; color: var(--text-secondary);">
+                                <i class="fas fa-tag"></i> التخفيض
+                            </span>
+                            <button class="btn btn-secondary" onclick="toggleDiscount()" style="padding: 6px 12px; font-size: 0.85rem;">
+                                <i class="fas fa-percent"></i> إضافة
+                            </button>
+                        </div>
+                        <div id="discount-options" style="display: none;">
+                            <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 10px;">
+                                <button class="discount-btn" onclick="applyDiscount(5)">5%</button>
+                                <button class="discount-btn" onclick="applyDiscount(10)">10%</button>
+                                <button class="discount-btn" onclick="applyDiscount(15)">15%</button>
+                                <button class="discount-btn" onclick="applyDiscount(20)">20%</button>
+                            </div>
+                            <div style="display: flex; gap: 8px;">
+                                <input type="number" id="custom-discount" placeholder="مخصص %" min="0" max="100" 
+                                       style="flex: 1; padding: 8px; border-radius: 8px; border: 1px solid var(--border); background: var(--bg); color: var(--text); color: var(--text);"
+                                       onkeypress="if(event.key==='Enter') applyCustomDiscount()">
+                                <button class="btn btn-primary" onclick="applyCustomDiscount()" style="padding: 8px 16px;">
+                                    <i class="fas fa-check"></i>
+                                </button>
+                                <button class="btn btn-danger" onclick="removeDiscount()" style="padding: 8px 16px;">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div id="discount-display" style="display: none; margin-top: 10px; padding: 10px; background: rgba(16, 185, 129, 0.1); border-radius: 8px; border: 1px solid rgba(16, 185, 129, 0.3);">
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <span style="color: var(--success); font-weight: 600;">
+                                    <i class="fas fa-tag"></i> تخفيض: <span id="discount-percent">0</span>%
+                                </span>
+                                <span style="color: var(--success); font-weight: 700;">
+                                    -<span id="discount-amount">0.000</span> ر.ع
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    
                     <div class="totals">
+                        <span>المجموع الفرعي</span>
+                        <span id="receipt-subtotal">0 ر.ع</span>
+                    </div>
+                    <div class="totals" style="font-size: 1.3rem; color: var(--primary); margin-top: 5px;">
                         <span>الإجمالي</span>
                         <span id="receipt-total">0 ر.ع</span>
                     </div>
@@ -420,6 +484,9 @@
             BonApp.saveData(); // If BonApp has this method, otherwise we might need to implement it
         }
 
+        // Discount variables
+        let currentDiscount = 0; // Percentage
+
         function renderReceipt() {
             const container = document.getElementById('receipt-items');
             const items = BonApp.state.cart;
@@ -443,13 +510,56 @@
                 </div>
             `;
 
-            const total = items.reduce((sum, item) => sum + (parseFloat(item.price) * item.quantity), 0);
+            const subtotal = items.reduce((sum, item) => sum + (parseFloat(item.price) * item.quantity), 0);
+            const discountAmount = (subtotal * currentDiscount) / 100;
+            const total = subtotal - discountAmount;
+
+            document.getElementById('receipt-subtotal').textContent = subtotal.toFixed(3) + ' ر.ع';
             document.getElementById('receipt-total').textContent = total.toFixed(3) + ' ر.ع';
+            
+            // Update discount display
+            if (currentDiscount > 0) {
+                document.getElementById('discount-display').style.display = 'block';
+                document.getElementById('discount-percent').textContent = currentDiscount;
+                document.getElementById('discount-amount').textContent = discountAmount.toFixed(3);
+            } else {
+                document.getElementById('discount-display').style.display = 'none';
+            }
             
             // Update BonApp UI if needed
             if (typeof BonApp.updateCartUI === 'function') {
                 BonApp.updateCartUI();
             }
+        }
+
+        function toggleDiscount() {
+            const options = document.getElementById('discount-options');
+            options.style.display = options.style.display === 'none' ? 'block' : 'none';
+        }
+
+        function applyDiscount(percent) {
+            currentDiscount = percent;
+            renderReceipt();
+            document.getElementById('discount-options').style.display = 'none';
+        }
+
+        function applyCustomDiscount() {
+            const customValue = parseFloat(document.getElementById('custom-discount').value);
+            if (customValue && customValue >= 0 && customValue <= 100) {
+                currentDiscount = customValue;
+                document.getElementById('custom-discount').value = '';
+                renderReceipt();
+                document.getElementById('discount-options').style.display = 'none';
+            } else {
+                alert('يرجى إدخال نسبة صحيحة بين 0 و 100');
+            }
+        }
+
+        function removeDiscount() {
+            currentDiscount = 0;
+            document.getElementById('custom-discount').value = '';
+            document.getElementById('discount-options').style.display = 'none';
+            renderReceipt();
         }
 
         function updateCartQuantity(productId, newQty) {
@@ -464,10 +574,51 @@
         }
 
         function pay(method) {
-            const order = BonApp.createOrder();
-            if (!order) return;
-            BonApp.showToast(method === 'cash' ? 'تم الدفع نقداً ✅' : 'تم الدفع بالبطاقة ✅', 'success');
-            renderReceipt();
+            const items = BonApp.state.cart;
+            if (items.length === 0) {
+                BonApp.showToast('السلة فارغة', 'error');
+                return;
+            }
+
+            const subtotal = items.reduce((sum, item) => sum + (parseFloat(item.price) * item.quantity), 0);
+            const discountAmount = (subtotal * currentDiscount) / 100;
+            const total = subtotal - discountAmount;
+
+            // Create order with discount info
+            const orderData = {
+                items: items.map(item => ({
+                    id: item.id,
+                    name: item.name,
+                    price: parseFloat(item.price),
+                    quantity: item.quantity
+                })),
+                subtotal: subtotal,
+                discount: {
+                    percent: currentDiscount,
+                    amount: discountAmount
+                },
+                total: total,
+                paymentMethod: method,
+                status: 'paid',
+                createdAt: new Date().toISOString(),
+                timestamp: Date.now(),
+                workerId: localStorage.getItem('worker_id') || null,
+                workerName: localStorage.getItem('worker_name') || null
+            };
+
+            // Save to Firebase
+            const orderRef = firebase.database().ref(ORDERS_PATH).push();
+            orderRef.set(orderData)
+                .then(() => {
+                    BonApp.showToast(method === 'cash' ? 'تم الدفع نقداً ✅' : 'تم الدفع بالبطاقة ✅', 'success');
+                    BonApp.clearCart();
+                    currentDiscount = 0;
+                    renderReceipt();
+                })
+                .catch(error => {
+                    console.error('Error saving order:', error);
+                    BonApp.showToast('حدث خطأ في حفظ الطلب', 'error');
+                });
         }
 
         // Barcode input for POS
