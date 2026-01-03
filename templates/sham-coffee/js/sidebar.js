@@ -16,6 +16,8 @@
         { name: 'لوحة التحكم', icon: 'fa-home', link: 'index.html', id: 'dashboard' },
         { name: 'قائمة الشيشة', icon: 'fa-cloud', link: 'menu.html', id: 'menu' },
         { name: 'إدارة القائمة', icon: 'fa-edit', link: 'admin-menu.html', id: 'admin-menu' },
+        { name: 'جميع الطلبات', icon: 'fa-list-alt', link: 'all-orders.html', id: 'all-orders' },
+        { name: 'إدارة الطلبات', icon: 'fa-clipboard-list', link: 'admin-orders.html', id: 'admin-orders' },
         { name: 'الجلسات الخاصة', icon: 'fa-couch', link: 'rooms.html', id: 'rooms' },
         { name: 'المتجر', icon: 'fa-store', link: 'store.html', id: 'store' },
         { name: 'إدارة المتجر', icon: 'fa-boxes', link: 'admin-store.html', id: 'admin-store' },
