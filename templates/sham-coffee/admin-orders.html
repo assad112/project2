@@ -186,6 +186,7 @@
         .status-new { background: rgba(239, 68, 68, 0.1); color: var(--danger); }
         .status-processing { background: rgba(218, 165, 32, 0.1); color: var(--gold); }
         .status-completed { background: rgba(16, 185, 129, 0.1); color: var(--success); }
+        .status-cancelled { background: rgba(239, 68, 68, 0.2); color: var(--danger); border: 1px solid var(--danger); }
 
         .order-items {
             margin-bottom: 15px;
@@ -247,6 +248,12 @@
             color: var(--danger);
         }
 
+        .btn-secondary {
+            background: var(--bg-secondary);
+            color: var(--text);
+            border: 1px solid var(--border);
+        }
+
         .btn:hover {
             opacity: 0.9;
             transform: scale(1.02);
@@ -277,6 +284,9 @@
                 <p>متابعة وتحديث حالة الطلبات</p>
             </div>
             <div class="header-actions">
+                <button class="btn btn-secondary" onclick="toggleCancelledOrders()" id="toggle-cancelled-btn" style="margin-left: 10px;">
+                    <i class="fas fa-eye-slash"></i> إظهار الملغية
+                </button>
                 <span id="connection-status" style="color: var(--success); font-size: 0.9rem;">
                     <i class="fas fa-wifi"></i> متصل
                 </span>
@@ -290,6 +300,19 @@
                 <p style="margin-top: 10px;">جاري تحميل الطلبات...</p>
             </div>
         </div>
+
+        <!-- قسم الطلبات الملغية -->
+        <div id="cancelled-orders-section" style="display: none; margin-top: 30px;">
+            <div class="header" style="margin-bottom: 20px;">
+                <div class="page-title">
+                    <h1 style="color: var(--danger);"><i class="fas fa-ban"></i> الطلبات الملغية</h1>
+                    <p>سجل الطلبات التي تم إلغاؤها</p>
+                </div>
+            </div>
+            <div class="orders-grid" id="cancelled-orders-grid">
+                <!-- Cancelled orders will be loaded here -->
+            </div>
+        </div>
     </main>
 
     <!-- Firebase & Scripts -->
@@ -298,8 +321,12 @@
     <script src="js/firebase-config.js"></script>
 
     <script>
-        const ORDERS_PATH = 'restaurant-system/restaurants/bon/orders';
+        const RESTAURANT_ID = 'sham-coffee-1';
+        const ORDERS_PATH = `restaurant-system/restaurants/${RESTAURANT_ID}/orders`;
+        const CANCELLED_ORDERS_PATH = `restaurant-system/restaurants/${RESTAURANT_ID}/cancelled-orders`;
         let orders = [];
+        let cancelledOrders = [];
+        let showCancelled = false;
 
         document.addEventListener('DOMContentLoaded', () => {
             initFirebaseListeners();
@@ -307,13 +334,16 @@
 
         function initFirebaseListeners() {
             const ordersRef = firebase.database().ref(ORDERS_PATH);
+            const cancelledOrdersRef = firebase.database().ref(CANCELLED_ORDERS_PATH);
             
+            // الطلبات النشطة
             ordersRef.on('value', (snapshot) => {
                 const data = snapshot.val();
                 if (data) {
                     orders = Object.entries(data)
                         .map(([key, value]) => ({ id: key, ...value }))
-                        .sort((a, b) => b.timestamp - a.timestamp); // Newest first
+                        .filter(order => order.status !== 'cancelled') // إخفاء الملغية من القائمة الرئيسية
+                        .sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
                     renderOrders();
                 } else {
                     orders = [];
@@ -326,6 +356,20 @@
                         حدث خطأ في الاتصال: ${error.message}
                     </div>
                 `;
+            });
+
+            // الطلبات الملغية
+            cancelledOrdersRef.on('value', (snapshot) => {
+                const data = snapshot.val();
+                if (data) {
+                    cancelledOrders = Object.entries(data)
+                        .map(([key, value]) => ({ id: key, ...value }))
+                        .sort((a, b) => (b.cancelledAt || 0) - (a.cancelledAt || 0));
+                    renderCancelledOrders();
+                } else {
+                    cancelledOrders = [];
+                    renderCancelledOrders();
+                }
             });
         }
 
@@ -406,15 +450,132 @@
         }
 
         function updateStatus(orderId, newStatus) {
-            firebase.database().ref(ORDERS_PATH + '/' + orderId).update({
-                status: newStatus,
-                updatedAt: firebase.database.ServerValue.TIMESTAMP
-            });
+            const order = orders.find(o => o.id === orderId);
+            if (!order) return;
+
+            if (newStatus === 'cancelled') {
+                // عند الإلغاء: نقل الطلب إلى قسم الملغية مع معلومات الحذف
+                const adminName = localStorage.getItem('admin_name') || 'مدير النظام';
+                const adminUsername = localStorage.getItem('admin_username') || 'admin';
+                
+                const cancelledOrderData = {
+                    ...order,
+                    status: 'cancelled',
+                    cancelledAt: firebase.database.ServerValue.TIMESTAMP,
+                    cancelledBy: {
+                        name: adminName,
+                        username: adminUsername,
+                        role: 'admin'
+                    },
+                    originalOrderId: orderId
+                };
+
+                // حفظ في قسم الملغية
+                firebase.database().ref(CANCELLED_ORDERS_PATH + '/' + orderId).set(cancelledOrderData)
+                    .then(() => {
+                        // حذف من الطلبات النشطة
+                        firebase.database().ref(ORDERS_PATH + '/' + orderId).remove();
+                    });
+            } else {
+                // تحديث الحالة العادية
+                firebase.database().ref(ORDERS_PATH + '/' + orderId).update({
+                    status: newStatus,
+                    updatedAt: firebase.database.ServerValue.TIMESTAMP
+                });
+            }
         }
 
         function deleteOrder(orderId) {
             if(confirm('هل أنت متأكد من حذف هذا الطلب نهائياً؟')) {
                 firebase.database().ref(ORDERS_PATH + '/' + orderId).remove();
+            }
+        }
+
+        function renderCancelledOrders() {
+            const container = document.getElementById('cancelled-orders-grid');
+            if (!container) return;
+
+            if (cancelledOrders.length === 0) {
+                container.innerHTML = `
+                    <div style="grid-column: 1/-1; text-align: center; padding: 50px; color: var(--text-secondary);">
+                        <i class="fas fa-ban" style="font-size: 3rem; margin-bottom: 15px; opacity: 0.5;"></i>
+                        <p>لا توجد طلبات ملغية</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = cancelledOrders.map(order => {
+                const cancelledDate = order.cancelledAt ? new Date(order.cancelledAt) : new Date();
+                const cancelledBy = order.cancelledBy || { name: 'غير معروف', username: 'unknown' };
+
+                return `
+                    <div class="order-card" style="opacity: 0.7; border-left: 4px solid var(--danger);">
+                        <div class="order-header">
+                            <div>
+                                <div class="order-id">#${order.tableNumber || 'بدون اسم'}</div>
+                                <div class="order-time">${new Date(order.createdAt || order.timestamp).toLocaleTimeString('ar-EG')}</div>
+                            </div>
+                            <span class="order-status status-cancelled">ملغي</span>
+                        </div>
+                        
+                        <div class="order-items">
+                            ${order.items ? order.items.map(item => `
+                                <div class="order-item">
+                                    <span><span class="item-qty">${item.quantity}x</span> ${item.name}</span>
+                                    <span>${(item.price * item.quantity).toFixed(3)}</span>
+                                </div>
+                            `).join('') : ''}
+                        </div>
+
+                        <div class="order-total">
+                            <span>الإجمالي</span>
+                            <span>${parseFloat(order.total || 0).toFixed(3)} ر.ع</span>
+                        </div>
+
+                        <div style="margin-top: 15px; padding-top: 15px; border-top: 1px solid var(--border); font-size: 0.85rem; color: var(--text-secondary);">
+                            <div style="margin-bottom: 5px;">
+                                <i class="fas fa-user-times"></i> ألغاه: <strong>${cancelledBy.name}</strong>
+                            </div>
+                            <div>
+                                <i class="fas fa-clock"></i> تاريخ الإلغاء: ${cancelledDate.toLocaleString('ar-EG', { 
+                                    year: 'numeric', 
+                                    month: 'long', 
+                                    day: 'numeric',
+                                    hour: '2-digit',
+                                    minute: '2-digit'
+                                })}
+                            </div>
+                        </div>
+
+                        <div class="order-actions" style="margin-top: 15px;">
+                            <button class="btn btn-danger" onclick="permanentDeleteOrder('${order.id}')" style="grid-column: 1/-1;">
+                                <i class="fas fa-trash-alt"></i> حذف نهائي
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function toggleCancelledOrders() {
+            showCancelled = !showCancelled;
+            const section = document.getElementById('cancelled-orders-section');
+            const btn = document.getElementById('toggle-cancelled-btn');
+            
+            if (showCancelled) {
+                section.style.display = 'block';
+                btn.innerHTML = '<i class="fas fa-eye-slash"></i> إخفاء الملغية';
+                renderCancelledOrders();
+            } else {
+                section.style.display = 'none';
+                btn.innerHTML = '<i class="fas fa-eye"></i> إظهار الملغية';
+            }
+        }
+
+        function permanentDeleteOrder(orderId) {
+            if(confirm('هل أنت متأكد من الحذف النهائي لهذا الطلب؟ لن يمكن استرجاعه بعد الحذف.')) {
+                firebase.database().ref(CANCELLED_ORDERS_PATH + '/' + orderId).remove();
             }
         }
     </script>

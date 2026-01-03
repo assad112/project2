@@ -230,8 +230,9 @@
 
     <script src="js/app.js"></script>
     <script>
-        const MENU_PATH = 'restaurant-system/restaurants/bon/menu';
-        const ORDERS_PATH = 'restaurant-system/restaurants/bon/orders';
+        const RESTAURANT_ID = 'sham-coffee-1';
+        const MENU_PATH = `restaurant-system/restaurants/${RESTAURANT_ID}/menu`;
+        const ORDERS_PATH = `restaurant-system/restaurants/${RESTAURANT_ID}/orders`;
         let menuItems = [];
         let incomingOrders = [];
 
@@ -249,15 +250,24 @@
 
         function initOrdersListener() {
             const ordersRef = firebase.database().ref(ORDERS_PATH);
+            const isWorker = localStorage.getItem('worker_logged_in') === 'true';
             
             ordersRef.on('value', (snapshot) => {
                 const data = snapshot.val();
                 if (data) {
-                    // Filter for 'new' orders
+                    // Filter for 'new' orders only - العامل لا يرى الملغية
                     incomingOrders = Object.entries(data)
                         .map(([key, value]) => ({ id: key, ...value }))
-                        .filter(order => order.status === 'new')
-                        .sort((a, b) => b.timestamp - a.timestamp);
+                        .filter(order => {
+                            // العامل: فقط الطلبات الجديدة
+                            if (isWorker) {
+                                return order.status === 'new';
+                            }
+                            // الأدمن: الطلبات الجديدة والقيد التحضير
+                            return order.status === 'new' || order.status === 'processing';
+                        })
+                        .filter(order => order.status !== 'cancelled') // إخفاء الملغية دائماً
+                        .sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
                     
                     renderIncomingOrders();
                 } else {

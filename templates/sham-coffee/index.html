@@ -241,7 +241,7 @@
         // ==========================================
         // Real Statistics from Firebase
         // ==========================================
-        const RESTAURANT_ID = 'bon';
+        const RESTAURANT_ID = 'sham-coffee-1';
         
         const MENU_PATH = `restaurant-system/restaurants/${RESTAURANT_ID}/menu`;
         const ORDERS_PATH = `restaurant-system/restaurants/${RESTAURANT_ID}/orders`;
@@ -269,6 +269,7 @@
                 const ordersData = snapshot.val() || {};
                 orders = Object.keys(ordersData)
                     .map(key => ({ id: key, ...ordersData[key] }))
+                    .filter(order => order.status !== 'cancelled') // إخفاء الطلبات الملغية
                     .sort((a, b) => {
                         const dateA = a.createdAt ? new Date(a.createdAt).getTime() : (a.timestamp || 0);
                         const dateB = b.createdAt ? new Date(b.createdAt).getTime() : (b.timestamp || 0);
@@ -338,6 +339,7 @@
                 const ordersData = ordersSnapshot.val() || {};
                 orders = Object.keys(ordersData)
                     .map(key => ({ id: key, ...ordersData[key] }))
+                    .filter(order => order.status !== 'cancelled') // إخفاء الطلبات الملغية
                     .sort((a, b) => (b.createdAt || b.timestamp || 0) - (a.createdAt || a.timestamp || 0));
                 
                 // Calculate today's date (start of day)
