@@ -1,0 +1,19 @@
+{
+  "id": "marmariya",
+  "name": "مرمرية",
+  "description": "نظام متكامل للكوفي شوب يشمل: لوحة التحكم، المتجر، المنيو، نظام الباركود، الكاشير، والمخزن",
+  "icon": "☕",
+  "color": "#8B4513",
+  "folder": "marmariya",
+  "preview": "templates/marmariya/index.html",
+  "category": "cafes",
+  "pages": ["index", "store", "menu", "barcode", "cashier", "inventory"],
+  "features": [
+    "لوحة تحكم شاملة",
+    "متجر إلكتروني متكامل",
+    "قائمة المنيو التفاعلية",
+    "نظام الباركود والـ QR",
+    "نظام الكاشير المتقدم",
+    "إدارة المخزون"
+  ]
+}

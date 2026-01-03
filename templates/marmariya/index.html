@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مرمرية | لوحة التحكم</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- Sidebar -->
+    <aside class="sidebar"></aside>
+    
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-title">
+                <h2>☕ مرحباً بك في مرمرية</h2>
+                <p>لوحة التحكم الرئيسية</p>
+            </div>
+            <div class="header-actions">
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" placeholder="بحث..." id="search-input">
+                </div>
+                <button class="btn btn-primary">
+                    <i class="fas fa-plus"></i>
+                    طلب جديد
+                </button>
+            </div>
+        </header>
+        
+        <!-- Stats -->
+        <div class="stats-grid">
+            <div class="stat-card coffee">
+                <div class="stat-icon">
+                    <i class="fas fa-coffee"></i>
+                </div>
+                <div class="stat-value" id="stat-products">0</div>
+                <div class="stat-label">المنتجات</div>
+                <div class="stat-change up">
+                    <i class="fas fa-arrow-up"></i>
+                    <span>جاري التحميل...</span>
+                </div>
+            </div>
+            
+            <div class="stat-card orders">
+                <div class="stat-icon">
+                    <i class="fas fa-receipt"></i>
+                </div>
+                <div class="stat-value" id="stat-orders">0</div>
+                <div class="stat-label">طلبات اليوم</div>
+                <div class="stat-change up">
+                    <i class="fas fa-arrow-up"></i>
+                    <span id="orders-change">جاري التحميل...</span>
+                </div>
+            </div>
+            
+            <div class="stat-card revenue">
+                <div class="stat-icon">
+                    <i class="fas fa-coins"></i>
+                </div>
+                <div class="stat-value" id="stat-revenue">0</div>
+                <div class="stat-label">مبيعات اليوم (ر.ع)</div>
+                <div class="stat-change up">
+                    <i class="fas fa-arrow-up"></i>
+                    <span id="revenue-change">جاري التحميل...</span>
+                </div>
+            </div>
+            
+            <div class="stat-card customers">
+                <div class="stat-icon">
+                    <i class="fas fa-shopping-bag"></i>
+                </div>
+                <div class="stat-value" id="stat-items-sold">0</div>
+                <div class="stat-label">أصناف مباعة</div>
+                <div class="stat-change up">
+                    <i class="fas fa-arrow-up"></i>
+                    <span id="items-change">جاري التحميل...</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Quick Actions -->
+        <div class="section-header" style="margin-bottom: 20px;">
+            <h3 style="font-size: 1.3rem; font-weight: 700;">
+                <i class="fas fa-bolt" style="color: var(--gold);"></i>
+                الوصول السريع
+            </h3>
+        </div>
+        
+        <div class="cards-grid" style="margin-bottom: 30px;">
+            <a href="store.html" class="card" style="text-decoration: none; color: inherit;">
+                <div class="card-image" style="background: linear-gradient(135deg, #3b82f6, #1d4ed8);">
+                    🛒
+                </div>
+                <div class="card-body">
+                    <h4 class="card-title">المتجر</h4>
+                    <p class="card-text">إدارة المنتجات والمبيعات</p>
+                </div>
+            </a>
+
+            <a href="admin-store.html" class="card" style="text-decoration: none; color: inherit;">
+                <div class="card-image" style="background: linear-gradient(135deg, #6366f1, #4338ca);">
+                    🛠️
+                </div>
+                <div class="card-body">
+                    <h4 class="card-title">إدارة المتجر</h4>
+                    <p class="card-text">إضافة وتعديل المنتجات</p>
+                </div>
+            </a>
+            
+            <a href="menu.html" class="card" style="text-decoration: none; color: inherit;">
+                <div class="card-image" style="background: linear-gradient(135deg, #8B4513, #D2691E);">
+                    ☕
+                </div>
+                <div class="card-body">
+                    <h4 class="card-title">المنيو</h4>
+                    <p class="card-text">قائمة المشروبات والمأكولات</p>
+                </div>
+            </a>
+            
+            <a href="barcode.html" class="card" style="text-decoration: none; color: inherit;">
+                <div class="card-image" style="background: linear-gradient(135deg, #10b981, #059669);">
+                    📱
+                </div>
+                <div class="card-body">
+                    <h4 class="card-title">الباركود</h4>
+                    <p class="card-text">مسح وإنشاء الباركود</p>
+                </div>
+            </a>
+            
+            <a href="cashier.html" class="card" style="text-decoration: none; color: inherit;">
+                <div class="card-image" style="background: linear-gradient(135deg, #f59e0b, #d97706);">
+                    💰
+                </div>
+                <div class="card-body">
+                    <h4 class="card-title">الكاشير</h4>
+                    <p class="card-text">نقطة البيع والفواتير</p>
+                </div>
+            </a>
+            
+            <a href="inventory.html" class="card" style="text-decoration: none; color: inherit;">
+                <div class="card-image" style="background: linear-gradient(135deg, #8b5cf6, #7c3aed);">
+                    📦
+                </div>
+                <div class="card-body">
+                    <h4 class="card-title">المخزن</h4>
+                    <p class="card-text">إدارة المخزون والمواد</p>
+                </div>
+            </a>
+            
+            <a href="rooms.html" class="card" style="text-decoration: none; color: inherit;">
+                <div class="card-image" style="background: linear-gradient(135deg, #ec4899, #be185d);">
+                    🛋️
+                </div>
+                <div class="card-body">
+                    <h4 class="card-title">الغرف الخاصة</h4>
+                    <p class="card-text">حجز الغرف والجلسات VIP</p>
+                </div>
+            </a>
+        </div>
+        
+        <!-- Recent Orders -->
+        <div class="section-header" style="margin-bottom: 20px;">
+            <h3 style="font-size: 1.3rem; font-weight: 700;">
+                <i class="fas fa-clock" style="color: var(--primary);"></i>
+                آخر الطلبات
+            </h3>
+        </div>
+        
+        <div class="table-container">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>رقم الطلب</th>
+                        <th>العميل</th>
+                        <th>المنتجات</th>
+                        <th>المبلغ</th>
+                        <th>الحالة</th>
+                        <th>الوقت</th>
+                    </tr>
+                </thead>
+                <tbody id="recent-orders">
+                    <tr>
+                        <td>#1001</td>
+                        <td>محمد أحمد</td>
+                        <td>2x لاتيه، 1x كرواسون</td>
+                        <td>48 ر.ع</td>
+                        <td><span class="badge badge-success">مكتمل</span></td>
+                        <td>منذ 5 دقائق</td>
+                    </tr>
+                    <tr>
+                        <td>#1002</td>
+                        <td>سارة علي</td>
+                        <td>1x كابتشينو</td>
+                        <td>20 ر.ع</td>
+                        <td><span class="badge badge-warning">قيد التحضير</span></td>
+                        <td>منذ 10 دقائق</td>
+                    </tr>
+                    <tr>
+                        <td>#1003</td>
+                        <td>خالد محمد</td>
+                        <td>3x قهوة عربية، 2x كيك</td>
+                        <td>81 ر.ع</td>
+                        <td><span class="badge badge-success">مكتمل</span></td>
+                        <td>منذ 15 دقيقة</td>
+                    </tr>
+                    <tr>
+                        <td>#1004</td>
+                        <td>نورة سعيد</td>
+                        <td>1x فرابتشينو، 1x موكا</td>
+                        <td>47 ر.ع</td>
+                        <td><span class="badge badge-primary">جديد</span></td>
+                        <td>منذ دقيقة</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </main>
+    
+    <!-- Toast Container -->
+    <div class="toast-container"></div>
+    
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+    <script src="js/firebase-config.js"></script>
+    
+    <script src="js/sidebar.js?v=1.1"></script>
+    <script src="js/app.js"></script>
+    <script>
+        // ==========================================
+        // Real Statistics from Firebase
+        // ==========================================
+        const RESTAURANT_ID = 'bon';
+        
+        const MENU_PATH = `restaurant-system/restaurants/${RESTAURANT_ID}/menu`;
+        const ORDERS_PATH = `restaurant-system/restaurants/${RESTAURANT_ID}/orders`;
+        const SALES_PATH = `restaurant-system/restaurants/${RESTAURANT_ID}/sales`;
+        const STORE_PATH = `restaurant-system/restaurants/${RESTAURANT_ID}/store`;
+        
+        let menuItems = [];
+        let orders = [];
+        let storeProducts = [];
+        let yesterdayStats = {
+            orders: 0,
+            revenue: 0,
+            customers: 0
+        };
+        
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            initFirebaseListeners();
+        });
+
+        // Real-time Firebase listeners
+        function initFirebaseListeners() {
+            // Listen to orders in real-time
+            firebase.database().ref(ORDERS_PATH).orderByChild('createdAt').limitToLast(20).on('value', (snapshot) => {
+                const ordersData = snapshot.val() || {};
+                orders = Object.keys(ordersData)
+                    .map(key => ({ id: key, ...ordersData[key] }))
+                    .sort((a, b) => {
+                        const dateA = a.createdAt ? new Date(a.createdAt).getTime() : (a.timestamp || 0);
+                        const dateB = b.createdAt ? new Date(b.createdAt).getTime() : (b.timestamp || 0);
+                        return dateB - dateA;
+                    });
+                loadRecentOrders();
+                loadRealStatistics();
+            });
+
+            // Listen to menu items
+            firebase.database().ref(MENU_PATH).on('value', (snapshot) => {
+                const menuData = snapshot.val() || {};
+                menuItems = Object.keys(menuData)
+                    .map(key => ({ id: key, ...menuData[key] }))
+                    .filter(item => item.active !== false);
+                loadRealStatistics();
+            });
+
+            // Listen to today's sales
+            const today = new Date().toISOString().split('T')[0];
+            firebase.database().ref(`${SALES_PATH}/${today}`).on('value', (snapshot) => {
+                const salesData = snapshot.val();
+                if (salesData) {
+                    updateSalesDisplay(salesData);
+                }
+            });
+        }
+
+        function updateSalesDisplay(salesData) {
+            document.getElementById('stat-orders').textContent = salesData.ordersCount || 0;
+            document.getElementById('stat-revenue').textContent = (salesData.totalRevenue || 0).toFixed(3);
+            document.getElementById('stat-items-sold').textContent = salesData.itemsSold || 0;
+            
+            // Update change texts
+            const ordersChange = document.getElementById('orders-change');
+            const revenueChange = document.getElementById('revenue-change');
+            const itemsChange = document.getElementById('items-change');
+            
+            if (ordersChange) ordersChange.textContent = `${salesData.ordersCount || 0} طلب مكتمل`;
+            if (revenueChange) {
+                const cash = salesData.cashPayments || 0;
+                const card = salesData.cardPayments || 0;
+                revenueChange.textContent = `نقدي: ${cash.toFixed(2)} | بطاقة: ${card.toFixed(2)}`;
+            }
+            if (itemsChange) itemsChange.textContent = `${salesData.itemsSold || 0} صنف تم بيعه`;
+        }
+        
+        // Load real statistics
+        async function loadRealStatistics() {
+            try {
+                // Load menu items
+                const menuSnapshot = await firebase.database().ref(MENU_PATH).once('value');
+                const menuData = menuSnapshot.val() || {};
+                menuItems = Object.keys(menuData)
+                    .map(key => ({ id: key, ...menuData[key] }))
+                    .filter(item => item.active !== false);
+                
+                // Load store products
+                const storeSnapshot = await firebase.database().ref(STORE_PATH).once('value');
+                const storeData = storeSnapshot.val() || {};
+                storeProducts = Object.keys(storeData)
+                    .map(key => ({ id: key, ...storeData[key] }))
+                    .filter(item => item.active !== false);
+                
+                // Load orders
+                const ordersSnapshot = await firebase.database().ref(ORDERS_PATH).once('value');
+                const ordersData = ordersSnapshot.val() || {};
+                orders = Object.keys(ordersData)
+                    .map(key => ({ id: key, ...ordersData[key] }))
+                    .sort((a, b) => (b.createdAt || b.timestamp || 0) - (a.createdAt || a.timestamp || 0));
+                
+                // Calculate today's date (start of day)
+                const today = new Date();
+                today.setHours(0, 0, 0, 0);
+                const todayTimestamp = today.getTime();
+                
+                // Calculate yesterday's date (start of day)
+                const yesterday = new Date(today);
+                yesterday.setDate(yesterday.getDate() - 1);
+                const yesterdayTimestamp = yesterday.getTime();
+                
+                // End of today
+                const endOfToday = todayTimestamp + (24 * 60 * 60 * 1000);
+                
+                // Filter today's orders
+                const todayOrders = orders.filter(order => {
+                    let orderDate = order.createdAt || order.timestamp || 0;
+                    // Handle ISO string dates
+                    if (typeof orderDate === 'string') {
+                        orderDate = new Date(orderDate).getTime();
+                    }
+                    return orderDate >= todayTimestamp && orderDate < endOfToday;
+                });
+                
+                // Filter yesterday's orders
+                const yesterdayOrders = orders.filter(order => {
+                    let orderDate = order.createdAt || order.timestamp || 0;
+                    // Handle ISO string dates
+                    if (typeof orderDate === 'string') {
+                        orderDate = new Date(orderDate).getTime();
+                    }
+                    return orderDate >= yesterdayTimestamp && orderDate < todayTimestamp;
+                });
+                
+                // Calculate statistics
+                const totalProducts = menuItems.length + storeProducts.length;
+                
+                const todayOrdersCount = todayOrders.length;
+                const yesterdayOrdersCount = yesterdayOrders.length;
+                const ordersChange = yesterdayOrdersCount > 0 ? 
+                    ((todayOrdersCount - yesterdayOrdersCount) / yesterdayOrdersCount * 100).toFixed(0) : 0;
+                
+                // Calculate revenue (from completed/paid orders)
+                const todayRevenue = todayOrders
+                    .filter(o => o.status === 'completed' || o.status === 'paid' || o.status === 'delivered')
+                    .reduce((sum, o) => sum + parseFloat(o.total || o.amount || 0), 0);
+                
+                const yesterdayRevenue = yesterdayOrders
+                    .filter(o => o.status === 'completed' || o.status === 'paid' || o.status === 'delivered')
+                    .reduce((sum, o) => sum + parseFloat(o.total || o.amount || 0), 0);
+                
+                const revenueChange = yesterdayRevenue > 0 ? 
+                    ((todayRevenue - yesterdayRevenue) / yesterdayRevenue * 100).toFixed(0) : 0;
+                
+                // Calculate unique customers today
+                const todayCustomers = new Set();
+                todayOrders.forEach(order => {
+                    if (order.customerName) todayCustomers.add(order.customerName);
+                    if (order.customerPhone) todayCustomers.add(order.customerPhone);
+                    if (order.tableNumber) todayCustomers.add(`table-${order.tableNumber}`);
+                });
+                
+                const yesterdayCustomers = new Set();
+                yesterdayOrders.forEach(order => {
+                    if (order.customerName) yesterdayCustomers.add(order.customerName);
+                    if (order.customerPhone) yesterdayCustomers.add(order.customerPhone);
+                    if (order.tableNumber) yesterdayCustomers.add(`table-${order.tableNumber}`);
+                });
+                
+                const todayCustomersCount = todayCustomers.size;
+                const yesterdayCustomersCount = yesterdayCustomers.size;
+                const newCustomers = todayCustomersCount - yesterdayCustomersCount;
+                
+                // Calculate products added this week
+                const weekAgo = new Date();
+                weekAgo.setDate(weekAgo.getDate() - 7);
+                weekAgo.setHours(0, 0, 0, 0);
+                const weekAgoTimestamp = weekAgo.getTime();
+                
+                const newProductsThisWeek = [...menuItems, ...storeProducts].filter(item => {
+                    let itemDate = item.createdAt || item.timestamp || 0;
+                    // Handle ISO string dates
+                    if (typeof itemDate === 'string') {
+                        itemDate = new Date(itemDate).getTime();
+                    }
+                    return itemDate >= weekAgoTimestamp;
+                }).length;
+                
+                // Update UI
+                updateStatCard('stat-products', totalProducts, newProductsThisWeek > 0 ? `+${newProductsThisWeek} هذا الأسبوع` : 'لا تغيير');
+                updateStatCard('stat-orders', todayOrdersCount, ordersChange != 0 ? `${ordersChange > 0 ? '+' : ''}${ordersChange}% من أمس` : 'لا تغيير');
+                updateStatCard('stat-revenue', todayRevenue.toFixed(3), revenueChange != 0 ? `${revenueChange > 0 ? '+' : ''}${revenueChange}% من أمس` : 'لا تغيير');
+                updateStatCard('stat-customers', todayCustomersCount, newCustomers > 0 ? `+${newCustomers} جديد` : newCustomers < 0 ? `${newCustomers} أقل` : 'لا تغيير');
+                
+            } catch (error) {
+                console.error('خطأ في تحميل الإحصائيات:', error);
+            }
+        }
+        
+        function updateStatCard(elementId, value, changeText) {
+            const element = document.getElementById(elementId);
+            if (element) {
+                // Format number with commas
+                const formattedValue = typeof value === 'number' ? 
+                    value.toLocaleString('ar-SA') : value;
+                element.textContent = formattedValue;
+                
+                // Update change text
+                const changeElement = element.parentElement.querySelector('.stat-change span');
+                if (changeElement) {
+                    changeElement.textContent = changeText;
+                    const changeContainer = element.parentElement.querySelector('.stat-change');
+                    if (changeContainer) {
+                        changeContainer.classList.remove('up', 'down');
+                        if (changeText.includes('+') || changeText.includes('جديد')) {
+                            changeContainer.classList.add('up');
+                        } else if (changeText.includes('-') || changeText.includes('أقل')) {
+                            changeContainer.classList.add('down');
+                        } else {
+                            changeContainer.style.opacity = '0.6';
+                        }
+                    }
+                }
+            }
+        }
+        
+        // Load recent orders (uses the already loaded orders array)
+        function loadRecentOrders() {
+            const tbody = document.getElementById('recent-orders');
+            if (!tbody) return;
+            
+            const allOrders = orders.slice(0, 10); // Last 10 orders
+            
+            if (allOrders.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; padding: 40px; color: var(--text-secondary);">لا توجد طلبات حالياً</td></tr>';
+                return;
+            }
+            
+            tbody.innerHTML = allOrders.map(order => {
+                    const orderId = order.id || 'N/A';
+                    const customerName = order.customerName || order.tableNumber || 'عميل';
+                    const items = order.items || [];
+                    const itemsText = items.length > 0 ? 
+                        items.slice(0, 2).map(item => `${item.quantity || 1}x ${item.name || 'منتج'}`).join('، ') + 
+                        (items.length > 2 ? ` +${items.length - 2} أكثر` : '') : 
+                        'لا توجد منتجات';
+                    const total = parseFloat(order.total || order.amount || 0).toFixed(3);
+                    const status = order.status || 'pending';
+                    const statusClass = {
+                        'completed': 'badge-success',
+                        'paid': 'badge-success',
+                        'delivered': 'badge-success',
+                        'preparing': 'badge-warning',
+                        'pending': 'badge-primary',
+                        'cancelled': 'badge-danger'
+                    }[status] || 'badge-primary';
+                    const statusText = {
+                        'completed': 'مكتمل',
+                        'paid': 'مدفوع',
+                        'delivered': 'تم التسليم',
+                        'preparing': 'قيد التحضير',
+                        'pending': 'قيد الانتظار',
+                        'cancelled': 'ملغي'
+                    }[status] || status;
+                    
+                    const orderDate = order.createdAt || order.timestamp || Date.now();
+                    const timeAgo = getTimeAgo(orderDate);
+                    
+                    return `
+                        <tr>
+                            <td>#${String(orderId).slice(-6)}</td>
+                            <td>${customerName}</td>
+                            <td>${itemsText}</td>
+                            <td>${total} ر.ع</td>
+                            <td><span class="badge ${statusClass}">${statusText}</span></td>
+                            <td>${timeAgo}</td>
+                        </tr>
+                    `;
+                }).join('');
+        }
+        
+        function getTimeAgo(timestamp) {
+            const now = Date.now();
+            const diff = now - timestamp;
+            const minutes = Math.floor(diff / 60000);
+            const hours = Math.floor(diff / 3600000);
+            const days = Math.floor(diff / 86400000);
+            
+            if (minutes < 1) return 'الآن';
+            if (minutes < 60) return `منذ ${minutes} دقيقة${minutes > 1 ? '' : ''}`;
+            if (hours < 24) return `منذ ${hours} ساعة${hours > 1 ? '' : ''}`;
+            return `منذ ${days} يوم${days > 1 ? '' : ''}`;
+        }
+    </script>
+</body>
+</html>

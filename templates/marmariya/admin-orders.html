@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>مرمرية | إدارة الطلبات</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #8B4513;
+            --primary-dark: #5D2E0C;
+            --primary-light: #A0522D;
+            --secondary: #D2691E;
+            --accent: #CD853F;
+            --gold: #DAA520;
+            --bg: #0a0a0a;
+            --bg-secondary: #141414;
+            --card-bg: #1a1a1a;
+            --card-hover: #252525;
+            --text: #ffffff;
+            --text-secondary: #888888;
+            --border: #2a2a2a;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --gradient: linear-gradient(135deg, #8B4513 0%, #D2691E 50%, #CD853F 100%);
+            --shadow: 0 10px 40px rgba(0,0,0,0.3);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Cairo', sans-serif;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 260px;
+            background: var(--card-bg);
+            border-left: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            position: fixed;
+            right: 0;
+            top: 0;
+            bottom: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 40px;
+            padding: 10px;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--gradient);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .logo h2 {
+            font-size: 1.5rem;
+            font-weight: 800;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .nav-links {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .nav-item {
+            padding: 12px 15px;
+            border-radius: 12px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+
+        .nav-item:hover, .nav-item.active {
+            background: rgba(139, 69, 19, 0.1);
+            color: var(--primary);
+        }
+
+        .nav-item i {
+            width: 24px;
+            text-align: center;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            margin-right: 260px;
+            padding: 30px;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .page-title h1 {
+            font-size: 1.8rem;
+            margin-bottom: 5px;
+        }
+
+        .page-title p {
+            color: var(--text-secondary);
+        }
+
+        /* Orders Grid */
+        .orders-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .order-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .order-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary);
+            box-shadow: var(--shadow);
+        }
+
+        .order-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .order-id {
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .order-time {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        .order-status {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .status-new { background: rgba(239, 68, 68, 0.1); color: var(--danger); }
+        .status-processing { background: rgba(218, 165, 32, 0.1); color: var(--gold); }
+        .status-completed { background: rgba(16, 185, 129, 0.1); color: var(--success); }
+
+        .order-items {
+            margin-bottom: 15px;
+        }
+
+        .order-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 0.95rem;
+        }
+
+        .item-qty {
+            color: var(--primary);
+            font-weight: 700;
+            margin-left: 8px;
+        }
+
+        .order-total {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid var(--border);
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+
+        .order-actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .btn {
+            padding: 8px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            font-family: inherit;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+
+        .btn-danger {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--danger);
+        }
+
+        .btn:hover {
+            opacity: 0.9;
+            transform: scale(1.02);
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(100%);
+                transition: transform 0.3s ease;
+            }
+            .sidebar.active {
+                transform: translateX(0);
+            }
+            .main-content {
+                margin-right: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <aside class="sidebar"></aside>
+
+    <main class="main-content">
+        <header class="header">
+            <div class="page-title">
+                <h1>إدارة الطلبات</h1>
+                <p>متابعة وتحديث حالة الطلبات</p>
+            </div>
+            <div class="header-actions">
+                <span id="connection-status" style="color: var(--success); font-size: 0.9rem;">
+                    <i class="fas fa-wifi"></i> متصل
+                </span>
+            </div>
+        </header>
+
+        <div class="orders-grid" id="orders-grid">
+            <!-- Orders will be loaded here -->
+            <div style="grid-column: 1/-1; text-align: center; padding: 50px; color: var(--text-secondary);">
+                <i class="fas fa-spinner fa-spin fa-2x"></i>
+                <p style="margin-top: 10px;">جاري تحميل الطلبات...</p>
+            </div>
+        </div>
+    </main>
+
+    <!-- Firebase & Scripts -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+    <script src="js/firebase-config.js"></script>
+
+    <script>
+        const ORDERS_PATH = 'restaurant-system/restaurants/bon/orders';
+        let orders = [];
+
+        document.addEventListener('DOMContentLoaded', () => {
+            initFirebaseListeners();
+        });
+
+        function initFirebaseListeners() {
+            const ordersRef = firebase.database().ref(ORDERS_PATH);
+            
+            ordersRef.on('value', (snapshot) => {
+                const data = snapshot.val();
+                if (data) {
+                    orders = Object.entries(data)
+                        .map(([key, value]) => ({ id: key, ...value }))
+                        .sort((a, b) => b.timestamp - a.timestamp); // Newest first
+                    renderOrders();
+                } else {
+                    orders = [];
+                    renderOrders();
+                }
+            }, (error) => {
+                console.error("Error fetching orders:", error);
+                document.getElementById('orders-grid').innerHTML = `
+                    <div style="grid-column: 1/-1; text-align: center; color: var(--danger);">
+                        حدث خطأ في الاتصال: ${error.message}
+                    </div>
+                `;
+            });
+        }
+
+        function renderOrders() {
+            const container = document.getElementById('orders-grid');
+            
+            if (orders.length === 0) {
+                container.innerHTML = `
+                    <div style="grid-column: 1/-1; text-align: center; padding: 50px; color: var(--text-secondary);">
+                        <i class="fas fa-clipboard-check" style="font-size: 3rem; margin-bottom: 15px; opacity: 0.5;"></i>
+                        <p>لا توجد طلبات حالياً</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = orders.map(order => {
+                const statusClass = `status-${order.status}`;
+                const statusText = {
+                    'new': 'جديد',
+                    'processing': 'قيد التحضير',
+                    'completed': 'مكتمل',
+                    'cancelled': 'ملغي'
+                }[order.status] || order.status;
+
+                return `
+                    <div class="order-card">
+                        <div class="order-header">
+                            <div>
+                                <div class="order-id">#${order.tableNumber || 'بدون اسم'}</div>
+                                <div class="order-time">${new Date(order.createdAt).toLocaleTimeString('ar-EG')}</div>
+                            </div>
+                            <span class="order-status ${statusClass}">${statusText}</span>
+                        </div>
+                        
+                        <div class="order-items">
+                            ${order.items.map(item => `
+                                <div class="order-item">
+                                    <span><span class="item-qty">${item.quantity}x</span> ${item.name}</span>
+                                    <span>${(item.price * item.quantity).toFixed(3)}</span>
+                                </div>
+                            `).join('')}
+                        </div>
+
+                        <div class="order-total">
+                            <span>الإجمالي</span>
+                            <span>${parseFloat(order.total).toFixed(3)} ر.ع</span>
+                        </div>
+
+                        <div class="order-actions">
+                            ${order.status === 'new' ? `
+                                <button class="btn btn-primary" onclick="updateStatus('${order.id}', 'processing')">
+                                    <i class="fas fa-fire"></i> تحضير
+                                </button>
+                            ` : ''}
+                            
+                            ${order.status === 'processing' ? `
+                                <button class="btn btn-success" onclick="updateStatus('${order.id}', 'completed')">
+                                    <i class="fas fa-check"></i> إكمال
+                                </button>
+                            ` : ''}
+
+                            ${order.status !== 'completed' && order.status !== 'cancelled' ? `
+                                <button class="btn btn-danger" onclick="updateStatus('${order.id}', 'cancelled')">
+                                    <i class="fas fa-times"></i> إلغاء
+                                </button>
+                            ` : ''}
+                            
+                            ${order.status === 'completed' ? `
+                                <button class="btn btn-danger" onclick="deleteOrder('${order.id}')" style="grid-column: 1/-1;">
+                                    <i class="fas fa-trash"></i> حذف من السجل
+                                </button>
+                            ` : ''}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function updateStatus(orderId, newStatus) {
+            firebase.database().ref(ORDERS_PATH + '/' + orderId).update({
+                status: newStatus,
+                updatedAt: firebase.database.ServerValue.TIMESTAMP
+            });
+        }
+
+        function deleteOrder(orderId) {
+            if(confirm('هل أنت متأكد من حذف هذا الطلب نهائياً؟')) {
+                firebase.database().ref(ORDERS_PATH + '/' + orderId).remove();
+            }
+        }
+    </script>
+    <script src="js/sidebar.js"></script>
+</body>
+</html>

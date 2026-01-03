@@ -1,0 +1,1459 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مرمرية | الغرف الخاصة</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        /* Room Page Specific Styles */
+        .page-header {
+            background: var(--gradient);
+            border-radius: 25px;
+            padding: 40px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .page-header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -20%;
+            width: 60%;
+            height: 200%;
+            background: rgba(255,255,255,0.05);
+            transform: rotate(30deg);
+        }
+
+        .page-header h1 {
+            font-size: 2.2rem;
+            font-weight: 800;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .page-header p {
+            opacity: 0.9;
+            font-size: 1.1rem;
+        }
+
+        /* Tabs */
+        .tabs-container {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            background: var(--card-bg);
+            padding: 8px;
+            border-radius: 15px;
+            border: 1px solid var(--border);
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 15px 25px;
+            border: none;
+            background: transparent;
+            color: var(--text-secondary);
+            font-family: inherit;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .tab-btn:hover {
+            color: var(--text);
+            background: var(--card-hover);
+        }
+
+        .tab-btn.active {
+            background: var(--gradient);
+            color: white;
+            box-shadow: 0 5px 20px rgba(139, 69, 19, 0.3);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.4s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Rooms Grid */
+        .rooms-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 25px;
+        }
+
+        .room-card {
+            background: var(--card-bg);
+            border-radius: 25px;
+            border: 1px solid var(--border);
+            overflow: hidden;
+            transition: all 0.4s ease;
+        }
+
+        .room-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 50px rgba(139, 69, 19, 0.2);
+            border-color: var(--primary);
+        }
+
+        .room-image {
+            height: 200px;
+            background: var(--gradient);
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .room-image .room-icon {
+            font-size: 5rem;
+            opacity: 0.9;
+        }
+
+        .room-status {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            padding: 8px 18px;
+            border-radius: 25px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            backdrop-filter: blur(10px);
+        }
+
+        .room-status.available {
+            background: rgba(34, 197, 94, 0.9);
+            color: white;
+        }
+
+        .room-status.booked {
+            background: rgba(239, 68, 68, 0.9);
+            color: white;
+        }
+
+        .room-status.maintenance {
+            background: rgba(245, 158, 11, 0.9);
+            color: white;
+        }
+
+        .room-capacity {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(10px);
+            padding: 8px 15px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+        }
+
+        .room-details {
+            padding: 25px;
+        }
+
+        .room-name {
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .room-amenities {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+
+        .amenity-tag {
+            background: var(--bg-secondary);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .room-price {
+            display: flex;
+            align-items: baseline;
+            gap: 5px;
+            margin-bottom: 20px;
+        }
+
+        .room-price .amount {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--gold);
+        }
+
+        .room-price .unit {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+
+        .room-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .room-actions .btn {
+            flex: 1;
+        }
+
+        /* Booking Form */
+        .booking-section {
+            display: grid;
+            grid-template-columns: 1fr 400px;
+            gap: 30px;
+        }
+
+        @media (max-width: 1024px) {
+            .booking-section {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .booking-form-container {
+            background: var(--card-bg);
+            border-radius: 25px;
+            border: 1px solid var(--border);
+            padding: 30px;
+        }
+
+        .booking-form-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .booking-form-title i {
+            color: var(--gold);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        @media (max-width: 600px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .form-input, .form-select {
+            width: 100%;
+            padding: 15px 20px;
+            background: var(--bg);
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            color: var(--text);
+            font-family: inherit;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-input:focus, .form-select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(139, 69, 19, 0.1);
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        /* Booking Summary */
+        .booking-summary {
+            background: var(--card-bg);
+            border-radius: 25px;
+            border: 1px solid var(--border);
+            padding: 30px;
+            height: fit-content;
+            position: sticky;
+            top: 30px;
+        }
+
+        .summary-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .summary-item:last-child {
+            border-bottom: none;
+        }
+
+        .summary-label {
+            color: var(--text-secondary);
+        }
+
+        .summary-value {
+            font-weight: 600;
+        }
+
+        .summary-total {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 2px solid var(--primary);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .summary-total .label {
+            font-size: 1.1rem;
+            font-weight: 700;
+        }
+
+        .summary-total .amount {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--gold);
+        }
+
+        /* Reservations Table */
+        .reservations-container {
+            background: var(--card-bg);
+            border-radius: 25px;
+            border: 1px solid var(--border);
+            overflow: hidden;
+        }
+
+        .reservations-header {
+            padding: 25px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .reservations-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .filter-group {
+            display: flex;
+            gap: 10px;
+        }
+
+        .filter-select {
+            padding: 10px 18px;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            color: var(--text);
+            font-family: inherit;
+        }
+
+        .reservations-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .reservations-table th,
+        .reservations-table td {
+            padding: 18px 25px;
+            text-align: right;
+        }
+
+        .reservations-table th {
+            background: var(--bg-secondary);
+            font-weight: 600;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .reservations-table tr {
+            border-bottom: 1px solid var(--border);
+            transition: all 0.3s ease;
+        }
+
+        .reservations-table tr:hover {
+            background: var(--card-hover);
+        }
+
+        .reservation-status {
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .reservation-status.confirmed {
+            background: rgba(34, 197, 94, 0.15);
+            color: var(--success);
+        }
+
+        .reservation-status.pending {
+            background: rgba(245, 158, 11, 0.15);
+            color: var(--warning);
+        }
+
+        .reservation-status.cancelled {
+            background: rgba(239, 68, 68, 0.15);
+            color: var(--danger);
+        }
+
+        .reservation-status.completed {
+            background: rgba(139, 69, 19, 0.15);
+            color: var(--primary);
+        }
+
+        .action-btn {
+            width: 35px;
+            height: 35px;
+            border-radius: 10px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .action-btn.edit {
+            background: rgba(59, 130, 246, 0.15);
+            color: #3b82f6;
+        }
+
+        .action-btn.delete {
+            background: rgba(239, 68, 68, 0.15);
+            color: var(--danger);
+        }
+
+        .action-btn:hover {
+            transform: scale(1.1);
+        }
+
+        /* Room Management Modal */
+        .room-modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .room-modal.active {
+            display: flex;
+        }
+
+        .room-modal-content {
+            background: var(--card-bg);
+            border-radius: 25px;
+            width: 100%;
+            max-width: 550px;
+            max-height: 90vh;
+            overflow-y: auto;
+            animation: modalSlide 0.4s ease;
+        }
+
+        @keyframes modalSlide {
+            from { opacity: 0; transform: translateY(-30px) scale(0.95); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        .room-modal-header {
+            padding: 25px 30px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .room-modal-header h3 {
+            font-size: 1.4rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .room-modal-close {
+            width: 45px;
+            height: 45px;
+            border-radius: 12px;
+            border: none;
+            background: var(--bg);
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+        }
+
+        .room-modal-close:hover {
+            background: var(--danger);
+            color: white;
+        }
+
+        .room-modal-body {
+            padding: 30px;
+        }
+
+        .room-modal-footer {
+            padding: 20px 30px;
+            border-top: 1px solid var(--border);
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+        }
+
+        /* Emoji Grid for Room Icons */
+        .emoji-grid {
+            display: grid;
+            grid-template-columns: repeat(8, 1fr);
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .emoji-option {
+            width: 45px;
+            height: 45px;
+            border-radius: 12px;
+            border: 2px solid var(--border);
+            background: var(--bg);
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .emoji-option:hover {
+            border-color: var(--primary);
+            background: var(--card-hover);
+            transform: scale(1.1);
+        }
+
+        .emoji-option.selected {
+            border-color: var(--gold);
+            background: rgba(218, 165, 32, 0.15);
+        }
+
+        /* Stats */
+        .rooms-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .room-stat-card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 25px;
+            border: 1px solid var(--border);
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .room-stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .room-stat-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 15px;
+            margin: 0 auto 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+        }
+
+        .room-stat-card.total .room-stat-icon {
+            background: rgba(139, 69, 19, 0.15);
+            color: var(--primary);
+        }
+
+        .room-stat-card.available .room-stat-icon {
+            background: rgba(34, 197, 94, 0.15);
+            color: var(--success);
+        }
+
+        .room-stat-card.booked .room-stat-icon {
+            background: rgba(239, 68, 68, 0.15);
+            color: var(--danger);
+        }
+
+        .room-stat-card.revenue .room-stat-icon {
+            background: rgba(218, 165, 32, 0.15);
+            color: var(--gold);
+        }
+
+        .room-stat-value {
+            font-size: 2rem;
+            font-weight: 800;
+            margin-bottom: 5px;
+        }
+
+        .room-stat-label {
+            color: var(--text-secondary);
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 60px 30px;
+            color: var(--text-secondary);
+        }
+
+        .empty-state i {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            opacity: 0.5;
+        }
+
+        .empty-state h3 {
+            font-size: 1.3rem;
+            margin-bottom: 10px;
+            color: var(--text);
+        }
+
+        /* Toast */
+        .toast-container {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 2000;
+        }
+
+        .toast {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 15px;
+            padding: 15px 25px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 10px;
+            animation: toastIn 0.4s ease;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+        }
+
+        .toast.success { border-right: 4px solid var(--success); }
+        .toast.error { border-right: 4px solid var(--danger); }
+
+        @keyframes toastIn {
+            from { opacity: 0; transform: translateX(-30px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <aside class="sidebar"></aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Page Header -->
+        <div class="page-header">
+            <h1>🛋️ الغرف الخاصة</h1>
+            <p>إدارة وحجز الغرف الخاصة والجلسات VIP</p>
+        </div>
+
+        <!-- Tabs -->
+        <div class="tabs-container">
+            <button class="tab-btn active" onclick="switchTab('rooms')">
+                <i class="fas fa-door-open"></i>
+                الغرف المتاحة
+            </button>
+            <button class="tab-btn" onclick="switchTab('booking')">
+                <i class="fas fa-calendar-plus"></i>
+                حجز جديد
+            </button>
+            <button class="tab-btn" onclick="switchTab('reservations')">
+                <i class="fas fa-list-alt"></i>
+                الحجوزات
+            </button>
+            <button class="tab-btn" onclick="switchTab('manage')">
+                <i class="fas fa-cog"></i>
+                إدارة الغرف
+            </button>
+        </div>
+
+        <!-- Tab: Rooms -->
+        <div id="tab-rooms" class="tab-content active">
+            <!-- Stats -->
+            <div class="rooms-stats">
+                <div class="room-stat-card total">
+                    <div class="room-stat-icon"><i class="fas fa-door-closed"></i></div>
+                    <div class="room-stat-value" id="stat-total-rooms">0</div>
+                    <div class="room-stat-label">إجمالي الغرف</div>
+                </div>
+                <div class="room-stat-card available">
+                    <div class="room-stat-icon"><i class="fas fa-check-circle"></i></div>
+                    <div class="room-stat-value" id="stat-available-rooms">0</div>
+                    <div class="room-stat-label">متاحة للحجز</div>
+                </div>
+                <div class="room-stat-card booked">
+                    <div class="room-stat-icon"><i class="fas fa-clock"></i></div>
+                    <div class="room-stat-value" id="stat-booked-rooms">0</div>
+                    <div class="room-stat-label">محجوزة حالياً</div>
+                </div>
+                <div class="room-stat-card revenue">
+                    <div class="room-stat-icon"><i class="fas fa-coins"></i></div>
+                    <div class="room-stat-value" id="stat-rooms-revenue">0</div>
+                    <div class="room-stat-label">إيرادات اليوم (ر.ع)</div>
+                </div>
+            </div>
+
+            <!-- Rooms Grid -->
+            <div class="rooms-grid" id="rooms-grid">
+                <!-- Rooms loaded dynamically -->
+            </div>
+        </div>
+
+        <!-- Tab: Booking -->
+        <div id="tab-booking" class="tab-content">
+            <div class="booking-section">
+                <div class="booking-form-container">
+                    <h3 class="booking-form-title">
+                        <i class="fas fa-calendar-check"></i>
+                        نموذج الحجز
+                    </h3>
+                    <form id="booking-form" onsubmit="submitBooking(event)">
+                        <div class="form-group">
+                            <label class="form-label">اختر الغرفة</label>
+                            <select class="form-select" id="booking-room" required onchange="updateBookingSummary()">
+                                <option value="">-- اختر غرفة --</option>
+                            </select>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">اسم العميل</label>
+                                <input type="text" class="form-input" id="booking-name" required placeholder="الاسم الكامل">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">رقم الهاتف</label>
+                                <input type="tel" class="form-input" id="booking-phone" required placeholder="9XXXXXXX">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">تاريخ الحجز</label>
+                            <input type="date" class="form-input" id="booking-date" required onchange="updateBookingSummary()">
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">وقت البداية</label>
+                                <input type="time" class="form-input" id="booking-start-time" required onchange="updateBookingSummary()">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">وقت النهاية</label>
+                                <input type="time" class="form-input" id="booking-end-time" required onchange="updateBookingSummary()">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">عدد الأشخاص</label>
+                            <select class="form-select" id="booking-guests">
+                                <option value="2">2 أشخاص</option>
+                                <option value="3">3 أشخاص</option>
+                                <option value="4">4 أشخاص</option>
+                                <option value="5">5 أشخاص</option>
+                                <option value="6">6 أشخاص</option>
+                                <option value="8">8 أشخاص</option>
+                                <option value="10">10 أشخاص</option>
+                                <option value="12">12 شخص</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">ملاحظات إضافية</label>
+                            <textarea class="form-input" id="booking-notes" rows="3" placeholder="أي طلبات خاصة..."></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center; padding: 18px;">
+                            <i class="fas fa-check"></i>
+                            تأكيد الحجز
+                        </button>
+                    </form>
+                </div>
+
+                <div class="booking-summary">
+                    <h4 class="summary-title">
+                        <i class="fas fa-receipt" style="color: var(--gold);"></i>
+                        ملخص الحجز
+                    </h4>
+                    <div class="summary-item">
+                        <span class="summary-label">الغرفة</span>
+                        <span class="summary-value" id="summary-room">--</span>
+                    </div>
+                    <div class="summary-item">
+                        <span class="summary-label">التاريخ</span>
+                        <span class="summary-value" id="summary-date">--</span>
+                    </div>
+                    <div class="summary-item">
+                        <span class="summary-label">الوقت</span>
+                        <span class="summary-value" id="summary-time">--</span>
+                    </div>
+                    <div class="summary-item">
+                        <span class="summary-label">المدة</span>
+                        <span class="summary-value" id="summary-hours">0 ساعة</span>
+                    </div>
+                    <div class="summary-item">
+                        <span class="summary-label">سعر الساعة</span>
+                        <span class="summary-value" id="summary-price">0 ر.ع</span>
+                    </div>
+                    <div class="summary-total">
+                        <span class="label">المجموع</span>
+                        <span class="amount" id="summary-total">0 ر.ع</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab: Reservations -->
+        <div id="tab-reservations" class="tab-content">
+            <div class="reservations-container">
+                <div class="reservations-header">
+                    <h3 class="reservations-title">
+                        <i class="fas fa-calendar-alt" style="color: var(--gold);"></i>
+                        قائمة الحجوزات
+                    </h3>
+                    <div class="filter-group">
+                        <select class="filter-select" id="filter-status" onchange="filterReservations()">
+                            <option value="all">جميع الحالات</option>
+                            <option value="confirmed">مؤكد</option>
+                            <option value="pending">قيد الانتظار</option>
+                            <option value="cancelled">ملغي</option>
+                        </select>
+                        <input type="date" class="filter-select" id="filter-date" onchange="filterReservations()">
+                    </div>
+                </div>
+                <table class="reservations-table">
+                    <thead>
+                        <tr>
+                            <th>رقم الحجز</th>
+                            <th>العميل</th>
+                            <th>الغرفة</th>
+                            <th>التاريخ</th>
+                            <th>الوقت</th>
+                            <th>المبلغ</th>
+                            <th>الحالة</th>
+                            <th>إجراءات</th>
+                        </tr>
+                    </thead>
+                    <tbody id="reservations-tbody">
+                        <!-- Reservations loaded dynamically -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Tab: Manage Rooms -->
+        <div id="tab-manage" class="tab-content">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
+                <h3 style="font-size: 1.4rem; font-weight: 700;">
+                    <i class="fas fa-cogs" style="color: var(--gold);"></i>
+                    إدارة الغرف
+                </h3>
+                <button class="btn btn-primary" onclick="openRoomModal()">
+                    <i class="fas fa-plus"></i>
+                    إضافة غرفة
+                </button>
+            </div>
+            <div class="rooms-grid" id="manage-rooms-grid">
+                <!-- Rooms for management loaded dynamically -->
+            </div>
+        </div>
+    </main>
+
+    <!-- Room Modal -->
+    <div class="room-modal" id="room-modal" onclick="closeRoomModal(event)">
+        <div class="room-modal-content" onclick="event.stopPropagation()">
+            <div class="room-modal-header">
+                <h3 id="room-modal-title"><i class="fas fa-door-open"></i> إضافة غرفة</h3>
+                <button class="room-modal-close" onclick="closeRoomModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="room-modal-body">
+                <form id="room-form">
+                    <input type="hidden" id="room-id">
+                    <div class="form-group">
+                        <label class="form-label">اسم الغرفة</label>
+                        <input type="text" class="form-input" id="room-name" required placeholder="مثال: غرفة VIP">
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">السعر للساعة (ر.ع)</label>
+                            <input type="number" step="0.5" class="form-input" id="room-price" required placeholder="0.0">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">السعة (أشخاص)</label>
+                            <input type="number" class="form-input" id="room-capacity" required placeholder="6">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">الحد الأدنى للحجز (ساعات)</label>
+                        <input type="number" class="form-input" id="room-min-hours" placeholder="1" value="1">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">الحالة</label>
+                        <select class="form-select" id="room-status">
+                            <option value="available">متاحة</option>
+                            <option value="booked">محجوزة</option>
+                            <option value="maintenance">صيانة</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">المميزات (افصل بفواصل)</label>
+                        <input type="text" class="form-input" id="room-amenities" placeholder="واي فاي, تكييف, تلفزيون">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">أيقونة الغرفة</label>
+                        <input type="hidden" id="room-icon" value="🛏️">
+                        <div class="emoji-grid" id="room-emoji-grid"></div>
+                    </div>
+                </form>
+            </div>
+            <div class="room-modal-footer">
+                <button class="btn btn-secondary" onclick="closeRoomModal()">إلغاء</button>
+                <button class="btn btn-primary" onclick="saveRoom()">
+                    <i class="fas fa-save"></i>
+                    حفظ
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div class="toast-container" id="toast-container"></div>
+
+    <!-- Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyBnBV5NJKy34uUYseMxGjpDRlkclKHiqmU",
+            authDomain: "dashbord-fcb7b.firebaseapp.com",
+            databaseURL: "https://dashbord-fcb7b-default-rtdb.firebaseio.com",
+            projectId: "dashbord-fcb7b",
+            storageBucket: "dashbord-fcb7b.firebasestorage.app",
+            messagingSenderId: "31514864344",
+            appId: "1:31514864344:web:00ef93b07bcf88ec6245ad"
+        };
+        firebase.initializeApp(firebaseConfig);
+    </script>
+    <script src="js/sidebar.js"></script>
+    <script>
+        // Data
+        let rooms = [];
+        let reservations = [];
+
+        // Firebase paths
+        function getRestaurantId() {
+            return localStorage.getItem('current_restaurant_id') || 'demo_restaurant';
+        }
+        const ROOMS_PATH = `restaurants/${getRestaurantId()}/rooms`;
+        const RESERVATIONS_PATH = `restaurants/${getRestaurantId()}/reservations`;
+
+        // Room icons (for private cafe rooms)
+        const roomIcons = ['🛋️', '☕', '🪑', '🚪', '👑', '💎', '✨', '🌟', '🎯', '🎭', '🎪', '🌴', '🏮', '🕯️', '🎶', '🌙'];
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            initFirebaseListeners();
+            loadRoomEmojis();
+            setMinDates();
+        });
+
+        function initFirebaseListeners() {
+            // Listen to rooms
+            firebase.database().ref(ROOMS_PATH).on('value', snapshot => {
+                rooms = [];
+                if (snapshot.exists()) {
+                    snapshot.forEach(child => {
+                        rooms.push({ id: child.key, ...child.val() });
+                    });
+                }
+                renderRooms();
+                loadRoomDropdown();
+                updateStats();
+            });
+
+            // Listen to reservations
+            firebase.database().ref(RESERVATIONS_PATH).on('value', snapshot => {
+                reservations = [];
+                if (snapshot.exists()) {
+                    snapshot.forEach(child => {
+                        reservations.push({ id: child.key, ...child.val() });
+                    });
+                }
+                renderReservations();
+                updateStats();
+            });
+        }
+
+        // Tab switching
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+            
+            event.target.closest('.tab-btn').classList.add('active');
+            document.getElementById(`tab-${tabId}`).classList.add('active');
+        }
+
+        // Render rooms
+        function renderRooms() {
+            const grid = document.getElementById('rooms-grid');
+            const manageGrid = document.getElementById('manage-rooms-grid');
+
+            if (rooms.length === 0) {
+                const emptyHTML = `
+                    <div class="empty-state" style="grid-column: 1/-1;">
+                        <i class="fas fa-door-open"></i>
+                        <h3>لا توجد غرف</h3>
+                        <p>أضف غرف جديدة من قسم إدارة الغرف</p>
+                    </div>
+                `;
+                grid.innerHTML = emptyHTML;
+                manageGrid.innerHTML = emptyHTML;
+                return;
+            }
+
+            grid.innerHTML = rooms.map(room => createRoomCard(room, false)).join('');
+            manageGrid.innerHTML = rooms.map(room => createRoomCard(room, true)).join('');
+        }
+
+        function createRoomCard(room, isManage = false) {
+            const statusText = {
+                available: 'متاحة',
+                booked: 'محجوزة',
+                maintenance: 'صيانة'
+            };
+
+            const amenities = room.amenities ? room.amenities.split(',').slice(0, 3) : [];
+
+            return `
+                <div class="room-card">
+                    <div class="room-image">
+                        <span class="room-icon">${room.icon || '🛏️'}</span>
+                        <span class="room-status ${room.status}">${statusText[room.status] || 'متاحة'}</span>
+                        <span class="room-capacity">
+                            <i class="fas fa-user"></i>
+                            ${room.capacity || 2} أشخاص
+                        </span>
+                    </div>
+                    <div class="room-details">
+                        <h3 class="room-name">${room.name}</h3>
+                        <div class="room-amenities">
+                            ${amenities.map(a => `<span class="amenity-tag"><i class="fas fa-check"></i> ${a.trim()}</span>`).join('')}
+                        </div>
+                        <div class="room-price">
+                            <span class="amount">${room.price || 0}</span>
+                            <span class="unit">ر.ع / ساعة</span>
+                        </div>
+                        <div class="room-actions">
+                            ${isManage ? `
+                                <button class="btn btn-secondary" onclick="editRoom('${room.id}')">
+                                    <i class="fas fa-edit"></i>
+                                    تعديل
+                                </button>
+                                <button class="btn btn-danger" onclick="deleteRoom('${room.id}')">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            ` : `
+                                <button class="btn btn-primary" onclick="bookRoom('${room.id}')" ${room.status !== 'available' ? 'disabled style="opacity:0.5"' : ''}>
+                                    <i class="fas fa-calendar-check"></i>
+                                    احجز الآن
+                                </button>
+                            `}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Room dropdown for booking
+        function loadRoomDropdown() {
+            const select = document.getElementById('booking-room');
+            select.innerHTML = '<option value="">-- اختر غرفة --</option>';
+            rooms.filter(r => r.status === 'available').forEach(room => {
+                select.innerHTML += `<option value="${room.id}" data-price="${room.price}" data-min="${room.minHours || 1}">${room.name} - ${room.price} ر.ع/ساعة</option>`;
+            });
+        }
+
+        // Update booking summary
+        function updateBookingSummary() {
+            const roomSelect = document.getElementById('booking-room');
+            const bookingDate = document.getElementById('booking-date').value;
+            const startTime = document.getElementById('booking-start-time').value;
+            const endTime = document.getElementById('booking-end-time').value;
+
+            const selectedOption = roomSelect.options[roomSelect.selectedIndex];
+            const roomName = selectedOption.text || '--';
+            const pricePerHour = parseFloat(selectedOption.dataset?.price) || 0;
+
+            document.getElementById('summary-room').textContent = roomSelect.value ? roomName.split(' - ')[0] : '--';
+            document.getElementById('summary-date').textContent = bookingDate || '--';
+            document.getElementById('summary-time').textContent = (startTime && endTime) ? `${startTime} - ${endTime}` : '--';
+            document.getElementById('summary-price').textContent = pricePerHour + ' ر.ع';
+
+            let hours = 0;
+            if (startTime && endTime) {
+                const start = new Date(`2000-01-01T${startTime}`);
+                const end = new Date(`2000-01-01T${endTime}`);
+                let diff = (end - start) / (1000 * 60 * 60);
+                if (diff < 0) diff += 24; // Handle overnight
+                hours = Math.max(0, diff);
+            }
+            document.getElementById('summary-hours').textContent = hours.toFixed(1) + ' ساعة';
+            document.getElementById('summary-total').textContent = (hours * pricePerHour).toFixed(2) + ' ر.ع';
+        }
+
+        // Set minimum dates
+        function setMinDates() {
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('booking-date').min = today;
+            document.getElementById('booking-date').value = today;
+        }
+
+        // Book room (quick action)
+        function bookRoom(roomId) {
+            document.getElementById('booking-room').value = roomId;
+            updateBookingSummary();
+            switchTab('booking');
+            document.querySelector('.tab-btn:nth-child(2)').classList.add('active');
+            document.querySelector('.tab-btn:nth-child(1)').classList.remove('active');
+        }
+
+        // Submit booking
+        function submitBooking(e) {
+            e.preventDefault();
+
+            const roomId = document.getElementById('booking-room').value;
+            const room = rooms.find(r => r.id === roomId);
+            if (!room) {
+                showToast('يرجى اختيار غرفة', 'error');
+                return;
+            }
+
+            const bookingDate = document.getElementById('booking-date').value;
+            const startTime = document.getElementById('booking-start-time').value;
+            const endTime = document.getElementById('booking-end-time').value;
+
+            if (!bookingDate || !startTime || !endTime) {
+                showToast('يرجى تحديد التاريخ والوقت', 'error');
+                return;
+            }
+
+            // Calculate hours
+            const start = new Date(`2000-01-01T${startTime}`);
+            const end = new Date(`2000-01-01T${endTime}`);
+            let hours = (end - start) / (1000 * 60 * 60);
+            if (hours <= 0) hours += 24; // Handle overnight
+
+            const minHours = room.minHours || 1;
+            if (hours < minHours) {
+                showToast(`الحد الأدنى للحجز ${minHours} ساعة`, 'error');
+                return;
+            }
+
+            const total = hours * room.price;
+
+            const reservation = {
+                roomId,
+                roomName: room.name,
+                customerName: document.getElementById('booking-name').value,
+                phone: document.getElementById('booking-phone').value,
+                date: bookingDate,
+                startTime,
+                endTime,
+                guests: parseInt(document.getElementById('booking-guests').value),
+                notes: document.getElementById('booking-notes').value,
+                hours: parseFloat(hours.toFixed(1)),
+                pricePerHour: room.price,
+                total: parseFloat(total.toFixed(2)),
+                status: 'confirmed',
+                createdAt: firebase.database.ServerValue.TIMESTAMP
+            };
+
+            // Save reservation
+            firebase.database().ref(RESERVATIONS_PATH).push(reservation)
+                .then(() => {
+                    showToast('تم الحجز بنجاح!', 'success');
+                    document.getElementById('booking-form').reset();
+                    setMinDates();
+                    updateBookingSummary();
+                    switchTab('reservations');
+                    // Activate correct tab
+                    document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+                    document.querySelector('.tab-btn:nth-child(3)').classList.add('active');
+                })
+                .catch(err => showToast(err.message, 'error'));
+        }
+
+        // Render reservations
+        function renderReservations() {
+            const tbody = document.getElementById('reservations-tbody');
+            
+            if (reservations.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="8" style="text-align: center; padding: 40px; color: var(--text-secondary);">
+                            <i class="fas fa-calendar-times" style="font-size: 2rem; margin-bottom: 10px; display: block;"></i>
+                            لا توجد حجوزات
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            const statusFilter = document.getElementById('filter-status').value;
+            const dateFilter = document.getElementById('filter-date').value;
+
+            let filtered = reservations;
+            if (statusFilter !== 'all') {
+                filtered = filtered.filter(r => r.status === statusFilter);
+            }
+            if (dateFilter) {
+                filtered = filtered.filter(r => r.checkin === dateFilter || r.checkout === dateFilter);
+            }
+
+            tbody.innerHTML = filtered.map((res, i) => {
+                const statusText = {
+                    confirmed: 'مؤكد',
+                    pending: 'قيد الانتظار',
+                    cancelled: 'ملغي',
+                    completed: 'مكتمل'
+                };
+                return `
+                    <tr>
+                        <td>#${String(i + 1).padStart(4, '0')}</td>
+                        <td>
+                            <strong>${res.customerName}</strong>
+                            <br><small style="color: var(--text-secondary);">${res.phone}</small>
+                        </td>
+                        <td>${res.roomName}</td>
+                        <td>${res.date || res.checkin || '--'}</td>
+                        <td>${res.startTime && res.endTime ? `${res.startTime} - ${res.endTime}` : '--'}</td>
+                        <td><strong>${res.total?.toFixed(2) || 0} ر.ع</strong></td>
+                        <td><span class="reservation-status ${res.status}">${statusText[res.status] || res.status}</span></td>
+                        <td>
+                            <button class="action-btn edit" onclick="completeReservation('${res.id}')" title="إتمام" style="background: rgba(34, 197, 94, 0.15); color: var(--success);">
+                                <i class="fas fa-check"></i>
+                            </button>
+                            <button class="action-btn delete" onclick="cancelReservation('${res.id}')" title="إلغاء">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function filterReservations() {
+            renderReservations();
+        }
+
+        function cancelReservation(id) {
+            if (!confirm('هل تريد إلغاء هذا الحجز؟')) return;
+            
+            const res = reservations.find(r => r.id === id);
+            firebase.database().ref(`${RESERVATIONS_PATH}/${id}`).update({ status: 'cancelled' })
+                .then(() => {
+                    // Make room available again
+                    if (res && res.roomId) {
+                        return firebase.database().ref(`${ROOMS_PATH}/${res.roomId}`).update({ status: 'available' });
+                    }
+                })
+                .then(() => showToast('تم إلغاء الحجز', 'success'))
+                .catch(err => showToast(err.message, 'error'));
+        }
+
+        function editReservation(id) {
+            showToast('ميزة التعديل قريباً', 'info');
+        }
+
+        function completeReservation(id) {
+            if (!confirm('هل تم إنهاء هذا الحجز؟')) return;
+            firebase.database().ref(`${RESERVATIONS_PATH}/${id}`).update({ status: 'completed' })
+                .then(() => showToast('تم إتمام الحجز', 'success'))
+                .catch(err => showToast(err.message, 'error'));
+        }
+
+        // Room Modal
+        function loadRoomEmojis() {
+            const grid = document.getElementById('room-emoji-grid');
+            grid.innerHTML = roomIcons.map(icon => 
+                `<div class="emoji-option" onclick="selectRoomIcon('${icon}', this)">${icon}</div>`
+            ).join('');
+            // Select first by default
+            grid.querySelector('.emoji-option')?.classList.add('selected');
+        }
+
+        function selectRoomIcon(icon, el) {
+            document.querySelectorAll('#room-emoji-grid .emoji-option').forEach(e => e.classList.remove('selected'));
+            el.classList.add('selected');
+            document.getElementById('room-icon').value = icon;
+        }
+
+        function openRoomModal(editMode = false) {
+            document.getElementById('room-modal').classList.add('active');
+            if (!editMode) {
+                document.getElementById('room-form').reset();
+                document.getElementById('room-id').value = '';
+                document.getElementById('room-modal-title').innerHTML = '<i class="fas fa-plus"></i> إضافة غرفة';
+                document.getElementById('room-icon').value = '🛏️';
+                document.querySelectorAll('#room-emoji-grid .emoji-option').forEach(e => e.classList.remove('selected'));
+                document.querySelector('#room-emoji-grid .emoji-option')?.classList.add('selected');
+            }
+        }
+
+        function closeRoomModal(e) {
+            if (e && e.target !== e.currentTarget) return;
+            document.getElementById('room-modal').classList.remove('active');
+        }
+
+        function editRoom(id) {
+            const room = rooms.find(r => r.id === id);
+            if (!room) return;
+
+            document.getElementById('room-id').value = room.id;
+            document.getElementById('room-name').value = room.name;
+            document.getElementById('room-price').value = room.price;
+            document.getElementById('room-capacity').value = room.capacity;
+            document.getElementById('room-min-hours').value = room.minHours || 1;
+            document.getElementById('room-status').value = room.status;
+            document.getElementById('room-amenities').value = room.amenities || '';
+            document.getElementById('room-icon').value = room.icon || '🛋️';
+            document.getElementById('room-modal-title').innerHTML = '<i class="fas fa-edit"></i> تعديل الغرفة';
+
+            // Select correct emoji
+            document.querySelectorAll('#room-emoji-grid .emoji-option').forEach(el => {
+                el.classList.toggle('selected', el.textContent === room.icon);
+            });
+
+            openRoomModal(true);
+        }
+
+        function saveRoom() {
+            const id = document.getElementById('room-id').value;
+            const roomData = {
+                name: document.getElementById('room-name').value,
+                price: parseFloat(document.getElementById('room-price').value) || 0,
+                capacity: parseInt(document.getElementById('room-capacity').value) || 6,
+                minHours: parseInt(document.getElementById('room-min-hours').value) || 1,
+                status: document.getElementById('room-status').value,
+                amenities: document.getElementById('room-amenities').value,
+                icon: document.getElementById('room-icon').value || '🛋️',
+                updatedAt: firebase.database.ServerValue.TIMESTAMP
+            };
+
+            if (!roomData.name) {
+                showToast('يرجى إدخال اسم الغرفة', 'error');
+                return;
+            }
+
+            const ref = id 
+                ? firebase.database().ref(`${ROOMS_PATH}/${id}`) 
+                : firebase.database().ref(ROOMS_PATH).push();
+
+            (id ? ref.update(roomData) : ref.set(roomData))
+                .then(() => {
+                    showToast(id ? 'تم تحديث الغرفة' : 'تمت إضافة الغرفة', 'success');
+                    closeRoomModal();
+                })
+                .catch(err => showToast(err.message, 'error'));
+        }
+
+        function deleteRoom(id) {
+            if (!confirm('هل أنت متأكد من حذف هذه الغرفة؟')) return;
+            firebase.database().ref(`${ROOMS_PATH}/${id}`).remove()
+                .then(() => showToast('تم حذف الغرفة', 'success'))
+                .catch(err => showToast(err.message, 'error'));
+        }
+
+        // Stats
+        function updateStats() {
+            document.getElementById('stat-total-rooms').textContent = rooms.length;
+            document.getElementById('stat-available-rooms').textContent = rooms.filter(r => r.status === 'available').length;
+            document.getElementById('stat-booked-rooms').textContent = rooms.filter(r => r.status === 'booked').length;
+
+            // Today's revenue
+            const today = new Date().toISOString().split('T')[0];
+            const todayRevenue = reservations
+                .filter(r => r.checkin === today && r.status === 'confirmed')
+                .reduce((sum, r) => sum + (r.total || 0), 0);
+            document.getElementById('stat-rooms-revenue').textContent = todayRevenue.toFixed(0);
+        }
+
+        // Toast
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.innerHTML = `
+                <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : 'info-circle'}"></i>
+                <span>${message}</span>
+            `;
+            container.appendChild(toast);
+            setTimeout(() => toast.remove(), 3500);
+        }
+    </script>
+</body>
+</html>
+

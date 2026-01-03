@@ -1,0 +1,1466 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مرمرية | المتجر</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        :root {
+            --radius-lg: 20px;
+            --radius-md: 14px;
+            --radius-sm: 12px;
+        }
+
+        /* Page layout refinements */
+        .main-content {
+            padding-bottom: 120px;
+        }
+
+        .header-actions {
+            align-items: center;
+        }
+
+        .search-box {
+            width: min(520px, 100%);
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 0 15px;
+            display: flex;
+            align-items: center;
+            height: 45px;
+            transition: border-color 0.2s;
+        }
+
+        .search-box:focus-within {
+            border-color: var(--primary);
+        }
+
+        .search-box input {
+            background: transparent;
+            border: none;
+            color: var(--text);
+            width: 100%;
+            height: 100%;
+            padding: 0 10px;
+            font-family: inherit;
+            outline: none;
+        }
+
+        /* Filters */
+        .products-filter {
+            position: sticky;
+            top: 0;
+            z-index: 5;
+            display: flex;
+            gap: 12px;
+            margin-bottom: 25px;
+            padding: 15px 0;
+            background: linear-gradient(180deg, var(--bg) 0%, rgba(0,0,0,0) 100%);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            overflow-x: auto;
+            overflow-y: hidden;
+            flex-wrap: nowrap;
+            scroll-snap-type: x mandatory;
+            scrollbar-width: none;
+        }
+
+        .products-filter::-webkit-scrollbar { display: none; }
+        
+        .filter-btn {
+            scroll-snap-align: start;
+            padding: 10px 20px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            background: var(--card-bg);
+            color: var(--text-secondary);
+            font-family: inherit;
+            font-weight: 700;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+            line-height: 1;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .filter-btn:hover, .filter-btn.active {
+            background: var(--gradient);
+            color: white;
+            border-color: transparent;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(139, 69, 19, 0.3);
+        }
+
+        /* Products grid container - now holds sections */
+        #products-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 40px;
+        }
+
+        /* Category Sections */
+        .category-section {
+            animation: fadeIn 0.4s ease;
+        }
+
+        .category-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .category-title {
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: var(--gold);
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .category-title::before {
+            content: '';
+            display: block;
+            width: 5px;
+            height: 28px;
+            background: var(--gradient);
+            border-radius: 4px;
+        }
+
+        .category-count {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            padding: 5px 14px;
+            border-radius: 12px;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            font-weight: 700;
+        }
+
+        .category-products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            gap: 20px;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .store-empty {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 40px;
+            text-align: center;
+            color: var(--text-secondary);
+        }
+        
+        .product-card {
+            background: var(--card-bg);
+            border-radius: 24px;
+            border: none;
+            overflow: hidden;
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease;
+            position: relative;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+        }
+        
+        .product-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+            z-index: 2;
+        }
+        
+        .product-image {
+            height: 180px;
+            background: var(--gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .product-image::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at 50% 30%, rgba(255,255,255,0.2), rgba(0,0,0,0) 70%);
+            pointer-events: none;
+        }
+        
+        .product-badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: var(--danger);
+            color: white;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+        
+        .product-info {
+            padding: 20px;
+        }
+        
+        .product-name {
+            font-size: 1.2rem;
+            font-weight: 800;
+            margin-bottom: 8px;
+            color: var(--text);
+        }
+        
+        .product-desc {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 20px;
+            line-height: 1.6;
+            min-height: 2.8em;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        
+        .product-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: auto;
+        }
+        
+        .product-price {
+            font-size: 1.4rem;
+            font-weight: 900;
+            color: var(--gold);
+            text-shadow: 0 2px 10px rgba(218, 165, 32, 0.2);
+        }
+        
+        .add-to-cart-btn {
+            width: 48px;
+            height: 48px;
+            border-radius: 16px;
+            border: none;
+            background: var(--gradient);
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            box-shadow: 0 4px 15px rgba(139, 69, 19, 0.4);
+        }
+        
+        .add-to-cart-btn:hover {
+            transform: scale(1.1) rotate(90deg);
+            box-shadow: 0 8px 25px rgba(139, 69, 19, 0.6);
+        }
+
+        /* Cart overlay/backdrop */
+        .cart-backdrop {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.45);
+            z-index: 97;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s ease;
+        }
+
+        .cart-backdrop.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        
+        /* Cart Sidebar */
+        .cart-sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 350px;
+            height: 100vh;
+            background: var(--card-bg);
+            border-right: 1px solid var(--border);
+            padding: 25px;
+            display: flex;
+            flex-direction: column;
+            z-index: 99;
+            transform: translateX(-100%);
+            transition: transform 0.3s ease;
+        }
+        
+        .cart-sidebar.active {
+            transform: translateX(0);
+        }
+
+        /* Delivery + checkout (ported from store-only) */
+        .delivery-options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin: 12px 0;
+        }
+
+        .delivery-option {
+            border: 1px solid var(--border);
+            background: var(--bg);
+            color: var(--text-secondary);
+            border-radius: var(--radius-md);
+            padding: 10px 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-family: inherit;
+            font-weight: 800;
+            transition: all 0.2s ease;
+        }
+
+        .delivery-option.active {
+            background: var(--gradient);
+            color: white;
+            border-color: transparent;
+        }
+
+        .shipping-companies-section {
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            background: var(--bg);
+            overflow: hidden;
+            margin: 10px 0;
+        }
+
+        .shipping-companies-section h4 {
+            margin: 0;
+            padding: 12px 14px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            cursor: pointer;
+            color: var(--text);
+        }
+
+        .shipping-companies-section h4 .toggle-icon {
+            opacity: 0.8;
+        }
+
+        .shipping-companies-section.collapsed .shipping-companies-list {
+            display: none;
+        }
+
+        .shipping-companies-list {
+            padding: 10px;
+            display: grid;
+            gap: 10px;
+        }
+
+        .no-shipping-companies {
+            text-align: center;
+            color: var(--text-secondary);
+            padding: 12px;
+        }
+
+        .shipping-company-card {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            padding: 10px;
+            background: var(--card-bg);
+            cursor: pointer;
+            transition: transform 0.15s ease, border-color 0.15s ease;
+        }
+
+        .shipping-company-card:hover {
+            transform: translateY(-2px);
+            border-color: var(--primary);
+        }
+
+        .shipping-company-card.selected {
+            border-color: var(--primary);
+        }
+
+        .shipping-company-logo {
+            width: 42px;
+            height: 42px;
+            border-radius: 12px;
+            display: grid;
+            place-items: center;
+            background: var(--gradient);
+            flex: 0 0 auto;
+            overflow: hidden;
+        }
+
+        .shipping-company-logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .shipping-company-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .shipping-company-name {
+            font-weight: 900;
+        }
+
+        .shipping-company-price {
+            color: var(--text-secondary);
+            font-weight: 700;
+            font-size: 0.9rem;
+            margin-top: 2px;
+        }
+
+        .shipping-company-check {
+            width: 28px;
+            height: 28px;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            display: grid;
+            place-items: center;
+            color: var(--text-secondary);
+        }
+
+        .shipping-company-card.selected .shipping-company-check {
+            background: var(--primary);
+            color: white;
+            border-color: transparent;
+        }
+
+        .summary-totals {
+            border-top: 1px solid var(--border);
+            padding-top: 12px;
+            margin-top: 12px;
+            display: grid;
+            gap: 10px;
+        }
+
+        .summary-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            color: var(--text-secondary);
+            font-weight: 800;
+        }
+
+        .summary-row.total {
+            color: var(--text);
+            font-size: 1.05rem;
+        }
+
+        .summary-row small {
+            opacity: 0.8;
+            font-weight: 800;
+        }
+
+        /* Checkout modal */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.55);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 120;
+            padding: 16px;
+        }
+
+        .modal-overlay.show {
+            display: flex;
+        }
+
+        .modal {
+            width: min(520px, 100%);
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 16px;
+        }
+
+        .modal h3 {
+            margin: 0 0 12px 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .form-group {
+            margin-bottom: 12px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 6px;
+            color: var(--text-secondary);
+            font-weight: 800;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border);
+            background: var(--bg);
+            color: var(--text);
+            padding: 12px;
+            font-family: inherit;
+        }
+
+        .form-group textarea {
+            min-height: 86px;
+            resize: vertical;
+        }
+
+        .modal-btns {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 12px;
+        }
+
+        .modal-btn {
+            border: none;
+            border-radius: var(--radius-md);
+            padding: 12px;
+            font-family: inherit;
+            font-weight: 900;
+            cursor: pointer;
+        }
+
+        .modal-btn.cancel {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            color: var(--text);
+        }
+
+        .modal-btn.confirm {
+            background: var(--gradient);
+            color: white;
+        }
+        
+        .cart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 20px;
+        }
+        
+        .cart-header h3 {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .cart-items {
+            flex: 1;
+            overflow-y: auto;
+        }
+        
+        .cart-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 15px;
+            background: var(--bg);
+            border-radius: 12px;
+            margin-bottom: 10px;
+        }
+        
+        .cart-item-icon {
+            font-size: 1.5rem;
+        }
+        
+        .cart-item-info {
+            flex: 1;
+        }
+        
+        .cart-item-name {
+            font-weight: 600;
+            display: block;
+        }
+        
+        .cart-item-price {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+        
+        .cart-item-quantity {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .cart-item-quantity button {
+            width: 28px;
+            height: 28px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            background: var(--card-bg);
+            color: var(--text);
+            cursor: pointer;
+        }
+        
+        .cart-footer {
+            padding-top: 20px;
+            border-top: 1px solid var(--border);
+        }
+        
+        .cart-total {
+            display: flex;
+            justify-content: space-between;
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+        }
+        
+        .cart-toggle {
+            position: fixed;
+            left: 20px;
+            bottom: 20px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: var(--gradient);
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            box-shadow: 0 5px 25px rgba(139, 69, 19, 0.4);
+            z-index: 98;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .cart-toggle .count {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            width: 24px;
+            height: 24px;
+            background: var(--danger);
+            border-radius: 50%;
+            font-size: 0.8rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .category-products-grid {
+                grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                gap: 12px;
+                align-items: stretch;
+            }
+
+            .header-actions {
+                width: 100%;
+            }
+
+            .search-box {
+                width: 100%;
+            }
+
+            .main-content {
+                padding: 18px;
+                padding-bottom: 140px;
+            }
+
+            .category-products-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: 12px;
+            }
+
+            .product-image {
+                height: 140px;
+                font-size: 3.4rem;
+            }
+
+            .add-to-cart-btn {
+                width: 48px;
+                height: 48px;
+            }
+
+            /* Cart becomes bottom sheet */
+            .cart-sidebar {
+                width: 100vw;
+                height: min(78vh, 720px);
+                top: auto;
+                bottom: 0;
+                left: 0;
+                border-right: none;
+                border-top: 1px solid var(--border);
+                border-radius: 18px 18px 0 0;
+                transform: translateY(110%);
+                padding: 18px;
+            }
+
+            .cart-sidebar.active {
+                transform: translateY(0);
+            }
+
+            .cart-toggle {
+                left: 14px;
+                bottom: 14px;
+                width: 58px;
+                height: 58px;
+            }
+        }
+
+        @media (max-width: 420px) {
+            .category-products-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <aside class="sidebar"></aside>
+    
+    <!-- Cart Sidebar -->
+    <aside class="cart-sidebar" id="cart-sidebar">
+        <div class="cart-header">
+            <h3><i class="fas fa-shopping-cart"></i> سلة المشتريات</h3>
+            <button class="modal-close" onclick="toggleCart()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        
+        <div class="cart-items" id="cart-items">
+            <!-- Cart items will be rendered here -->
+        </div>
+        
+        <div class="cart-footer">
+            <div class="delivery-options">
+                <button class="delivery-option active" data-type="delivery" onclick="setDelivery('delivery')">
+                    <i class="fas fa-motorcycle"></i>
+                    <span>توصيل</span>
+                </button>
+                <button class="delivery-option" data-type="pickup" onclick="setDelivery('pickup')">
+                    <i class="fas fa-store"></i>
+                    <span>استلام</span>
+                </button>
+            </div>
+
+            <div class="shipping-companies-section" id="shipping-companies-section">
+                <h4 onclick="toggleShippingSection()">
+                    <span><i class="fas fa-truck"></i> اختر شركة الشحن</span>
+                    <i class="fas fa-chevron-down toggle-icon"></i>
+                </h4>
+                <div class="shipping-companies-list" id="shipping-companies-list">
+                    <div class="no-shipping-companies">
+                        <i class="fas fa-info-circle"></i> لا توجد شركات شحن متاحة حالياً
+                    </div>
+                </div>
+            </div>
+
+            <div class="summary-totals">
+                <div class="summary-row">
+                    <span>المجموع الفرعي</span>
+                    <span id="subtotal">0.000 ر.ع</span>
+                </div>
+                <div class="summary-row">
+                    <span>رسوم التوصيل</span>
+                    <span id="delivery-fee">0.500 ر.ع</span>
+                </div>
+                <div class="summary-row total">
+                    <span>الإجمالي</span>
+                    <span id="total">0.500 ر.ع</span>
+                </div>
+            </div>
+
+            <button class="btn btn-primary" id="checkout-btn" style="width: 100%;" onclick="showCheckout()" disabled>
+                <i class="fas fa-check"></i>
+                إتمام الطلب
+            </button>
+        </div>
+    </aside>
+
+    <!-- Checkout Modal (ported from store-only) -->
+    <div class="modal-overlay" id="checkout-modal">
+        <div class="modal">
+            <div id="checkout-form">
+                <h3><i class="fas fa-truck"></i> معلومات التوصيل</h3>
+
+                <div class="form-group">
+                    <label>الاسم الكامل</label>
+                    <input type="text" id="customer-name" placeholder="أدخل اسمك">
+                </div>
+
+                <div class="form-group">
+                    <label>رقم الهاتف</label>
+                    <input type="tel" id="customer-phone" placeholder="+968 1234 5678">
+                </div>
+
+                <div class="form-group" id="address-group">
+                    <label>عنوان التوصيل</label>
+                    <textarea id="customer-address" placeholder="المنطقة، الشارع، رقم المنزل..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>ملاحظات (اختياري)</label>
+                    <textarea id="order-notes" placeholder="أي ملاحظات خاصة بالطلب..."></textarea>
+                </div>
+
+                <div class="modal-btns">
+                    <button class="modal-btn cancel" onclick="hideCheckout()">إلغاء</button>
+                    <button class="modal-btn confirm" onclick="confirmOrder()">
+                        <i class="fas fa-check"></i> تأكيد الطلب
+                    </button>
+                </div>
+            </div>
+
+            <div id="order-success" style="display:none; text-align:center; padding: 8px 0;">
+                <div style="font-size: 2.2rem; margin-bottom: 8px;">✅</div>
+                <h3 style="margin: 0 0 6px 0;">تم استلام طلبك!</h3>
+                <p style="margin: 0 0 14px 0; color: var(--text-secondary);">سيتم التواصل معك قريباً</p>
+                <div class="summary-row total" style="justify-content:center; gap: 10px;">
+                    <span>رقم الطلب</span>
+                    <span id="order-number">#000001</span>
+                </div>
+                <button class="btn btn-primary" style="width: 100%; margin-top: 14px;" onclick="hideCheckout();">
+                    <i class="fas fa-store"></i>
+                    العودة للمتجر
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cart Backdrop -->
+    <div class="cart-backdrop" id="cart-backdrop" onclick="toggleCart(false)"></div>
+    
+    <!-- Cart Toggle Button -->
+    <button class="cart-toggle" onclick="toggleCart()">
+        <i class="fas fa-shopping-cart"></i>
+        <span class="count" id="cart-count">0</span>
+    </button>
+    
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-title">
+                <h2>🛒 المتجر</h2>
+                <p>تصفح وشراء المنتجات</p>
+            </div>
+            <div class="header-actions">
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" placeholder="ابحث عن منتج..." id="search-input">
+                </div>
+            </div>
+        </header>
+        
+        <!-- Filters -->
+        <div class="products-filter">
+            <button class="filter-btn active" data-filter="all">الكل</button>
+            <button class="filter-btn" data-filter="hot">مشروبات ساخنة</button>
+            <button class="filter-btn" data-filter="cold">مشروبات باردة</button>
+            <button class="filter-btn" data-filter="food">مأكولات</button>
+            <button class="filter-btn" data-filter="beans">البن</button>
+        </div>
+        
+        <!-- Products Grid -->
+        <div id="products-grid"></div>
+    </main>
+    
+    <!-- Toast Container -->
+    <div class="toast-container"></div>
+    
+    <script src="js/app.js"></script>
+    <script>
+        let currentFilter = 'all';
+        let currentQuery = '';
+
+        // Delivery system (ported from store-only)
+        let deliveryType = 'delivery';
+        let shippingCompanies = [];
+        let selectedShippingCompany = null;
+
+        function loadShippingCompanies() {
+            try {
+                const raw = localStorage.getItem('bon-shipping-companies');
+                const parsed = raw ? JSON.parse(raw) : [];
+                shippingCompanies = Array.isArray(parsed) ? parsed : [];
+            } catch {
+                shippingCompanies = [];
+            }
+            renderShippingCompanies();
+        }
+
+        function renderShippingCompanies() {
+            const container = document.getElementById('shipping-companies-list');
+            if (!container) return;
+
+            if (!shippingCompanies.length) {
+                container.innerHTML = `
+                    <div class="no-shipping-companies">
+                        <i class="fas fa-truck"></i> لا توجد شركات شحن متاحة حالياً
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = shippingCompanies.map(company => {
+                const isSelected = selectedShippingCompany?.id === company.id;
+                const basePrice = Number(company.basePrice || 0);
+                return `
+                    <div class="shipping-company-card ${isSelected ? 'selected' : ''}" onclick="selectShippingCompany('${company.id}')">
+                        <div class="shipping-company-logo">
+                            ${company.logo ? `<img src="${company.logo}" alt="${company.name || ''}">` : '<i class="fas fa-truck" style="color: white;"></i>'}
+                        </div>
+                        <div class="shipping-company-info">
+                            <div class="shipping-company-name">${company.name || ''}</div>
+                            <div class="shipping-company-price"><i class="fas fa-tag"></i> ${basePrice.toFixed(3)} ${BonApp.config.currency}</div>
+                        </div>
+                        <div class="shipping-company-check"><i class="fas fa-check"></i></div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function selectShippingCompany(companyId) {
+            selectedShippingCompany = shippingCompanies.find(c => c.id === companyId) || null;
+            renderShippingCompanies();
+            updateDeliverySummary();
+            if (selectedShippingCompany) {
+                BonApp.showToast(`تم اختيار ${selectedShippingCompany.name}`, 'success');
+                const section = document.getElementById('shipping-companies-section');
+                if (section) section.classList.add('collapsed');
+            }
+        }
+
+        function toggleShippingSection() {
+            const section = document.getElementById('shipping-companies-section');
+            if (section) section.classList.toggle('collapsed');
+        }
+
+        function setDelivery(type) {
+            deliveryType = type;
+
+            document.querySelectorAll('.delivery-option').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.type === type);
+            });
+
+            const shippingSection = document.getElementById('shipping-companies-section');
+            if (shippingSection) {
+                shippingSection.style.display = type === 'delivery' ? 'block' : 'none';
+            }
+
+            if (type === 'pickup') {
+                selectedShippingCompany = null;
+                renderShippingCompanies();
+            }
+
+            updateDeliverySummary();
+        }
+
+        function getDeliveryFee() {
+            if (deliveryType !== 'delivery') return 0;
+            if (selectedShippingCompany) return Number(selectedShippingCompany.basePrice || 0.5);
+            return 0.5;
+        }
+
+        function updateDeliverySummary() {
+            const subtotal = Number(BonApp.getCartTotal() || 0);
+            const deliveryFee = getDeliveryFee();
+
+            const subtotalEl = document.getElementById('subtotal');
+            const deliveryFeeEl = document.getElementById('delivery-fee');
+            const totalEl = document.getElementById('total');
+
+            if (subtotalEl) subtotalEl.textContent = BonApp.formatPrice(subtotal);
+
+            if (deliveryFeeEl) {
+                if (selectedShippingCompany && deliveryType === 'delivery') {
+                    deliveryFeeEl.innerHTML = `${deliveryFee.toFixed(3)} ${BonApp.config.currency} <small>(${selectedShippingCompany.name})</small>`;
+                } else {
+                    deliveryFeeEl.textContent = `${deliveryFee.toFixed(3)} ${BonApp.config.currency}`;
+                }
+            }
+
+            if (totalEl) totalEl.textContent = BonApp.formatPrice(subtotal + deliveryFee);
+        }
+
+        function showCheckout() {
+            const modal = document.getElementById('checkout-modal');
+            if (!modal) return;
+            modal.classList.add('show');
+            document.getElementById('checkout-form').style.display = 'block';
+            document.getElementById('order-success').style.display = 'none';
+
+            const addressGroup = document.getElementById('address-group');
+            if (addressGroup) addressGroup.style.display = deliveryType === 'delivery' ? 'block' : 'none';
+        }
+
+        function hideCheckout() {
+            const modal = document.getElementById('checkout-modal');
+            if (!modal) return;
+            modal.classList.remove('show');
+        }
+
+        async function confirmOrder() {
+            const name = document.getElementById('customer-name').value.trim();
+            const phone = document.getElementById('customer-phone').value.trim();
+            const address = document.getElementById('customer-address').value.trim();
+            const notes = document.getElementById('order-notes').value.trim();
+
+            if (!name) {
+                BonApp.showToast('أدخل الاسم', 'error');
+                return;
+            }
+            if (!phone) {
+                BonApp.showToast('أدخل رقم الهاتف', 'error');
+                return;
+            }
+            if (deliveryType === 'delivery' && !address) {
+                BonApp.showToast('أدخل عنوان التوصيل', 'error');
+                return;
+            }
+            if (deliveryType === 'delivery' && shippingCompanies.length > 0 && !selectedShippingCompany) {
+                BonApp.showToast('اختر شركة الشحن', 'error');
+                return;
+            }
+
+            const confirmBtn = document.querySelector('.modal-btn.confirm');
+            if (confirmBtn) {
+                confirmBtn.disabled = true;
+                confirmBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري الإرسال...';
+            }
+
+            try {
+                const subtotal = Number(BonApp.getCartTotal() || 0);
+                const deliveryFee = getDeliveryFee();
+                const total = subtotal + deliveryFee;
+
+                const order = BonApp.createOrder({
+                    source: 'store',
+                    customerName: name,
+                    customerPhone: phone,
+                    customerAddress: deliveryType === 'delivery' ? address : '',
+                    deliveryType: deliveryType,
+                    shippingCompany: selectedShippingCompany ? {
+                        id: selectedShippingCompany.id,
+                        name: selectedShippingCompany.name,
+                        price: Number(selectedShippingCompany.basePrice || 0)
+                    } : null,
+                    subtotal: subtotal,
+                    deliveryFee: deliveryFee,
+                    notes: notes,
+                    total: total
+                });
+
+                if (!order) return;
+
+                const orderNumber = String(order.id).slice(-6);
+                document.getElementById('checkout-form').style.display = 'none';
+                document.getElementById('order-success').style.display = 'block';
+                document.getElementById('order-number').textContent = '#' + orderNumber;
+
+                document.getElementById('customer-name').value = '';
+                document.getElementById('customer-phone').value = '';
+                document.getElementById('customer-address').value = '';
+                document.getElementById('order-notes').value = '';
+
+                selectedShippingCompany = null;
+                renderShippingCompanies();
+                updateDeliverySummary();
+            } finally {
+                if (confirmBtn) {
+                    confirmBtn.disabled = false;
+                    confirmBtn.innerHTML = '<i class="fas fa-check"></i> تأكيد الطلب';
+                }
+            }
+        }
+
+        function toggleCart(force) {
+            const sidebar = document.getElementById('cart-sidebar');
+            const backdrop = document.getElementById('cart-backdrop');
+            const shouldOpen = typeof force === 'boolean' ? force : !sidebar.classList.contains('active');
+
+            sidebar.classList.toggle('active', shouldOpen);
+            backdrop.classList.toggle('active', shouldOpen);
+            document.body.style.overflow = shouldOpen ? 'hidden' : '';
+        }
+
+        function productImageBackground(category) {
+            // keep palette consistent with Bon theme variables
+            if (category === 'cold') return 'linear-gradient(135deg, rgba(6, 182, 212, 0.5), rgba(8, 145, 178, 0.6))';
+            if (category === 'food') return 'linear-gradient(135deg, rgba(245, 158, 11, 0.55), rgba(217, 119, 6, 0.7))';
+            if (category === 'beans') return 'linear-gradient(135deg, rgba(120, 53, 15, 0.7), rgba(146, 64, 14, 0.8))';
+            return 'var(--gradient)';
+        }
+
+        function renderProducts() {
+            const grid = document.getElementById('products-grid');
+            const products = (window.BonApp?.state?.products || []).filter(p => {
+                const matchesFilter = currentFilter === 'all' || p.category === currentFilter;
+                const q = currentQuery.trim();
+                if (!q) return matchesFilter;
+                const hay = `${p.name || ''} ${p.description || ''} ${p.barcode || ''}`.toLowerCase();
+                return matchesFilter && hay.includes(q);
+            });
+
+            if (!products.length) {
+                grid.innerHTML = `
+                    <div class="store-empty">
+                        <div style="font-size: 2.3rem; margin-bottom: 10px;">🔎</div>
+                        لا توجد منتجات مطابقة للبحث.
+                    </div>
+                `;
+                return;
+            }
+
+            grid.innerHTML = products.map(p => {
+                const icon = p.image || '☕';
+                const bg = productImageBackground(p.category);
+                const price = Number(p.price || 0);
+                return `
+                    <div class="product-card" data-category="${p.category || ''}">
+                        <div class="product-image" style="background: ${bg}">${icon}</div>
+                        <div class="product-info">
+                            <h4 class="product-name">${p.name || ''}</h4>
+                            <p class="product-desc">${p.description || ''}</p>
+                            <div class="product-footer">
+                                <span class="product-price">${BonApp.formatPrice(price)}</span>
+                                <button class="add-to-cart-btn" onclick="BonApp.addToCart(${p.id}); BonApp.updateCartUI();">
+                                    <i class="fas fa-plus"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Ensure delivery totals update whenever cart UI updates
+        document.addEventListener('DOMContentLoaded', () => {
+            // BonApp is initialized by js/app.js; delay hook a tick
+            setTimeout(() => {
+                if (!window.BonApp) return;
+                const original = window.BonApp.updateCartUI.bind(window.BonApp);
+                window.BonApp.updateCartUI = function() {
+                    original();
+                    updateDeliverySummary();
+                };
+                loadShippingCompanies();
+                setDelivery('delivery');
+                window.BonApp.updateCartUI();
+                // BonApp.loadData runs during BonApp.init (DOMContentLoaded).
+                // Re-render after init so products appear on first load.
+                renderProducts();
+            }, 0);
+        });
+
+        // Filter buttons
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                currentFilter = btn.dataset.filter || 'all';
+                renderProducts();
+            });
+        });
+
+        // Search
+        document.getElementById('search-input').addEventListener('input', (e) => {
+            currentQuery = (e.target.value || '').toLowerCase();
+            renderProducts();
+        });
+
+        // ESC closes cart
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') toggleCart(false);
+        });
+
+        // Initial render
+        // renderProducts(); // Moved to Firebase listener
+        BonApp.updateCartUI();
+    </script>
+    
+    <!-- Firebase & Scripts -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+    <script src="js/firebase-config.js"></script>
+
+    <script>
+        const STORE_PATH = 'restaurant-system/restaurants/bon/store';
+        const CATEGORIES_PATH = 'restaurant-system/restaurants/bon/store-categories';
+        let storeItems = [];
+        let categories = [];
+        // Ensure these are available globally or at least in this scope
+        window.currentFilter = window.currentFilter || 'all';
+        window.currentQuery = window.currentQuery || '';
+
+        document.addEventListener('DOMContentLoaded', () => {
+            initFirebaseListeners();
+            
+            // Re-attach search listener if needed, or rely on existing one if it works
+            const searchInput = document.getElementById('search-input');
+            if (searchInput) {
+                searchInput.addEventListener('input', (e) => {
+                    window.currentQuery = (e.target.value || '').toLowerCase();
+                    renderProducts();
+                });
+            }
+        });
+
+        function initFirebaseListeners() {
+            const storeRef = firebase.database().ref(STORE_PATH);
+            const categoriesRef = firebase.database().ref(CATEGORIES_PATH);
+            
+            storeRef.on('value', (snapshot) => {
+                const data = snapshot.val();
+                if (data) {
+                    storeItems = Object.keys(data).map(key => ({
+                        id: key,
+                        ...data[key],
+                        image: data[key].emoji // Map emoji to image property for compatibility
+                    }));
+                } else {
+                    storeItems = [];
+                }
+                
+                // Update BonApp state
+                if (window.BonApp && window.BonApp.state) {
+                    if (!window.BonApp.state.products) window.BonApp.state.products = [];
+                    const currentIds = new Set(window.BonApp.state.products.map(p => p.id));
+                    storeItems.forEach(item => {
+                        if (!currentIds.has(item.id)) {
+                            window.BonApp.state.products.push(item);
+                        } else {
+                            const idx = window.BonApp.state.products.findIndex(p => p.id === item.id);
+                            if (idx !== -1) window.BonApp.state.products[idx] = item;
+                        }
+                    });
+                }
+                
+                renderProducts();
+            });
+
+            categoriesRef.on('value', (snapshot) => {
+                const data = snapshot.val();
+                if (data) {
+                    categories = Object.keys(data).map(key => ({
+                        id: key,
+                        ...data[key]
+                    }));
+                } else {
+                    categories = [];
+                }
+                renderFilters();
+            });
+        }
+
+        function renderFilters() {
+            const container = document.querySelector('.products-filter');
+            if (!container) return;
+
+            let html = `<button class="filter-btn ${window.currentFilter === 'all' ? 'active' : ''}" onclick="setFilter('all')">الكل</button>`;
+            
+            if (categories.length > 0) {
+                html += categories.map(cat => `
+                    <button class="filter-btn ${window.currentFilter === cat.id ? 'active' : ''}" onclick="setFilter('${cat.id}')">${cat.name}</button>
+                `).join('');
+            } else {
+                // Fallback
+                html += `
+                    <button class="filter-btn" onclick="setFilter('hot')">مشروبات ساخنة</button>
+                    <button class="filter-btn" onclick="setFilter('cold')">مشروبات باردة</button>
+                    <button class="filter-btn" onclick="setFilter('food')">مأكولات</button>
+                    <button class="filter-btn" onclick="setFilter('beans')">البن</button>
+                `;
+            }
+            container.innerHTML = html;
+        }
+
+        window.setFilter = function(filter) {
+            window.currentFilter = filter;
+            renderFilters(); 
+            renderProducts();
+        }
+
+        // Override renderProducts to use storeItems
+        function renderProducts() {
+            const grid = document.getElementById('products-grid');
+            if (!grid) return;
+            
+            // 1. Filter items based on search query only (category filtering is handled by sections)
+            const q = (window.currentQuery || '').trim().toLowerCase();
+            let filteredItems = storeItems.filter(p => {
+                if (!q) return true;
+                const hay = `${p.name || ''} ${p.description || ''} ${p.barcode || ''}`.toLowerCase();
+                return hay.includes(q);
+            });
+
+            if (!filteredItems.length) {
+                grid.innerHTML = `
+                    <div class="store-empty">
+                        <div style="font-size: 2.3rem; margin-bottom: 10px;">🔎</div>
+                        لا توجد منتجات مطابقة للبحث.
+                    </div>
+                `;
+                return;
+            }
+
+            // 2. Group items by category
+            // If a specific filter is selected, we only show that category (or sections matching it)
+            // But usually "filter" in this context means "jump to section" or "show only this section".
+            // Let's implement "Show only this section" if filter != 'all'.
+
+            let sectionsToRender = [];
+
+            if (window.currentFilter !== 'all') {
+                // Show only selected category
+                const catId = window.currentFilter;
+                const catName = getCategoryName(catId);
+                const items = filteredItems.filter(p => p.category === catId);
+                
+                if (items.length > 0) {
+                    sectionsToRender.push({ id: catId, name: catName, items: items });
+                }
+            } else {
+                // Show all categories
+                // First, map known categories
+                categories.forEach(cat => {
+                    const items = filteredItems.filter(p => p.category === cat.id);
+                    if (items.length > 0) {
+                        sectionsToRender.push({ id: cat.id, name: cat.name, items: items });
+                    }
+                });
+
+                // Handle items in categories not in the list (or legacy categories)
+                const knownCatIds = new Set(categories.map(c => c.id));
+                const otherItems = filteredItems.filter(p => !knownCatIds.has(p.category));
+                
+                // Group legacy items by their category string
+                const legacyGroups = {};
+                otherItems.forEach(item => {
+                    const cat = item.category || 'other';
+                    if (!legacyGroups[cat]) legacyGroups[cat] = [];
+                    legacyGroups[cat].push(item);
+                });
+
+                Object.keys(legacyGroups).forEach(catId => {
+                    sectionsToRender.push({ 
+                        id: catId, 
+                        name: getLegacyCategoryName(catId), 
+                        items: legacyGroups[catId] 
+                    });
+                });
+            }
+
+            if (sectionsToRender.length === 0) {
+                grid.innerHTML = `
+                    <div class="store-empty">
+                        <div style="font-size: 2.3rem; margin-bottom: 10px;">📂</div>
+                        لا توجد منتجات في هذا القسم.
+                    </div>
+                `;
+                return;
+            }
+
+            // 3. Render Sections
+            grid.innerHTML = sectionsToRender.map(section => `
+                <div class="category-section" id="cat-${section.id}">
+                    <div class="category-header">
+                        <h3 class="category-title">${section.name}</h3>
+                        <span class="category-count">${section.items.length}</span>
+                    </div>
+                    <div class="category-products-grid">
+                        ${section.items.map(p => renderProductCard(p)).join('')}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderProductCard(p) {
+            const icon = p.emoji || p.image || '📦';
+            const bg = (typeof productImageBackground === 'function') ? productImageBackground(p.category) : 'var(--gradient)';
+            const price = Number(p.price || 0);
+            
+            return `
+                <div class="product-card" data-category="${p.category || ''}">
+                    <div class="product-image" style="background: ${bg}">${icon}</div>
+                    <div class="product-info">
+                        <h4 class="product-name">${p.name || ''}</h4>
+                        <p class="product-desc">${p.description || ''}</p>
+                        <div class="product-footer">
+                            <span class="product-price">${(window.BonApp && window.BonApp.formatPrice) ? window.BonApp.formatPrice(price) : price.toFixed(3)}</span>
+                            <button class="add-to-cart-btn" onclick="addToCartWrapper('${p.id}')">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function getCategoryName(id) {
+            const cat = categories.find(c => c.id === id);
+            if (cat) return cat.name;
+            return getLegacyCategoryName(id);
+        }
+
+        function getLegacyCategoryName(cat) {
+            const names = {
+                'beans': 'حبوب القهوة',
+                'equipment': 'معدات',
+                'cups': 'أكواب',
+                'syrups': 'سيروب ونكهات',
+                'other': 'أخرى',
+                'hot': 'مشروبات ساخنة',
+                'cold': 'مشروبات باردة',
+                'food': 'مأكولات'
+            };
+            return names[cat] || cat;
+        }
+
+        function addToCartWrapper(id) {
+            // Ensure item is in BonApp state before adding
+            const item = storeItems.find(i => i.id === id);
+            if (item && window.BonApp) {
+                if (!window.BonApp.state.products) window.BonApp.state.products = [];
+                const exists = window.BonApp.state.products.find(p => p.id === id);
+                if (!exists) {
+                    window.BonApp.state.products.push(item);
+                }
+                window.BonApp.addToCart(id);
+                window.BonApp.updateCartUI();
+            }
+        }
+    </script>
+    <script src="js/sidebar.js?v=1.1"></script>
+</body>
+</html>
