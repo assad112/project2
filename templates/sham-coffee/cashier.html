@@ -164,6 +164,10 @@
                     مسح باركود
                 </button>
                 <input id="pos-barcode" class="barcode-input" placeholder="أدخل/امسح الباركود ثم Enter" style="max-width: 340px;">
+                <button class="btn btn-danger" onclick="logout()" style="background: rgba(239, 68, 68, 0.1); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.2); margin-right: 10px;">
+                    <i class="fas fa-sign-out-alt"></i>
+                    تسجيل الخروج
+                </button>
             </div>
         </header>
 
@@ -463,6 +467,24 @@
 
         renderProducts();
         renderReceipt();
+
+        // دالة تسجيل الخروج
+        function logout() {
+            if (confirm('هل تريد تسجيل الخروج؟')) {
+                localStorage.removeItem('admin_logged_in');
+                localStorage.removeItem('admin_username');
+                localStorage.removeItem('admin_name');
+                localStorage.removeItem('admin_role');
+                localStorage.removeItem('worker_logged_in');
+                localStorage.removeItem('worker_username');
+                localStorage.removeItem('worker_name');
+                localStorage.removeItem('worker_role');
+                localStorage.removeItem('worker_position');
+                localStorage.removeItem('worker_id');
+                localStorage.removeItem('restaurant_id');
+                window.location.href = 'login-worker.html';
+            }
+        }
     </script>
 </body>
 </html>

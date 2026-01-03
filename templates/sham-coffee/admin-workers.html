@@ -306,9 +306,14 @@
             <div class="page-title">
                 <h1><i class="fas fa-users"></i> إدارة العمال</h1>
             </div>
-            <button class="btn-primary" onclick="openAddWorkerModal()">
-                <i class="fas fa-plus"></i> إضافة عامل جديد
-            </button>
+            <div style="display: flex; gap: 10px; align-items: center;">
+                <button class="btn-primary" onclick="openAddWorkerModal()">
+                    <i class="fas fa-plus"></i> إضافة عامل جديد
+                </button>
+                <button class="btn-primary" onclick="logout()" style="background: rgba(239, 68, 68, 0.1); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.2);">
+                    <i class="fas fa-sign-out-alt"></i> تسجيل الخروج
+                </button>
+            </div>
         </div>
 
         <div class="alert alert-success" id="success-alert"></div>
@@ -551,6 +556,24 @@
         // التحقق من تسجيل الدخول
         if (localStorage.getItem('admin_logged_in') !== 'true') {
             window.location.href = 'login-admin.html';
+        }
+
+        // دالة تسجيل الخروج
+        function logout() {
+            if (confirm('هل تريد تسجيل الخروج؟')) {
+                localStorage.removeItem('admin_logged_in');
+                localStorage.removeItem('admin_username');
+                localStorage.removeItem('admin_name');
+                localStorage.removeItem('admin_role');
+                localStorage.removeItem('worker_logged_in');
+                localStorage.removeItem('worker_username');
+                localStorage.removeItem('worker_name');
+                localStorage.removeItem('worker_role');
+                localStorage.removeItem('worker_position');
+                localStorage.removeItem('worker_id');
+                localStorage.removeItem('restaurant_id');
+                window.location.href = 'login-admin.html';
+            }
         }
     </script>
 </body>

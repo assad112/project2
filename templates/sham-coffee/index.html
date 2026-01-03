@@ -25,10 +25,16 @@
                     <i class="fas fa-search"></i>
                     <input type="text" placeholder="بحث..." id="search-input">
                 </div>
-                <button class="btn btn-primary">
-                    <i class="fas fa-plus"></i>
-                    طلب جديد
-                </button>
+                <div class="user-info" style="display: flex; align-items: center; gap: 15px; margin-left: 15px;">
+                    <div style="text-align: right;">
+                        <div style="font-weight: 600; font-size: 14px;" id="user-name-display">مدير النظام</div>
+                        <div style="font-size: 12px; color: var(--text-secondary);" id="user-role-display">أدمن</div>
+                    </div>
+                    <button class="btn btn-danger" onclick="logout()" style="background: rgba(239, 68, 68, 0.1); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.2); padding: 10px 18px;">
+                        <i class="fas fa-sign-out-alt"></i>
+                        تسجيل الخروج
+                    </button>
+                </div>
             </div>
         </header>
         
@@ -532,6 +538,48 @@
         if (localStorage.getItem('admin_logged_in') !== 'true') {
             window.location.href = 'login-admin.html';
         }
+
+        // عرض معلومات المستخدم
+        function displayUserInfo() {
+            const adminName = localStorage.getItem('admin_name') || 'مدير النظام';
+            const adminRole = localStorage.getItem('admin_role') || 'أدمن';
+            const workerName = localStorage.getItem('worker_name');
+            const workerRole = localStorage.getItem('worker_role');
+            
+            const userNameDisplay = document.getElementById('user-name-display');
+            const userRoleDisplay = document.getElementById('user-role-display');
+            
+            if (userNameDisplay && userRoleDisplay) {
+                if (workerName) {
+                    userNameDisplay.textContent = workerName;
+                    userRoleDisplay.textContent = workerRole === 'worker' ? 'عامل' : 'موظف';
+                } else if (adminName) {
+                    userNameDisplay.textContent = adminName;
+                    userRoleDisplay.textContent = adminRole === 'admin' ? 'أدمن' : 'مدير';
+                }
+            }
+        }
+
+        // دالة تسجيل الخروج
+        function logout() {
+            if (confirm('هل تريد تسجيل الخروج؟')) {
+                localStorage.removeItem('admin_logged_in');
+                localStorage.removeItem('admin_username');
+                localStorage.removeItem('admin_name');
+                localStorage.removeItem('admin_role');
+                localStorage.removeItem('worker_logged_in');
+                localStorage.removeItem('worker_username');
+                localStorage.removeItem('worker_name');
+                localStorage.removeItem('worker_role');
+                localStorage.removeItem('worker_position');
+                localStorage.removeItem('worker_id');
+                localStorage.removeItem('restaurant_id');
+                window.location.href = 'login-admin.html';
+            }
+        }
+
+        // عرض معلومات المستخدم عند تحميل الصفحة
+        displayUserInfo();
     </script>
 </body>
 </html>
