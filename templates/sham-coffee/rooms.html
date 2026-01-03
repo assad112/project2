@@ -1454,14 +1454,12 @@
             setTimeout(() => toast.remove(), 3500);
         }
 
-        // حماية الصفحة - للأدمن فقط
-        if (localStorage.getItem('admin_logged_in') !== 'true') {
-            if (localStorage.getItem('worker_logged_in') === 'true') {
-                alert('ليس لديك صلاحية للوصول إلى هذه الصفحة');
-                window.location.href = 'cashier.html';
-            } else {
-                window.location.href = 'login-admin.html';
-            }
+        // حماية الصفحة - للأدمن أو العامل
+        const isAdmin = localStorage.getItem('admin_logged_in') === 'true';
+        const isWorker = localStorage.getItem('worker_logged_in') === 'true';
+        
+        if (!isAdmin && !isWorker) {
+            window.location.href = 'login-admin.html';
         }
     </script>
 </body>

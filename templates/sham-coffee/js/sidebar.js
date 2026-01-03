@@ -26,10 +26,11 @@
         { name: 'نظام الباركود', icon: 'fa-barcode', link: 'barcode.html', id: 'barcode' }
     ];
 
-    // قائمة العامل (المنيو والكاشير فقط)
+    // قائمة العامل (المنيو والكاشير والجلسات الخاصة)
     const workerMenuItems = [
         { name: 'قائمة الشيشة', icon: 'fa-cloud', link: 'menu.html', id: 'menu' },
-        { name: 'الكاشير', icon: 'fa-cash-register', link: 'cashier.html', id: 'cashier' }
+        { name: 'الكاشير', icon: 'fa-cash-register', link: 'cashier.html', id: 'cashier' },
+        { name: 'الجلسات الخاصة', icon: 'fa-couch', link: 'rooms.html', id: 'rooms' }
     ];
 
     // اختيار القائمة المناسبة - للعامل فقط المنيو والكاشير
