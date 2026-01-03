@@ -119,6 +119,30 @@
       "category": "cafes",
       "pages": ["index", "admin", "orders", "beans-store"],
       "features": ["قائمة المشروبات والحلويات", "لوحة تحكم إدارية", "نظام إدارة الطلبات", "متجر بيع البن", "سلة تسوق متقدمة", "تصميم احترافي"]
+    },
+    {
+      "id": "marmariya",
+      "name": "مرمرية",
+      "description": "نظام متكامل للكوفي شوب يشمل: لوحة التحكم، المتجر، المنيو، نظام الباركود، الكاشير، والمخزن",
+      "icon": "☕",
+      "color": "#8B4513",
+      "folder": "marmariya",
+      "preview": "templates/marmariya/index.html",
+      "category": "cafes",
+      "pages": ["index", "store", "menu", "barcode", "cashier", "inventory", "rooms"],
+      "features": ["لوحة تحكم شاملة", "متجر إلكتروني متكامل", "قائمة المنيو التفاعلية", "نظام الباركود والـ QR", "نظام الكاشير المتقدم", "إدارة المخزون", "حجز الغرف الخاصة"]
+    },
+    {
+      "id": "sham-coffee",
+      "name": "قهوة الشام",
+      "description": "نظام متكامل لمقهى الشيشة يشمل: لوحة التحكم، قائمة الشيشة والمشروبات، حجز الجلسات الخاصة، الكاشير، والمخزن",
+      "icon": "💨",
+      "color": "#A78BFA",
+      "folder": "sham-coffee",
+      "preview": "templates/sham-coffee/index.html",
+      "category": "cafes",
+      "pages": ["index", "store", "menu", "barcode", "cashier", "inventory", "rooms"],
+      "features": ["لوحة تحكم شاملة", "قائمة الشيشة والنكهات", "قائمة المشروبات", "حجز الجلسات الخاصة", "نظام الكاشير المتقدم", "إدارة المخزون"]
     }
   ]
 }
