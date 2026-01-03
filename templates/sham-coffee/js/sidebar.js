@@ -17,7 +17,6 @@
         { name: 'قائمة الشيشة', icon: 'fa-cloud', link: 'menu.html', id: 'menu' },
         { name: 'إدارة القائمة', icon: 'fa-edit', link: 'admin-menu.html', id: 'admin-menu' },
         { name: 'الطلبات', icon: 'fa-list-alt', link: 'all-orders.html', id: 'all-orders' },
-        { name: 'إدارة الطلبات', icon: 'fa-clipboard-list', link: 'admin-orders.html', id: 'admin-orders' },
         { name: 'الجلسات الخاصة', icon: 'fa-couch', link: 'rooms.html', id: 'rooms' },
         { name: 'المتجر', icon: 'fa-store', link: 'store.html', id: 'store' },
         { name: 'إدارة المتجر', icon: 'fa-boxes', link: 'admin-store.html', id: 'admin-store' },
@@ -78,15 +77,11 @@
     } else {
         // للأدمن أو غير المسجلين
         menuItems.forEach(item => {
-            // Check if active
-            let isActive = false;
-            if (page === item.link) {
-                isActive = true;
-            }
-            // Special case for admin-orders if it was merged or redirected
-            if (item.link === 'admin-menu.html' && page === 'admin-orders.html') {
-                isActive = true;
-            }
+        // Check if active
+        let isActive = false;
+        if (page === item.link) {
+            isActive = true;
+        }
 
             sidebarHTML += `
                 <a href="${item.link}" class="nav-item ${isActive ? 'active' : ''}" data-section="${item.id}">
