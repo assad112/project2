@@ -2772,30 +2772,135 @@
             const today = new Date();
             const dateKey = today.toISOString().split('T')[0]; // YYYY-MM-DD
 
+            // Get full item details from menuItems for each cart item
+            const fullItems = cart.map(cartItem => {
+                // Find the original item from menuItems to get all details
+                const originalItem = menuItems.find(mi => mi.id === cartItem.id);
+                
+                // Build complete item object with all available details
+                const fullItem = {
+                    // Basic info
+                    id: cartItem.id,
+                    name: cartItem.name || originalItem?.name || 'منتج',
+                    price: parseFloat(cartItem.price || 0),
+                    quantity: parseInt(cartItem.quantity || 1),
+                    
+                    // Visual info
+                    emoji: cartItem.emoji || originalItem?.emoji || '☕',
+                    image: originalItem?.image || null,
+                    
+                    // Size info (if applicable)
+                    size: cartItem.size || null,
+                    sizePrice: cartItem.sizePrice || null,
+                    
+                    // Category info
+                    category: originalItem?.category || null,
+                    categoryId: originalItem?.categoryId || null,
+                    categoryName: originalItem?.categoryName || null,
+                    
+                    // Product details
+                    description: originalItem?.description || null,
+                    barcode: originalItem?.barcode || null,
+                    
+                    // Pricing details
+                    originalPrice: originalItem?.price || cartItem.price,
+                    smallPrice: originalItem?.smallPrice || null,
+                    largePrice: originalItem?.largePrice || null,
+                    
+                    // Status and metadata
+                    active: originalItem?.active !== false,
+                    featured: originalItem?.featured || false,
+                    badge: originalItem?.badge || null,
+                    
+                    // Calculated values
+                    itemTotal: parseFloat((cartItem.price * cartItem.quantity).toFixed(3)),
+                    
+                    // Timestamps
+                    itemCreatedAt: originalItem?.createdAt || null,
+                    itemUpdatedAt: originalItem?.updatedAt || null
+                };
+                
+                return fullItem;
+            });
+
+            // Get URL parameters (table number from QR code)
+            const urlParams = new URLSearchParams(window.location.search);
+            const tableFromUrl = urlParams.get('table');
+
+            // Build complete order data with ALL details
             const orderData = {
-                items: cart.map(item => ({
-                    id: item.id,
-                    name: item.name,
-                    price: item.price,
-                    quantity: item.quantity,
-                    emoji: item.emoji || '☕',
-                    size: item.size || null
-                })),
+                // Order identification
+                orderNumber: Date.now().toString().slice(-6),
+                
+                // Customer/Table info
                 tableNumber: tableNumber,
+                tableId: tableFromUrl || null,
+                customerName: tableNumber,
+                customerPhone: null, // Can be added later if needed
+                customerAddress: null,
+                
+                // Complete items array with all details
+                items: fullItems,
+                
+                // Pricing breakdown
                 subtotal: parseFloat(subtotal.toFixed(3)),
                 tax: parseFloat(tax.toFixed(3)),
+                taxRate: 0.05, // 5%
                 total: parseFloat(total.toFixed(3)),
                 itemsCount: itemsCount,
+                
+                // Payment info
                 paymentMethod: paymentMethod, // cash or card
+                paymentStatus: 'paid',
+                paidAmount: parseFloat(total.toFixed(3)),
+                changeAmount: 0,
+                
+                // Order status
                 status: 'paid', // Order is paid immediately
+                
+                // Source and location
+                source: 'menu',
+                location: 'dine-in', // or 'takeaway' if needed
+                deliveryType: null,
+                
+                // Discount info (if applicable)
+                discount: {
+                    percent: 0,
+                    amount: 0,
+                    type: null
+                },
+                
+                // Shipping info (if applicable)
+                shippingCompany: null,
+                shippingFee: 0,
+                
+                // Notes and special requests
+                notes: null,
+                specialInstructions: null,
+                
+                // Worker info (if ordered by worker)
+                workerId: null,
+                workerName: null,
+                workerPosition: null,
+                
+                // Room/Reservation info (if applicable)
+                roomId: null,
+                roomName: null,
+                reservationId: null,
+                
+                // Date and time tracking
                 dateKey: dateKey,
+                orderDate: today.toISOString().split('T')[0],
+                orderTime: today.toTimeString().split(' ')[0],
                 timestamp: firebase.database.ServerValue.TIMESTAMP,
-                createdAt: new Date().toISOString()
+                createdAt: new Date().toISOString(),
+                updatedAt: null,
+                
+                // Additional metadata
+                restaurantId: 'sham-coffee-1',
+                restaurantName: 'قهوة الشام',
+                version: '1.0'
             };
-
-            // Generate order number
-            const orderNumber = Date.now().toString().slice(-6);
-            orderData.orderNumber = orderNumber;
 
             const newOrderRef = firebase.database().ref(ORDERS_PATH).push();
             newOrderRef.set(orderData)
@@ -2804,7 +2909,7 @@
                     return updateDailySales(dateKey, total, itemsCount, paymentMethod);
                 })
                 .then(() => {
-                    showToast(`تم الطلب بنجاح! رقم الطلب: ${orderNumber} ✨`);
+                    showToast(`تم الطلب بنجاح! رقم الطلب: ${orderData.orderNumber} ✨`);
                     clearCart();
                     closeCart();
                     document.getElementById('table-number').value = '';
@@ -2817,7 +2922,7 @@
 
         // Update daily sales statistics
         function updateDailySales(dateKey, total, itemsCount, paymentMethod) {
-            const salesRef = firebase.database().ref(`restaurant-system/restaurants/bon/sales/${dateKey}`);
+            const salesRef = firebase.database().ref(`restaurant-system/restaurants/${RESTAURANT_ID}/sales/${dateKey}`);
             
             return salesRef.transaction((current) => {
                 if (current === null) {
