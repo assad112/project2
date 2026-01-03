@@ -3108,6 +3108,14 @@
                 closeFiltersModal();
             }
         });
+
+        // التحقق من تسجيل الدخول - للأدمن أو العامل
+        const isAdmin = localStorage.getItem('admin_logged_in') === 'true';
+        const isWorker = localStorage.getItem('worker_logged_in') === 'true';
+        
+        if (!isAdmin && !isWorker) {
+            window.location.href = 'login-admin.html';
+        }
     </script>
 </body>
 </html>

@@ -365,13 +365,18 @@
             const container = document.getElementById('pos-products');
             
             if (!menuItems || menuItems.length === 0) {
+                const isAdmin = localStorage.getItem('admin_logged_in') === 'true';
+                const adminLink = isAdmin ? `
+                    <a href="admin-menu.html" style="color: var(--primary); text-decoration: none; margin-top: 10px; display: inline-block;">
+                        إضافة منتجات <i class="fas fa-arrow-left"></i>
+                    </a>
+                ` : '';
+                
                 container.innerHTML = `
                     <div style="grid-column: 1/-1; text-align: center; padding: 40px; color: var(--text-secondary);">
                         <i class="fas fa-mug-hot" style="font-size: 3rem; margin-bottom: 15px; opacity: 0.5;"></i>
                         <p>لا توجد منتجات في القائمة</p>
-                        <a href="admin-menu.html" style="color: var(--primary); text-decoration: none; margin-top: 10px; display: inline-block;">
-                            إضافة منتجات <i class="fas fa-arrow-left"></i>
-                        </a>
+                        ${adminLink}
                     </div>
                 `;
                 return;
@@ -484,6 +489,14 @@
                 localStorage.removeItem('restaurant_id');
                 window.location.href = 'login-worker.html';
             }
+        }
+
+        // التحقق من تسجيل الدخول - للأدمن أو العامل
+        const isAdmin = localStorage.getItem('admin_logged_in') === 'true';
+        const isWorker = localStorage.getItem('worker_logged_in') === 'true';
+        
+        if (!isAdmin && !isWorker) {
+            window.location.href = 'login-admin.html';
         }
     </script>
 </body>

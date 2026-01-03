@@ -31,8 +31,18 @@
         { name: 'الكاشير', icon: 'fa-cash-register', link: 'cashier.html', id: 'cashier' }
     ];
 
-    // اختيار القائمة المناسبة
-    const menuItems = isAdmin ? adminMenuItems : (isWorker ? workerMenuItems : adminMenuItems);
+    // اختيار القائمة المناسبة - للعامل فقط المنيو والكاشير
+    let menuItems;
+    if (isWorker) {
+        // للعامل: فقط المنيو والكاشير - لا تظهر أي عناصر إدارية
+        menuItems = workerMenuItems;
+    } else if (isAdmin) {
+        // للأدمن: جميع الصفحات
+        menuItems = adminMenuItems;
+    } else {
+        // إذا لم يكن مسجل دخول: توجيه لتسجيل الدخول
+        menuItems = [];
+    }
 
     // معلومات المستخدم
     const userName = isAdmin ? (localStorage.getItem('admin_name') || 'مدير النظام') : 
@@ -51,24 +61,39 @@
         <nav class="nav-menu">
     `;
 
-    menuItems.forEach(item => {
-        // Check if active
-        let isActive = false;
-        if (page === item.link) {
-            isActive = true;
-        }
-        // Special case for admin-orders if it was merged or redirected
-        if (item.link === 'admin-menu.html' && page === 'admin-orders.html') {
-            isActive = true;
-        }
+    // التأكد من أن العامل لا يرى عناصر إدارية
+    if (isWorker) {
+        // للعامل: فقط عرض عناصر workerMenuItems
+        workerMenuItems.forEach(item => {
+            let isActive = page === item.link;
+            sidebarHTML += `
+                <a href="${item.link}" class="nav-item ${isActive ? 'active' : ''}" data-section="${item.id}">
+                    <i class="fas ${item.icon}"></i>
+                    <span>${item.name}</span>
+                </a>
+            `;
+        });
+    } else {
+        // للأدمن أو غير المسجلين
+        menuItems.forEach(item => {
+            // Check if active
+            let isActive = false;
+            if (page === item.link) {
+                isActive = true;
+            }
+            // Special case for admin-orders if it was merged or redirected
+            if (item.link === 'admin-menu.html' && page === 'admin-orders.html') {
+                isActive = true;
+            }
 
-        sidebarHTML += `
-            <a href="${item.link}" class="nav-item ${isActive ? 'active' : ''}" data-section="${item.id}">
-                <i class="fas ${item.icon}"></i>
-                <span>${item.name}</span>
-            </a>
-        `;
-    });
+            sidebarHTML += `
+                <a href="${item.link}" class="nav-item ${isActive ? 'active' : ''}" data-section="${item.id}">
+                    <i class="fas ${item.icon}"></i>
+                    <span>${item.name}</span>
+                </a>
+            `;
+        });
+    }
 
     sidebarHTML += `
         </nav>
