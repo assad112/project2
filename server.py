@@ -355,6 +355,10 @@ def list_hosting_sites(project_id=None):
 
             if result.returncode != 0:
                 last_error = combined or f'فشل تنفيذ الأمر: {cmd}'
+                # إذا كان خطأ في الصلاحيات، لا نحاول المزيد
+                if 'Permission' in combined or '403' in combined or 'denied' in combined.lower():
+                    cache.set(cache_key, [])
+                    raise RuntimeError('لا توجد صلاحيات للوصول إلى Firebase Hosting. يرجى تسجيل الدخول إلى Firebase CLI باستخدام: firebase login')
                 continue
 
             sites = []
@@ -418,7 +422,11 @@ def list_hosting_sites(project_id=None):
 
     # فشل كل المحاولات
     cache.set(cache_key, [])
-    raise RuntimeError(last_error or 'تعذر جلب مواقع الاستضافة')
+    error_msg = last_error or 'تعذر جلب مواقع الاستضافة'
+    # تحسين رسالة الخطأ
+    if 'Permission' in error_msg or '403' in error_msg or 'denied' in error_msg.lower():
+        error_msg = 'لا توجد صلاحيات للوصول إلى Firebase Hosting. يرجى تسجيل الدخول إلى Firebase CLI.'
+    raise RuntimeError(error_msg)
 
 class RestaurantHandler(BaseHTTPRequestHandler):
     # تعطيل السجلات لتحسين الأداء
@@ -440,11 +448,17 @@ class RestaurantHandler(BaseHTTPRequestHandler):
         return True
     
     def send_error_json(self, code, message):
-        self.send_response(code)
-        self.send_header('Content-Type', 'application/json; charset=utf-8')
-        self.send_header('Access-Control-Allow-Origin', '*')
-        self.end_headers()
-        self.wfile.write(json.dumps({'error': message}, ensure_ascii=False).encode('utf-8'))
+        try:
+            self.send_response(code)
+            self.send_header('Content-Type', 'application/json; charset=utf-8')
+            self.send_header('Access-Control-Allow-Origin', '*')
+            self.end_headers()
+            self.wfile.write(json.dumps({'error': message}, ensure_ascii=False).encode('utf-8'))
+            self.wfile.flush()
+        except (ConnectionAbortedError, BrokenPipeError, OSError):
+            pass  # الاتصال انقطع
+        except Exception as e:
+            print(f'⚠️ خطأ في إرسال error JSON: {e}')
     
     def do_GET(self):
         if not self.check_rate_limit():
@@ -479,8 +493,20 @@ class RestaurantHandler(BaseHTTPRequestHandler):
                 project_id = (qs.get('project') or [None])[0]
                 sites = list_hosting_sites(project_id=project_id)
                 self.send_json({'success': True, 'sites': sites})
+            except RuntimeError as e:
+                # خطأ في الصلاحيات أو الاتصال بـ Firebase
+                error_msg = str(e)
+                if 'Permission' in error_msg or '403' in error_msg:
+                    error_msg = 'لا توجد صلاحيات للوصول إلى Firebase Hosting. يرجى تسجيل الدخول إلى Firebase CLI.'
+                self.send_json({'success': False, 'error': error_msg, 'sites': []})
             except Exception as e:
-                self.send_json({'success': False, 'error': str(e), 'sites': []})
+                # خطأ عام
+                error_msg = f'خطأ في جلب المواقع: {str(e)}'
+                print(f'⚠️ {error_msg}')
+                try:
+                    self.send_json({'success': False, 'error': error_msg, 'sites': []})
+                except:
+                    pass  # الاتصال انقطع
         elif parsed.path == '/api/health':
             # نقطة فحص الصحة المحسّنة
             health_data = {
@@ -627,8 +653,14 @@ class RestaurantHandler(BaseHTTPRequestHandler):
             self.send_header('Content-Length', len(content))
             self.end_headers()
             self.wfile.write(content)
+            self.wfile.flush()
+        except (ConnectionAbortedError, BrokenPipeError, OSError):
+            pass  # الاتصال انقطع
         except IOError:
-            self.send_error(500)
+            try:
+                self.send_error(500)
+            except:
+                pass  # الاتصال انقطع
     
     def guess_content_type(self, path):
         ext = os.path.splitext(path)[1].lower()
@@ -762,23 +794,31 @@ class RestaurantHandler(BaseHTTPRequestHandler):
             self.send_error(404)
     
     def send_json(self, obj, compress=False):
-        content = json.dumps(obj, ensure_ascii=False).encode('utf-8')
-        
-        self.send_response(200)
-        self.send_header('Content-Type', 'application/json; charset=utf-8')
-        self.send_header('Access-Control-Allow-Origin', '*')
-        self.send_header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS')
-        self.send_header('Access-Control-Allow-Headers', 'Content-Type')
-        
-        # ضغط الاستجابات الكبيرة
-        accept_encoding = self.headers.get('Accept-Encoding', '')
-        if compress and 'gzip' in accept_encoding and len(content) > 1024:
-            content = gzip.compress(content)
-            self.send_header('Content-Encoding', 'gzip')
-        
-        self.send_header('Content-Length', len(content))
-        self.end_headers()
-        self.wfile.write(content)
+        try:
+            content = json.dumps(obj, ensure_ascii=False).encode('utf-8')
+            
+            self.send_response(200)
+            self.send_header('Content-Type', 'application/json; charset=utf-8')
+            self.send_header('Access-Control-Allow-Origin', '*')
+            self.send_header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS')
+            self.send_header('Access-Control-Allow-Headers', 'Content-Type')
+            
+            # ضغط الاستجابات الكبيرة
+            accept_encoding = self.headers.get('Accept-Encoding', '')
+            if compress and 'gzip' in accept_encoding and len(content) > 1024:
+                content = gzip.compress(content)
+                self.send_header('Content-Encoding', 'gzip')
+            
+            self.send_header('Content-Length', len(content))
+            self.end_headers()
+            self.wfile.write(content)
+            self.wfile.flush()
+        except (ConnectionAbortedError, BrokenPipeError, OSError) as e:
+            # الاتصال انقطع - لا حاجة لمعالجة
+            pass
+        except Exception as e:
+            # خطأ آخر - تسجيل فقط
+            print(f'⚠️ خطأ في إرسال JSON: {e}')
     
     def do_OPTIONS(self):
         self.send_response(200)
@@ -811,14 +851,15 @@ if __name__ == '__main__':
         pass
 
     port = 3000
+    host = 'localhost'  # استخدام localhost بدلاً من 0.0.0.0
     server_start_time = time.time()  # تتبع وقت البدء
-    server = ThreadedHTTPServer(('0.0.0.0', port), RestaurantHandler)
+    server = ThreadedHTTPServer((host, port), RestaurantHandler)
 
     banner = f'''
 ╔════════════════════════════════════════════════════════════════╗
 ║     🍽️  سيرفر المطعم المحسّن v2.0 - أداء فائق               ║
 ╠════════════════════════════════════════════════════════════════╣
-║  🌐 الرابط: http://0.0.0.0:{port}                              ║
+║  🌐 الرابط: http://localhost:{port}                            ║
 ║  📱 للهاتف: http://192.168.1.112:{port}                        ║
 ║  ⚡ الخيوط المتزامنة: {MAX_WORKERS}                                 ║
 ║  🛡️  Rate Limit: {RATE_LIMIT_REQUESTS} طلب/{RATE_LIMIT_WINDOW} ثانية                       ║
@@ -831,7 +872,7 @@ if __name__ == '__main__':
         print(banner)
     except UnicodeEncodeError:
         # fallback بسيط بدون رموز/عربي
-        print(f"Server started on http://0.0.0.0:{port} (UTF-8 output not supported in this console)")
+        print(f"Server started on http://localhost:{port} (UTF-8 output not supported in this console)")
     
     try:
         server.serve_forever()

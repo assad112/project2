@@ -2085,32 +2085,48 @@
     }
 
     document.addEventListener('DOMContentLoaded', async function() {
-        // تحميل البيانات من Firebase
-        await loadDataFromFirebase();
+        try {
+            // تحميل البيانات من Firebase
+            await loadDataFromFirebase();
+            
+            // مزامنة مواقع Firebase Hosting
+            await syncFirebaseHostingSites();
+            await loadDataFromFirebase(); // إعادة التحميل بعد الإضافة
+        } catch (error) {
+            console.error('خطأ في تحميل البيانات من Firebase:', error);
+            // المتابعة حتى لو فشل Firebase
+        }
         
-        // مزامنة مواقع Firebase Hosting
-        await syncFirebaseHostingSites();
-        await loadDataFromFirebase(); // إعادة التحميل بعد الإضافة
-        
-        loadRestaurants();
-        updateStats();
-        renderSuperAdminStatsSection();
-        renderSuperAdminSettingsSection();
-        applySuperAdminPreferences(loadSuperAdminPreferences(), { applyDefaultTab: false });
-        setupFilters();
-        loadTheme();
-        
-        // تحميل شركات الشحن
-        loadShippingCompanies();
-        
-        // تحديث التاريخ
-        const today = new Date().toLocaleDateString('ar-SA', { day: 'numeric', month: 'short' });
-        document.getElementById('today-date').textContent = today;
+        try {
+            loadRestaurants();
+            updateStats();
+            renderSuperAdminStatsSection();
+            renderSuperAdminSettingsSection();
+            applySuperAdminPreferences(loadSuperAdminPreferences(), { applyDefaultTab: false });
+            setupFilters();
+            loadTheme();
+            
+            // تحميل شركات الشحن
+            loadShippingCompanies();
+            
+            // تحديث التاريخ
+            const today = new Date().toLocaleDateString('ar-SA', { day: 'numeric', month: 'short' });
+            const todayDateEl = document.getElementById('today-date');
+            if (todayDateEl) {
+                todayDateEl.textContent = today;
+            }
 
-        // تطبيق التفضيلات بالكامل (بعد اكتمال ربط أحداث التبويبات)
-        setTimeout(() => {
-            applySuperAdminPreferences(loadSuperAdminPreferences(), { applyDefaultTab: true });
-        }, 0);
+            // تطبيق التفضيلات بالكامل (بعد اكتمال ربط أحداث التبويبات)
+            setTimeout(() => {
+                applySuperAdminPreferences(loadSuperAdminPreferences(), { applyDefaultTab: true });
+            }, 0);
+        } catch (error) {
+            console.error('خطأ في تحميل الصفحة:', error);
+        }
+        
+        // إخفاء أي شاشة تحميل
+        const loaders = document.querySelectorAll('.loader, .loading, [class*="loading"]');
+        loaders.forEach(loader => loader.style.display = 'none');
     });
     
     function toggleSidebar() {
@@ -2415,11 +2431,35 @@
     // تحميل البيانات من Firebase
     async function loadDataFromFirebase() {
         try {
+            // إضافة timeout للتحميل
+            const loadPromise = Promise.all([
+                FirebaseDB.getRestaurants().catch(e => {
+                    console.warn('خطأ في تحميل المطاعم:', e);
+                    return [];
+                }),
+                FirebaseDB.getSites().catch(e => {
+                    console.warn('خطأ في تحميل المواقع:', e);
+                    return {};
+                })
+            ]);
+            
+            const timeoutPromise = new Promise((_, reject) => 
+                setTimeout(() => reject(new Error('انتهت مهلة التحميل')), 10000)
+            );
+            
+            const [restaurantsData, sitesData] = await Promise.race([
+                loadPromise,
+                timeoutPromise
+            ]).catch(() => {
+                // في حالة الفشل، نستخدم بيانات افتراضية
+                console.warn('استخدام بيانات افتراضية بسبب فشل التحميل');
+                return [[], {}];
+            });
+            
             // تحميل المطاعم
-            restaurants = await FirebaseDB.getRestaurants();
+            restaurants = Array.isArray(restaurantsData) ? restaurantsData : [];
             
             // تحميل المواقع
-            const sitesData = await FirebaseDB.getSites();
             const safeSites = sitesData && typeof sitesData === 'object' ? sitesData : {};
             hostingSites = Object.keys(safeSites).map(key => ({
                 id: key,
